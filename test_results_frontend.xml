@@ -1,0 +1,10 @@
+<testsuites id="" name="" tests="3" failures="0" skipped="0" errors="0" time="5.760426">
+<testsuite name="dashboard.spec.js" timestamp="2026-03-17T13:26:58.290Z" hostname="chromium" tests="3" failures="0" skipped="0" time="2.371" errors="0">
+<testcase name="Dashboard E2E Automation › Deve bloquear acesso sem login e redirecionar para Login" classname="dashboard.spec.js" time="0.5">
+</testcase>
+<testcase name="Dashboard E2E Automation › Deve realizar login com sucesso" classname="dashboard.spec.js" time="1.256">
+</testcase>
+<testcase name="Dashboard E2E Automation › Deve exibir erro de login com credenciais incorretas" classname="dashboard.spec.js" time="0.615">
+</testcase>
+</testsuite>
+</testsuites>

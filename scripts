@@ -1,0 +1,455 @@
+-- Query para localizar os or�amentos do m�s relacionado ao fechamento, pegar o id e utilizar na query para buscar as ZAJUS
+select o.id,
+    o.descricao,
+    afp.descricao as periodo,
+    otv.nome as tipo_verba,
+    o.status,
+    o.vlr_orcamento,
+    o.dta_criacao,
+    o.dta_alteracao,
+    u1.nom_usuario as id_usuario_criacao,
+    u2.nom_usuario as id_usuario_alteracao
+from orcamento o
+    inner join usuario u1 on u1.id_externo = o.id_usuario_criacao
+    inner join usuario u2 on u2.id_externo = o.id_usuario_alteracao
+    inner join orcamento_tipo_verba otv on otv.id = o.id_tipo_verba
+    inner join orcamento_linha_investimento oli on oli.id_orcamento = o.id
+    inner join orcamento_desdobramento od on od.id_linha_investimento = oli.id
+    inner join ano_fiscal_periodo afp on afp.id = od.id_periodo_orcamentario
+where o.status in ('APROVADO', 'AGUARDANDO_APROVACAO')
+group by o.id,
+    o.descricao,
+    afp.descricao,
+    otv.nome,
+    o.status,
+    o.vlr_orcamento,
+    o.dta_criacao,
+    o.dta_alteracao,
+    u1.nom_usuario,
+    u2.nom_usuario
+order by o.id desc;
+-- Query para consultar erros de integracao de Provisão VK11
+with dados as (
+    select soi.id_orcamento,
+        o.descricao,
+        soi.tipo_integracao,
+        soi.id_ajuste_verba,
+        soi.status
+    from suzano_orcamento_integracao soi
+        inner join orcamento o on o.id = soi.id_orcamento
+    where valid_from >= '2024-01-01'
+    order by soi.id desc
+)
+select dados.id_orcamento,
+    dados.descricao,
+    dados.tipo_integracao,
+    dados.id_ajuste_verba,
+    count(1) filter (
+        where dados.status = 'INTEGRADO'
+    ) as integrado,
+    count(1) filter (
+        where dados.status = 'PENDENTE_INTEGRACAO'
+    ) as pendente_integracao,
+    count(1) filter (
+        where dados.status = 'ERRO'
+    ) as erro -- count(1) filter (where dados.status = 'PENDENTE_INTEGRACAO_1')
+from dados
+group by dados.id_orcamento,
+    dados.descricao,
+    dados.tipo_integracao,
+    dados.id_ajuste_verba
+order by dados.id_orcamento desc;
+-- Query para acompanhar integração de ZAJU
+with dados as (
+    select sapmc.id_orcamento,
+        otv.descricao as tipo_verba,
+        o.descricao,
+        sapmc.id_ajuste_verba,
+        oav.tipo_ajuste,
+        oav.dta_alteracao,
+        sapmc.status,
+        sapmc.purch_no_c
+    from suzano_ajuste_provisao_memoria_calculo sapmc
+        inner join orcamento o on sapmc.id_orcamento = o.id
+        left join orcamento_ajuste_verba oav on sapmc.id_ajuste_verba = oav.id
+        inner join orcamento_tipo_verba otv on o.id_tipo_verba = otv.id
+    where sapmc.cond_value != 0
+        and sapmc.dta_alteracao between '2025-10-01 00:00:00' and '2025-10-31 23:59:59' --and sapmc.dta_criacao >= '2024-01-01 00:00:00'
+        and sapmc.status not in (
+            'PENDENTE_INTEGRACAO1',
+            'STATUS_INVALIDO',
+            'INVALIDO'
+        ) --and purch_no_c not in ('ZAJU_APUR_REPROVADA','ZAJU_AJUSTE_PGTO')
+        --and sapmc.id_orcamento in (337,336,334,333)
+        and sapmc.purch_no_c is not null
+    order by sapmc.id desc
+)
+select dados.id_orcamento,
+    dados.tipo_verba,
+    dados.descricao,
+    dados.id_ajuste_verba,
+    dados.tipo_ajuste,
+    dados.dta_alteracao,
+    dados.purch_no_c,
+    count(1) filter (
+        where dados.status = 'INTEGRADO'
+    ) as INTEGRADO,
+    count(1) filter (
+        where dados.status = 'PENDENTE_INTEGRACAO'
+    ) as PENDENTE_INTEGRACAO,
+    count(1) filter (
+        where dados.status = 'ERRO'
+    ) as ERRO,
+    count(1) filter (
+        where dados.status = 'PENDENTE_RETORNO'
+    ) as PENDENTE_RETORNO,
+    count(
+        dados.status in ('INTEGRADO', 'PENDENTE_INTEGRACAO')
+    ) as total_zaju
+from dados
+group by dados.id_orcamento,
+    dados.tipo_verba,
+    dados.descricao,
+    dados.id_ajuste_verba,
+    dados.tipo_ajuste,
+    dados.dta_alteracao,
+    dados.purch_no_c
+order by dados.purch_no_c asc;
+-- Query para consultar erros de ZAJU
+select concat(sapmc.id, ','),
+    sapmc.id,
+    sapmc.id_orcamento,
+    o.descricao as orcamento,
+    oli.descricao as linha_investimento,
+    oti.nome as tipo_linha_investimento,
+    c.id_externo as cod_cliente,
+    c.nom_cliente,
+    sapmc.nro_nota_fiscal,
+    s.nro_nota_fiscal,
+    s.vkorg,
+    s.nro_documento,
+    s.valor_total,
+    s.valor_liquido,
+    sapmc.cond_value,
+    sapmc.dta_criacao,
+    sapmc.purch_no_c,
+    sapmc.doc_type,
+    sapmc.sequencial,
+    sapmc.material,
+    p.nom_produto,
+    um.sigla,
+    sapmc.cond_type,
+    sapmc.status,
+    sapmc.numov,
+    sapmc.numfat,
+    sapmc.dta_integracao,
+    sapmc.msg
+from suzano_ajuste_provisao_memoria_calculo sapmc
+    inner join orcamento o on sapmc.id_orcamento = o.id
+    inner join orcamento_linha_investimento oli on sapmc.id_linha_investimento = oli.id
+    inner join orcamento_tipo_investimento oti on oli.id_tipo_investimento = oti.id
+    inner join sellin s on sapmc.id_sellin = s.id
+    inner join cliente c on s.id_cliente = c.id
+    inner join produto p on sapmc.material = p.id_externo
+    inner join unidade_medida um on p.id_unidade_medida = um.id
+where sapmc.cond_value != 0
+    and sapmc.dta_alteracao between '2025-09-01 00:00:00' and '2025-09-30 23:59:59'
+    and sapmc.status in ('ERRO') --and purch_no_c in ('ZAJU_AJUSTE_VERBA_NOMI') --and sapmc.nro_nota_fiscal = '000000-1' order by c.id_externo asc;
+    -- Query para acompanhamento dos pagamentos
+    WITH dados AS (
+        SELECT spi.id_pagamento,
+            c.id_externo,
+            c.nom_cliente,
+            pa.vlr_final,
+            spi.status,
+            spi.ind_enviado_integracao
+        FROM suzano_pagamento_integracao spi
+            INNER JOIN cliente c ON spi.id_cliente = c.id
+            INNER JOIN pagamento_acao pa ON spi.id_pagamento = pa.id
+        WHERE spi.dta_alteracao >= '2025-02-01 00:00:00'
+        ORDER BY spi.id DESC
+    )
+SELECT dados.id_externo AS id_cliente,
+    dados.nom_cliente,
+    COUNT(1) FILTER (
+        WHERE dados.status = 'INTEGRADO'
+    ) AS integrado,
+    COUNT(1) FILTER (
+        WHERE dados.status = 'PENDENTE_INTEGRACAO'
+    ) AS pendente_integracao,
+    COUNT(1) FILTER (
+        WHERE dados.status = 'PENDENTE_RETORNO'
+    ) AS pendente_retorno,
+    COUNT(1) FILTER (
+        WHERE dados.status = 'ERRO'
+    ) AS erro,
+    COUNT(1) FILTER (
+        WHERE dados.status IN ('INTEGRADO', 'PENDENTE_INTEGRACAO', 'ERRO')
+    ) AS total_pagamentos,
+    SUM(
+        CAST(
+            REPLACE(dados.vlr_final::TEXT, ',', '.') AS NUMERIC(10, 2)
+        )
+    ) FILTER (
+        WHERE dados.status = 'INTEGRADO'
+    ) AS valor_pagamento,
+    SUM(
+        CAST(
+            REPLACE(dados.vlr_final::TEXT, ',', '.') AS NUMERIC(10, 2)
+        )
+    ) FILTER (
+        WHERE dados.status = 'ERRO'
+            and dados.vlr_final IS NOT NULL
+    ) AS valor_pagamento_erro
+FROM dados
+GROUP BY dados.id_externo,
+    dados.nom_cliente;
+--query pagamentos ERRO 
+select spi.id_pagamento,
+    c.id_externo as cod_cliente,
+    c.nom_cliente,
+    spi.nro_documento,
+    spi.sequencial,
+    spi.doc_type,
+    spi.purch_no_c,
+    spi.cond_type,
+    spi.tipo_acao,
+    spi.dta_criacao,
+    spi.dta_alteracao,
+    spi.status,
+    spi.msg,
+    spi.dta_integracao as dta_envio_integracao
+from suzano_pagamento_integracao spi
+    inner join cliente c on c.id = spi.id_cliente
+    inner join pagamento_acao pa on pa.id = spi.id_pagamento
+where spi.dta_alteracao >= '2025-02-01 00:00:00'
+    and spi.status = 'ERRO'
+order by msg asc;
+-- Query para consultar inconsistencias na integração de sellin
+select distinct ife.erros,
+    ife.lote,
+    ife.dta_criacao,
+    ife.registro->>'dataEmissao' as data_emissao,
+    ife.registro->>'numeroNF' as nro_nota_fiscal,
+    ife.registro->>'clienteId' as id_cliente,
+    ife.registro->>'nomCliente' as nom_cliente,
+    ife.registro->>'numeroDocFiscal' as nro_documento,
+    ife.registro->>'itemDocumento' as item_documento,
+    ife.registro->>'produtoId' as id_produto,
+    ife.registro->>'nomProduto' as nom_produto,
+    ife.registro->>'unidadeMedida' as unidade_medida,
+    ife.registro->>'quantidade' as quantidade,
+    ife.registro->>'valorBruto' as valor_total,
+    ife.registro->>'valorLiquido' as valor_liquido,
+    ife.registro->>'dataVencimentoLiq' as dta_venc_liq,
+    ife.registro->>'tipoDocFat' as tipo_doc_fat,
+    ife.registro->>'referenciaFat' as referencia_fat
+from integracao_fila_erros ife
+where tipo = 'SELLIN'
+    and ife.dta_alteracao between '2026-01-01 00:00:00' and '2026-01-31 23:59:59' --and ife.registro ->>'produtoId' like '%90005082%'
+    and not exists (
+        select distinct se.nro_documento,
+            se.id_produto,
+            se.id_cliente,
+            se.tipo_doc_fat
+        from sellin se
+        where se.nro_documento = cast(ife.registro->>'numeroDocFiscal' as integer) --and se.nro_nota_fiscal = ife.registro ->> 'numeroNF'
+            and se.id_produto in (
+                select p.id
+                from produto p
+                where p.id_externo = ife.registro->>'produtoId'
+            )
+            and se.id_cliente in (
+                select c.id
+                from cliente c
+                where c.id_externo = ife.registro->>'clienteId'
+            )
+            and se.tipo_doc_fat = ife.registro->>'tipoDocFat'
+    ) --and se.referencia_fat = ife.registro ->> 'referenciaFat')
+group by ife.erros,
+    ife.lote,
+    ife.dta_criacao,
+    ife.registro->>'dataEmissao',
+    ife.registro->>'numeroNF',
+    ife.registro->>'clienteId',
+    ife.registro->>'nomCliente',
+    ife.registro->>'numeroDocFiscal',
+    ife.registro->>'itemDocumento',
+    ife.registro->>'produtoId',
+    ife.registro->>'nomProduto',
+    ife.registro->>'unidadeMedida',
+    ife.registro->>'quantidade',
+    ife.registro->>'valorBruto',
+    ife.registro->>'valorLiquido',
+    ife.registro->>'dataVencimentoLiq',
+    ife.registro->>'tipoDocFat',
+    ife.registro->>'referenciaFat'
+order by ife.registro->>'dataEmissao' desc;
+-- Query para consultar inconsistencias na integracao de clientes
+SELECT ife.dta_criacao,
+    ife.erros,
+    ife.registro->>'codCliente' AS cod_cliente,
+    ife.registro->>'nome' AS nom_cliente,
+    ife.registro->>'cnpj' AS cnpj,
+    CAST(ife.registro->>'ativoInativo' AS BOOLEAN) AS ativo_inativo,
+    ife.registro->>'descricaoContato' AS contato_cliente,
+    ife.registro->>'emailContato' AS email_contato_cliente,
+    ife.registro->>'telefoneContato' AS telefone_contato_cliente,
+    CAST(ife.registro->>'pagador' AS BOOLEAN) AS sap_pagador,
+    ife.registro->>'codCustomerGroup' AS cod_customer_group,
+    ife.registro->>'customerGroup' AS customer_group,
+    ife.registro->>'codCanal' AS cod_canal,
+    ife.registro->>'canal' AS canal,
+    ife.registro->>'subCanal' AS sub_canal,
+    ife.registro->>'codRegional' AS cod_regional,
+    ife.registro->>'divisaoRegional' AS regional
+FROM integracao_fila_erros ife
+WHERE ife.tipo = 'CLIENTE'
+    AND ife.dta_alteracao >= '2025-06-01 00:00:00'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM cliente c
+            INNER JOIN cliente_contato cc ON c.id_contato_responsavel = cc.id
+        WHERE c.id_externo = ife.registro->>'codCliente'
+            AND c.nom_cliente = ife.registro->>'nome'
+            AND c.des_cnpj = ife.registro->>'cnpj'
+            AND c.ind_ativo = CAST(ife.registro->>'ativoInativo' AS BOOLEAN)
+            AND cc.nom_contato = ife.registro->>'descricaoContato'
+            AND cc.vlr_email = ife.registro->>'emailContato'
+            AND cc.vlr_telefone = ife.registro->>'telefoneContato'
+            AND c.ind_pagador = CAST(ife.registro->>'pagador' AS BOOLEAN)
+    )
+GROUP BY ife.dta_criacao,
+    ife.erros,
+    ife.registro->>'codCliente',
+    ife.registro->>'nome',
+    ife.registro->>'cnpj',
+    CAST(ife.registro->>'ativoInativo' AS BOOLEAN),
+    ife.registro->>'descricaoContato',
+    ife.registro->>'emailContato',
+    ife.registro->>'telefoneContato',
+    CAST(ife.registro->>'pagador' AS BOOLEAN),
+    ife.registro->>'codCustomerGroup',
+    ife.registro->>'customerGroup',
+    ife.registro->>'codCanal',
+    ife.registro->>'canal',
+    ife.registro->>'subCanal',
+    ife.registro->>'codRegional',
+    ife.registro->>'divisaoRegional'
+ORDER BY ife.dta_criacao DESC;
+-- Query para consultar inconsistencias na integração produto
+select distinct ife.lote,
+    ife.erros,
+    ife.registro->>'idExterno' as id_produto,
+    ife.registro->>'nome' as nom_produto,
+    ife.registro->>'ativoInativo' as ativo_inativo,
+    ife.registro->>'volume' as volume,
+    ife.registro->>'peso' as peso,
+    ife.registro->>'unidadeMedida' as unidade_medida,
+    ife.registro->>'codClasse' as cod_classe,
+    ife.registro->>'classe' as classe,
+    ife.registro->>'codLinhaProduto' as cod_linha_produto,
+    ife.registro->>'grupoMercadoria' as grupo_mercadoria,
+    ife.registro->>'codFamilia' as cod_familia,
+    ife.registro->>'familia' as familia,
+    ife.registro->>'codSetorAtividade' as cod_setor_atividade,
+    ife.registro->>'setorAtividade' as setor_atividade,
+    ife.registro->>'codHierarquia1' as cod_hierarquia1,
+    ife.registro->>'hierarquia1' as hierarquia1,
+    ife.registro->>'codHierarquia2' as cod_hierarquia2,
+    ife.registro->>'hierarquia2' as hierarquia2,
+    ife.registro->>'codHierarquia3' as cod_hierarquia3,
+    ife.registro->>'hierarquia3' as hierarquia3,
+    ife.registro->>'codUnidadeNegocio' as cod_unidade_negocio,
+    ife.registro->>'unidadeNegocio' as unidade_negocio
+from integracao_fila_erros ife
+where tipo = 'PRODUTO'
+    and ife.dta_alteracao between '2025-09-01 00:00:00' and '2025-10-03 23:59:59' --and ife.dta_criacao >= '2024-03-01 00:00:00'
+    and ife.registro->>'idExterno' like '%0090005082%'
+    and not exists (
+        select *
+        from produto p
+        where p.id_externo = ife.registro->>'idExterno'
+    )
+group by ife.lote,
+    ife.erros,
+    ife.registro->>'idExterno',
+    ife.registro->>'nome',
+    ife.registro->>'ativoInativo',
+    ife.registro->>'volume',
+    ife.registro->>'peso',
+    ife.registro->>'unidadeMedida',
+    ife.registro->>'codClasse',
+    ife.registro->>'classe',
+    ife.registro->>'codLinhaProduto',
+    ife.registro->>'grupoMercadoria',
+    ife.registro->>'codFamilia',
+    ife.registro->>'familia',
+    ife.registro->>'codSetorAtividade',
+    ife.registro->>'setorAtividade',
+    ife.registro->>'codHierarquia1',
+    ife.registro->>'hierarquia1',
+    ife.registro->>'codHierarquia2',
+    ife.registro->>'hierarquia2',
+    ife.registro->>'codHierarquia3',
+    ife.registro->>'hierarquia3',
+    ife.registro->>'codUnidadeNegocio',
+    ife.registro->>'unidadeNegocio';
+-- Query para consulta de inconsistencias de integracao de usuários
+select --ife.id,
+    --ife.lote,
+    ife.erros,
+    ife.registro->>'email' as email,
+    ife.registro->>'matricula' as matricula,
+    ife.registro->>'nomePerfil' as nomePerfil,
+    ife.registro->>'ativoInativo' as ativo_inativo,
+    ife.registro->>'nomeEstrutura' as nomeEstrura,
+    ife.registro->>'codigoDivisao' as codigoDivisao,
+    ife.registro->>'indRecebeEmail' ind_recebe_email,
+    ife.registro->>'chaveIntegracao' as chave_integracao,
+    ife.registro->>'indAprovaWorkflow' as ind_aprova_workflow
+from integracao_fila_erros ife
+where tipo = 'PRE_CADASTRO_USUARIO'
+    and dta_alteracao >= '2025-06-01 00:00:00'
+    and not exists (
+        select u.matricula,
+            u.email,
+            u.chave_integracao
+        from usuario u
+        where u.matricula = ife.registro->>'matricula'
+            and u.email = ife.registro->>'email'
+            and u.chave_integracao = ife.registro->>'chaveIntegracao'
+    )
+group by ife.id,
+    ife.lote,
+    ife.erros,
+    ife.registro->>'email',
+    ife.registro->>'matricula',
+    ife.registro->>'nomePerfil',
+    ife.registro->>'ativoInativo',
+    ife.registro->>'nomeEstrutura',
+    ife.registro->>'codigoDivisao',
+    ife.registro->>'indRecebeEmail',
+    ife.registro->>'chaveIntegracao',
+    ife.registro->>'indAprovaWorkflow';
+select *
+from usuario u
+where nom_usuario like '%magalhaes%'
+order by nom_usuario asc --where email like '%HMAGALHAES@SUZANO.COM.BR%'
+    -- Query para consultar inconsistencias de cutoff
+select distinct --concat(ife.registro ->> 'numeroDocFat',','),
+    ife.tipo,
+    ife.erros,
+    ife.registro->>'cutoff' as cutoff,
+    ife.registro->>'numeroDocFat' as nro_documento --ife.dta_criacao
+    --concat(ife.registro ->> 'numeroDocFat',',')
+from integracao_fila_erros ife
+where ife.tipo = 'CUTOFF'
+    and ife.dta_alteracao between '2025-06-01 00:00:00' and '2025-06-30 23:59:59'
+    and ife.dta_criacao >= '2025-06-01 00:00:00'
+    and not exists (
+        select *
+        from sellin s
+        where s.nro_documento = cast(ife.registro->>'numeroDocFat' as integer)
+            and s.cutoff = ife.registro->>'cutoff'
+    );
