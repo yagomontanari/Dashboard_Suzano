@@ -122,6 +122,12 @@ async def get_dashboard_metrics(
             "error": sum(r["erro"] or 0 for r in zaju_rows),
             "pending_return": sum(r["pendente_retorno"] or 0 for r in zaju_rows)
         }
+        zaju_totals["total"] = (
+            zaju_totals["success"] + 
+            zaju_totals["pending"] + 
+            zaju_totals["error"] + 
+            zaju_totals["pending_return"]
+        )
 
         zver_rows = zver_res.mappings().all()
         

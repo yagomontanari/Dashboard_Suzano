@@ -174,9 +174,9 @@ export default function Dashboard() {
     const wb = XLSX.utils.book_new();
     
     const integracoes = [
-      { Tipo: 'VK11 (Orçamento)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error, PendenteRetorno: 0 },
-      { Tipo: 'ZAJUS (Ajustes)', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error, PendenteRetorno: data.zaju.pending_return },
-      { Tipo: 'ZVER (Pagamentos)', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error, PendenteRetorno: data.zver.pending_return }
+      { Tipo: 'VK11 (Orçamento)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error, PendenteRetorno: 0, Total: data.vk11.success + data.vk11.pending + data.vk11.error },
+      { Tipo: 'ZAJUS (Ajustes)', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error, PendenteRetorno: data.zaju.pending_return, Total: data.zaju.total },
+      { Tipo: 'ZVER (Pagamentos)', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error, PendenteRetorno: data.zver.pending_return, Total: data.zver.success + data.zver.pending + data.zver.error + data.zver.pending_return }
     ];
     
     const inconsistencias = Object.entries(data.errors).map(([key, value]) => ({
@@ -250,7 +250,7 @@ export default function Dashboard() {
     { id: 'geral', label: 'Geral' },
     { id: 'pagamentos', label: 'Pagamentos' },
     { id: 'vk11', label: 'VK11' },
-    { id: 'zaku', label: 'ZAKU' }
+    { id: 'zaku', label: 'Ajuste de Provisão (ZAJU)' }
   ];
 
   return (
@@ -572,13 +572,60 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Placeholder for ZAKU tab */}
         {activeTab === 'zaku' && (
-          <div className="flex flex-col items-center justify-center p-20 bg-white rounded-xl border border-dashed border-slate-300 text-slate-400 space-y-4">
-            <Clock size={48} className="animate-pulse" />
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-slate-600 uppercase">Módulo em Desenvolvimento</h3>
-              <p>A visão detalhada para ZAKU estará disponível em breve.</p>
+          <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integrados</p>
+                <h3 className="text-3xl font-bold text-blue-600 text-center">{data.zaju.success}</h3>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integração Pendente</p>
+                <h3 className="text-3xl font-bold text-amber-600 text-center">{data.zaju.pending}</h3>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Pendente Retorno</p>
+                <h3 className="text-3xl font-bold text-indigo-600 text-center">{data.zaju.pending_return}</h3>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Erros</p>
+                <h3 className="text-3xl font-bold text-rose-600 text-center">{data.zaju.error}</h3>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Total de Zajus</p>
+                <h3 className="text-3xl font-bold text-slate-800 text-center">{data.zaju.total}</h3>
+              </div>
+            </div>
+
+            {/* Total Highlight */}
+            <div className="bg-slate-900 p-10 rounded-xl shadow-[8px_8px_0px_#94a3b8] border border-slate-800 flex flex-col md:flex-row items-center justify-around gap-8">
+              <div className="text-center">
+                <p className="text-blue-400 font-black text-xs uppercase tracking-[0.2em] mb-2">Processamento de Zajus</p>
+                <h2 className="text-6xl font-black text-white tracking-tighter">
+                  {data.zaju.success}
+                </h2>
+                <p className="text-slate-400 font-bold text-sm mt-2">Integrados com Sucesso</p>
+              </div>
+
+              <div className="h-20 w-px bg-slate-800 hidden md:block"></div>
+
+              <div className="text-center">
+                <p className="text-rose-500 font-black text-xs uppercase tracking-[0.2em] mb-2">Volume Total de Registros</p>
+                <h2 className="text-6xl font-black text-white tracking-tighter">
+                  {data.zaju.total}
+                </h2>
+                <p className="text-slate-400 font-bold text-sm mt-2">Total na Base de Dados</p>
+              </div>
+            </div>
+
+            {/* Inconsistencies Link Placeholder (if ZAJU has specific errors) */}
+            <div className="bg-white p-8 rounded-xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400">
+               <Search size={32} className="mb-2" />
+               <p className="font-medium">O detalhamento individual de cada ZAJU pode ser consultado via exportação ou na aba Geral.</p>
             </div>
           </div>
         )}
