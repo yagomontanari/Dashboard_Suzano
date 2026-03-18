@@ -54,9 +54,13 @@ QUERY_PAGAMENTOS = text("""
         COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
         COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS pendente_retorno,
         COUNT(1) FILTER (WHERE spi.status = 'ERRO') AS erro,
-        COUNT(1) FILTER (WHERE spi.status IN ('INTEGRADO', 'PENDENTE_INTEGRACAO', 'ERRO')) AS total_pagamentos,
-        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(10, 2))) FILTER (WHERE spi.status = 'INTEGRADO') AS valor_pagamento,
-        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(10, 2))) FILTER (WHERE spi.status = 'ERRO' AND pa.vlr_final IS NOT NULL) AS valor_pagamento_erro
+        COUNT(1) FILTER (WHERE spi.status IN ('INTEGRADO', 'PENDENTE_INTEGRACAO', 'PENDENTE_RETORNO', 'ERRO')) AS total_pagamentos,
+        
+        -- Valores Financeiros
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'INTEGRADO') AS valor_integrado,
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS valor_pendente_integracao,
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS valor_pendente_retorno,
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'ERRO' AND pa.vlr_final IS NOT NULL) AS valor_erro
     FROM suzano_pagamento_integracao spi
     INNER JOIN cliente c ON spi.id_cliente = c.id
     INNER JOIN pagamento_acao pa ON spi.id_pagamento = pa.id 
@@ -286,3 +290,28 @@ QUERY_ERRO_PAGAMENTOS_LIST = text("""
 """)
 
 QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED = text(QUERY_ERRO_PAGAMENTOS_LIST.text + " ORDER BY dta_alteracao DESC LIMIT :limit OFFSET :offset;")
+
+QUERY_PAGAMENTOS_SUCESSO_LIST = text("""
+    WITH dados AS (
+        SELECT 
+            spi.id_pagamento as cod_pagamento,
+            concat(c.id_externo,' - ',c.nom_cliente) as cliente,
+            spi.sequencial,
+            spi.purch_no_c,
+            spi.dta_criacao,
+            spi.dta_alteracao,
+            spi.dta_integracao as dta_envio_integracao,
+            spi.status,
+            spi.msg,
+            ROW_NUMBER() OVER(PARTITION BY spi.id_pagamento ORDER BY spi.dta_alteracao DESC) as rn
+        FROM suzano_pagamento_integracao spi
+        INNER JOIN cliente c ON spi.id_cliente = c.id
+        WHERE spi.status = 'INTEGRADO'
+          AND spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
+    )
+    SELECT cod_pagamento, cliente, sequencial, purch_no_c, dta_criacao, dta_envio_integracao, status, msg, dta_alteracao
+    FROM dados
+    WHERE rn = 1
+""")
+
+QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED = text(QUERY_PAGAMENTOS_SUCESSO_LIST.text + " ORDER BY dta_alteracao DESC LIMIT :limit OFFSET :offset;")

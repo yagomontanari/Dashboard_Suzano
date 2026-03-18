@@ -24,7 +24,9 @@ from api.queries import (
     QUERY_ERRO_CUTOFF_PAGINATED,
     QUERY_ERRO_USUARIOS_PAGINATED,
     QUERY_ERRO_PAGAMENTOS_LIST,
-    QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED
+    QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED,
+    QUERY_PAGAMENTOS_SUCESSO_LIST,
+    QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED
 )
 
 router = APIRouter()
@@ -119,11 +121,29 @@ async def get_dashboard_metrics(
         }
 
         zver_rows = zver_res.mappings().all()
+        
+        # Obter Top 5 clientes por valor integrado
+        zver_rows_sorted = sorted(zver_rows, key=lambda x: x["valor_integrado"] or 0, reverse=True)
+        top_5_clients = [
+            {
+                "id": r["id_cliente"],
+                "nome": r["nom_cliente"],
+                "valor": float(r["valor_integrado"] or 0),
+                "qtd": r["integrado"] or 0
+            }
+            for r in zver_rows_sorted[:5] if (r["valor_integrado"] or 0) > 0
+        ]
+
         zver_totals = {
             "success": sum(r["integrado"] or 0 for r in zver_rows),
             "pending": sum(r["pendente_integracao"] or 0 for r in zver_rows),
             "error": sum(r["erro"] or 0 for r in zver_rows),
-            "pending_return": sum(r["pendente_retorno"] or 0 for r in zver_rows)
+            "pending_return": sum(r["pendente_retorno"] or 0 for r in zver_rows),
+            "value_success": float(sum(r["valor_integrado"] or 0 for r in zver_rows)),
+            "value_pending": float(sum(r["valor_pendente_integracao"] or 0 for r in zver_rows)),
+            "value_pending_return": float(sum(r["valor_pendente_retorno"] or 0 for r in zver_rows)),
+            "value_error": float(sum(r["valor_erro"] or 0 for r in zver_rows)),
+            "top_clients": top_5_clients
         }
 
         # Contagem de inconsistências que afetam o BD
@@ -191,7 +211,8 @@ async def get_inconsistencies(
             "produtos": (QUERY_ERRO_PRODUTOS_PAGINATED, QUERY_ERRO_PRODUTOS),
             "cutoff": (QUERY_ERRO_CUTOFF_PAGINATED, QUERY_ERRO_CUTOFF),
             "usuarios": (QUERY_ERRO_USUARIOS_PAGINATED, QUERY_ERRO_USUARIOS),
-            "pagamentos": (QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED, QUERY_ERRO_PAGAMENTOS_LIST)
+            "pagamentos": (QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED, QUERY_ERRO_PAGAMENTOS_LIST),
+            "pagamentos_sucesso": (QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED, QUERY_PAGAMENTOS_SUCESSO_LIST)
         }
         
         if category not in query_map:
