@@ -18,7 +18,7 @@ const formatDateTime = (value) => {
   }
 };
 
-const DATE_KEYS = new Set(['dta_criacao']);
+const DATE_KEYS = new Set(['dta_criacao', 'dta_envio_integracao', 'data_emissao', 'valid_from']);
 
 const formatCellValue = (key, value) => {
   if (DATE_KEYS.has(key)) return formatDateTime(value);
