@@ -23,9 +23,14 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-        <div className="bg-blue-600 p-8 text-center">
-            <h2 className="text-3xl font-bold text-white tracking-tight">Agente Suzano</h2>
-            <p className="text-blue-100 mt-2">Dashboard de Fechamento</p>
+        <div className="bg-white p-10 text-center border-b border-slate-100 flex flex-col items-center gap-8">
+            <div className="flex items-center justify-center">
+                <img src="/logo/Tradelinks_Colorida.png" alt="Tradelinks" className="h-16 object-contain" />
+            </div>
+            <div>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Dashboard Suzano</h2>
+              <p className="text-slate-500 font-bold text-xs uppercase tracking-[0.3em] mt-2">Dashboard de Fechamento</p>
+            </div>
         </div>
         <div className="p-8">
           <form onSubmit={handleLogin} className="space-y-6">
@@ -67,7 +72,7 @@ export default function Login() {
               type="submit"
               className="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 transition-colors"
             >
-              Acessar Sistema
+              Login
             </button>
           </form>
         </div>

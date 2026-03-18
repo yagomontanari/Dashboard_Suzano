@@ -1,5 +1,8 @@
 from sqlalchemy import text
 
+# Pagination and sorting constants
+PAGINATION_SORT_SUFFIX = " ORDER BY dta_alteracao DESC LIMIT :limit OFFSET :offset;"
+
 # ================================
 # INTEGRAÇÕES (KPIs Principais)
 # ================================
@@ -87,6 +90,7 @@ QUERY_ERRO_SELLIN = text("""
             ife.registro ->> 'referenciaFat' AS referencia_fat,
             ife.registro ->> 'produtoId' AS id_produto,
             ife.registro ->> 'clienteId' AS id_cliente,
+            ife.dta_alteracao,
             ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'numeroDocFiscal', ife.registro ->> 'produtoId' ORDER BY ife.dta_criacao DESC) as rn
         FROM integracao_fila_erros ife
         WHERE tipo = 'SELLIN' 
@@ -102,7 +106,8 @@ QUERY_ERRO_SELLIN = text("""
         de.produto,
         de.nom_produto,
         de.tipo_doc_fat,
-        de.referencia_fat
+        de.referencia_fat,
+        de.dta_alteracao
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM sellin se 
@@ -111,10 +116,9 @@ QUERY_ERRO_SELLIN = text("""
           AND se.id_cliente IN (SELECT c.id FROM cliente c WHERE c.id_externo = de.id_cliente)
           AND se.tipo_doc_fat = de.tipo_doc_fat
     )
-    ORDER BY de.data_emissao DESC;
 """)
 
-QUERY_ERRO_SELLIN_PAGINATED = text(QUERY_ERRO_SELLIN.text.replace(";", " LIMIT :limit OFFSET :offset;"))
+QUERY_ERRO_SELLIN_PAGINATED = text(QUERY_ERRO_SELLIN.text + PAGINATION_SORT_SUFFIX)
 
 
 QUERY_ERRO_CLIENTES = text("""
@@ -137,6 +141,7 @@ QUERY_ERRO_CLIENTES = text("""
             ife.registro ->> 'subCanal' AS sub_canal,
             ife.registro ->> 'codRegional' AS cod_regional,
             ife.registro ->> 'divisaoRegional' AS regional,
+            ife.dta_alteracao,
             ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'codCliente' ORDER BY ife.dta_criacao DESC) as rn
         FROM integracao_fila_erros ife
         WHERE ife.tipo = 'CLIENTE' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
@@ -145,7 +150,7 @@ QUERY_ERRO_CLIENTES = text("""
         de.dta_criacao, de.erros, de.cod_cliente, de.nom_cliente, de.cnpj,
         de.ativo_inativo, de.contato_cliente, de.email_contato_cliente, de.telefone_contato_cliente,
         de.sap_pagador, de.cod_customer_group, de.customer_group, de.cod_canal, de.canal, de.sub_canal,
-        de.cod_regional, de.regional
+        de.cod_regional, de.regional, de.dta_alteracao
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM cliente c
@@ -159,10 +164,9 @@ QUERY_ERRO_CLIENTES = text("""
           AND cc.vlr_telefone = de.telefone_contato_cliente
           AND c.ind_pagador = de.sap_pagador
     )
-    ORDER BY de.dta_criacao DESC;
 """)
 
-QUERY_ERRO_CLIENTES_PAGINATED = text(QUERY_ERRO_CLIENTES.text.replace(";", " LIMIT :limit OFFSET :offset;"))
+QUERY_ERRO_CLIENTES_PAGINATED = text(QUERY_ERRO_CLIENTES.text + PAGINATION_SORT_SUFFIX)
 
 
 QUERY_ERRO_PRODUTOS = text("""
@@ -191,6 +195,7 @@ QUERY_ERRO_PRODUTOS = text("""
             ife.registro ->> 'hierarquia3' AS hierarquia3,
             ife.registro ->> 'codUnidadeNegocio' AS cod_unidade_negocio,
             ife.registro ->> 'unidadeNegocio' AS unidade_negocio,
+            ife.dta_alteracao,
             ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'idExterno' ORDER BY ife.dta_criacao DESC) as rn
         FROM integracao_fila_erros ife 
         WHERE tipo = 'PRODUTO' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
@@ -201,15 +206,14 @@ QUERY_ERRO_PRODUTOS = text("""
         de.cod_linha_produto, de.grupo_mercadoria, de.cod_familia, de.familia,
         de.cod_setor_atividade, de.setor_atividade, de.cod_hierarquia1, de.hierarquia1,
         de.cod_hierarquia2, de.hierarquia2, de.cod_hierarquia3, de.hierarquia3,
-        de.cod_unidade_negocio, de.unidade_negocio
+        de.cod_unidade_negocio, de.unidade_negocio, de.dta_alteracao
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM produto p WHERE p.id_externo = de.id_produto
-    );
+    )
 """)
 
-# Note: Adding arbitrary ORDER BY for pagination consistency if none exists
-QUERY_ERRO_PRODUTOS_PAGINATED = text(QUERY_ERRO_PRODUTOS.text.replace(";", " ORDER BY de.id_produto DESC LIMIT :limit OFFSET :offset;"))
+QUERY_ERRO_PRODUTOS_PAGINATED = text(QUERY_ERRO_PRODUTOS.text + PAGINATION_SORT_SUFFIX)
 
 
 QUERY_ERRO_CUTOFF = text("""
@@ -218,20 +222,21 @@ QUERY_ERRO_CUTOFF = text("""
             ife.tipo, ife.erros, ife.dta_criacao,
             ife.registro ->> 'cutoff' AS cutoff,
             ife.registro ->> 'numeroDocFat' AS nro_documento,
+            ife.dta_alteracao,
             ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'numeroDocFat', ife.registro ->> 'cutoff' ORDER BY ife.dta_criacao DESC) as rn
         FROM integracao_fila_erros ife 
         WHERE ife.tipo = 'CUTOFF' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
     )
-    SELECT de.tipo, de.erros, de.cutoff, de.nro_documento
+    SELECT de.tipo, de.erros, de.cutoff, de.nro_documento, de.dta_alteracao
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM sellin s 
         WHERE s.nro_documento = CAST(de.nro_documento AS INTEGER) 
           AND s.cutoff = de.cutoff
-    );
+    )
 """)
 
-QUERY_ERRO_CUTOFF_PAGINATED = text(QUERY_ERRO_CUTOFF.text.replace(";", " ORDER BY de.nro_documento DESC LIMIT :limit OFFSET :offset;"))
+QUERY_ERRO_CUTOFF_PAGINATED = text(QUERY_ERRO_CUTOFF.text + PAGINATION_SORT_SUFFIX)
 
 
 QUERY_ERRO_USUARIOS = text("""
@@ -247,6 +252,7 @@ QUERY_ERRO_USUARIOS = text("""
             ife.registro ->> 'indRecebeEmail' AS ind_recebe_email,
             ife.registro ->> 'chaveIntegracao' AS chave_integracao,
             ife.registro ->> 'indAprovaWorkflow' AS ind_aprova_workflow,
+            ife.dta_alteracao,
             ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'matricula' ORDER BY ife.dta_criacao DESC) as rn
         FROM integracao_fila_erros ife 
         WHERE ife.tipo = 'PRE_CADASTRO_USUARIO' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
@@ -254,17 +260,17 @@ QUERY_ERRO_USUARIOS = text("""
     SELECT 
         de.erros, de.dta_criacao, de.email, de.matricula, de.nome_perfil,
         de.ativo_inativo, de.nome_estrutura, de.codigo_divisao, de.ind_recebe_email,
-        de.chave_integracao, de.ind_aprova_workflow
+        de.chave_integracao, de.ind_aprova_workflow, de.dta_alteracao
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM usuario u 
         WHERE u.matricula = de.matricula 
           AND u.email = de.email 
           AND u.chave_integracao = de.chave_integracao
-    );
+    )
 """)
 
-QUERY_ERRO_USUARIOS_PAGINATED = text(QUERY_ERRO_USUARIOS.text.replace(";", " ORDER BY de.email DESC LIMIT :limit OFFSET :offset;"))
+QUERY_ERRO_USUARIOS_PAGINATED = text(QUERY_ERRO_USUARIOS.text + PAGINATION_SORT_SUFFIX)
 
 QUERY_ERRO_PAGAMENTOS_LIST = text("""
     WITH dados AS (
@@ -289,7 +295,7 @@ QUERY_ERRO_PAGAMENTOS_LIST = text("""
     WHERE rn = 1
 """)
 
-QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED = text(QUERY_ERRO_PAGAMENTOS_LIST.text + " ORDER BY dta_alteracao DESC LIMIT :limit OFFSET :offset;")
+QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED = text(QUERY_ERRO_PAGAMENTOS_LIST.text + PAGINATION_SORT_SUFFIX)
 
 QUERY_PAGAMENTOS_SUCESSO_LIST = text("""
     WITH dados AS (
@@ -314,4 +320,22 @@ QUERY_PAGAMENTOS_SUCESSO_LIST = text("""
     WHERE rn = 1
 """)
 
-QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED = text(QUERY_PAGAMENTOS_SUCESSO_LIST.text + " ORDER BY dta_alteracao DESC LIMIT :limit OFFSET :offset;")
+QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED = text(QUERY_PAGAMENTOS_SUCESSO_LIST.text + PAGINATION_SORT_SUFFIX)
+
+QUERY_ERRO_VK11_LIST = text("""
+    SELECT 
+        soi.id_orcamento,
+        o.descricao,
+        soi.tipo_integracao,
+        soi.id_ajuste_verba,
+        soi.status,
+        soi.msg,
+        soi.valid_from,
+        o.dta_alteracao as dta_alteracao
+    FROM suzano_orcamento_integracao soi
+    INNER JOIN orcamento o ON o.id = soi.id_orcamento
+    WHERE soi.status = 'ERRO'
+      AND soi.valid_from >= :start_date AND soi.valid_from < :end_date
+""")
+
+QUERY_ERRO_VK11_LIST_PAGINATED = text(QUERY_ERRO_VK11_LIST.text + PAGINATION_SORT_SUFFIX)

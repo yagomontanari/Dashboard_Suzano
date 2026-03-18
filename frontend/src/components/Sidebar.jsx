@@ -26,12 +26,17 @@ export default function Sidebar() {
       </button>
 
       {/* Brand */}
-      <div className="p-6 flex items-center gap-4 border-b border-slate-800 h-20">
-        <div className="bg-blue-600 min-w-8 w-8 h-8 rounded shrink-0 flex items-center justify-center font-bold text-white shadow-[2px_2px_0px_#1e1e1e] border border-blue-400">
-          S
+      <div className={`flex flex-col items-center justify-center border-b border-slate-800 transition-all duration-300 ${
+        expanded ? 'p-10 h-48 gap-2' : 'p-6 h-28 gap-0'
+      }`}>
+        <div className={`bg-white rounded-xl shrink-0 flex items-center justify-center p-2 shadow-[4px_4px_0px_#1e1e1e] border border-slate-700 transition-all duration-300 ${
+          expanded ? 'w-16 h-16' : 'w-10 h-10'
+        }`}>
+          <img src="/logo/suzano-logo.png" alt="Suzano" className="w-full h-full object-contain" />
         </div>
-        <div className={`flex flex-col overflow-hidden transition-all duration-300 ${expanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
-          <span className="font-bold tracking-wide whitespace-nowrap text-slate-100">Agente Suzano</span>
+        <div className={`flex flex-col items-center transition-all duration-300 ${expanded ? 'opacity-100 mt-2' : 'opacity-0 h-0 overflow-hidden'}`}>
+          <span className="font-black tracking-tighter whitespace-nowrap text-slate-100 text-lg">Dashboard Suzano</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-0.5">Fechamento</span>
         </div>
       </div>
 
@@ -69,6 +74,15 @@ export default function Sidebar() {
           </span>
         </NavLink>
       </nav>
+
+      {/* Partner Logos */}
+      <div className={`p-4 border-t border-slate-800 space-y-4 ${expanded ? 'block' : 'hidden'}`}>
+        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">Powered by</p>
+        <div className="flex flex-col items-center gap-3">
+          <img src="/logo/Tradelinks_Colorida.png" alt="Tradelinks" className="h-6 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+          <img src="/logo/MGCS_Logo_Colorida.png" alt="MGCS" className="h-6 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+        </div>
+      </div>
 
       {/* User Actions */}
       <div className="p-4 border-t border-slate-800">

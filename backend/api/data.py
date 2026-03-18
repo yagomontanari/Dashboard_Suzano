@@ -26,7 +26,9 @@ from api.queries import (
     QUERY_ERRO_PAGAMENTOS_LIST,
     QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED,
     QUERY_PAGAMENTOS_SUCESSO_LIST,
-    QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED
+    QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED,
+    QUERY_ERRO_VK11_LIST,
+    QUERY_ERRO_VK11_LIST_PAGINATED
 )
 
 router = APIRouter()
@@ -91,10 +93,10 @@ async def get_dashboard_metrics(
         zver_res = await db.execute(QUERY_PAGAMENTOS, params)
         
         # Otimização: contando inconsistências direto via SQL para não sobrecarregar a memória
-        async def get_count(q):
+        async def get_count(q, p=params):
             raw_text = q.text.strip().rstrip(';')
             count_query = text(f"SELECT COUNT(1) AS total FROM ({raw_text}) AS subquery")
-            res = await db.execute(count_query, params)
+            res = await db.execute(count_query, p)
             return res.scalar() or 0
 
         sellin_count = await get_count(QUERY_ERRO_SELLIN)
@@ -103,6 +105,7 @@ async def get_dashboard_metrics(
         cutoff_count = await get_count(QUERY_ERRO_CUTOFF)
         usuarios_count = await get_count(QUERY_ERRO_USUARIOS)
         pagamentos_count = await get_count(QUERY_ERRO_PAGAMENTOS_LIST)
+        vk11_count = await get_count(QUERY_ERRO_VK11_LIST, params_str)
 
         # Consolidando (agregando linhas separadas de volta num painel geral do dashboard)
         vk11_rows = vk11_res.mappings().all()
@@ -158,7 +161,8 @@ async def get_dashboard_metrics(
                 "produtos": produtos_count,
                 "cutoff": cutoff_count,
                 "usuarios": usuarios_count,
-                "pagamentos": pagamentos_count
+                "pagamentos": pagamentos_count,
+                "vk11": vk11_count
             }
         }
     except Exception as e:
@@ -205,6 +209,19 @@ async def get_inconsistencies(
         params = {"start_date": start_dt, "end_date": end_dt, "limit": size, "offset": offset}
         params_count = {"start_date": start_dt, "end_date": end_dt}
         
+        # Consistent with get_dashboard_metrics, VK11 needs string dates
+        if category == "vk11":
+            params = {
+                "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"), 
+                "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S"),
+                "limit": size, 
+                "offset": offset
+            }
+            params_count = {
+                "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"), 
+                "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S")
+            }
+        
         query_map = {
             "sellin": (QUERY_ERRO_SELLIN_PAGINATED, QUERY_ERRO_SELLIN),
             "clientes": (QUERY_ERRO_CLIENTES_PAGINATED, QUERY_ERRO_CLIENTES),
@@ -212,7 +229,8 @@ async def get_inconsistencies(
             "cutoff": (QUERY_ERRO_CUTOFF_PAGINATED, QUERY_ERRO_CUTOFF),
             "usuarios": (QUERY_ERRO_USUARIOS_PAGINATED, QUERY_ERRO_USUARIOS),
             "pagamentos": (QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED, QUERY_ERRO_PAGAMENTOS_LIST),
-            "pagamentos_sucesso": (QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED, QUERY_PAGAMENTOS_SUCESSO_LIST)
+            "pagamentos_sucesso": (QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED, QUERY_PAGAMENTOS_SUCESSO_LIST),
+            "vk11": (QUERY_ERRO_VK11_LIST_PAGINATED, QUERY_ERRO_VK11_LIST)
         }
         
         if category not in query_map:
@@ -241,13 +259,14 @@ async def get_inconsistencies(
         else:
             final_query = paginated_query_orig
             
+        # Otimização: Usar COUNT(1) no banco ao invés de carregar tudo na memória do Python
+        count_sql = f"SELECT COUNT(1) FROM ({count_query.text.strip().rstrip(';')}) AS total_count"
+        count_res = await db.execute(text(count_sql), params_count)
+        total_count = count_res.scalar() or 0
+
         # Obter os dados paginados
         res = await db.execute(final_query, params)
         rows = [dict(row) for row in res.mappings().all()]
-        
-        # Obter o offset total executando a count original (poderia ser trocado por COUNT(*) em produção real)
-        count_res = await db.execute(count_query, params_count)
-        total_count = len(count_res.mappings().all())
         
         return {
             "source": "postgresql",

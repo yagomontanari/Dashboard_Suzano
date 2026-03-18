@@ -38,6 +38,18 @@ export default function Dashboard() {
   const [sortConfig, setSortConfig] = useState(null);
 
   const [activeTab, setActiveTab] = useState('geral');
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+
+  const formatDateTime = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear()).slice(-2);
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const seconds = String(d.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -49,6 +61,7 @@ export default function Dashboard() {
       }
       const result = await getDashboardData();
       setData(result);
+      setLastUpdated(new Date());
     } catch (err) {
       console.error(err);
     } finally {
@@ -58,6 +71,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     loadData();
+    const interval = setInterval(loadData, 300000); // 5 minutes
+    return () => clearInterval(interval);
   }, [loadData]);
 
   const formatCurrency = (value) => {
@@ -147,6 +162,7 @@ export default function Dashboard() {
         {key: 'erros', label:'Erros (JSON)'}
       ];
       case 'pagamentos': return [{key: 'cod_pagamento', label: 'Cod. Pagamento'}, {key: 'cliente', label: 'Cliente'}, {key: 'sequencial', label: 'Sequencial'}, {key: 'purch_no_c', label: 'Identificador'}, {key: 'dta_criacao', label: 'Data Registro'}, {key: 'dta_envio_integracao', label: 'Data Integração'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
+      case 'vk11': return [{key: 'id_orcamento', label: 'ID Orçamento'}, {key: 'descricao', label: 'Descrição'}, {key: 'tipo_integracao', label: 'Tipo'}, {key: 'valid_from', label: 'Válido De'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
       default: return [{key: 'id', label: 'ID'}];
     }
   };
@@ -223,7 +239,7 @@ export default function Dashboard() {
   }
 
   const chartData = [
-    { name: 'VK11', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error },
+    { name: 'PROVISÃO (VK11)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error },
     { name: 'ZAJUS', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error },
     { name: 'ZVER', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error }
   ];
@@ -233,8 +249,8 @@ export default function Dashboard() {
   const tabs = [
     { id: 'geral', label: 'Geral' },
     { id: 'pagamentos', label: 'Pagamentos' },
-    { id: 'zaku', label: 'ZAKU' },
-    { id: 'vk11', label: 'VK11' }
+    { id: 'vk11', label: 'VK11' },
+    { id: 'zaku', label: 'ZAKU' }
   ];
 
   return (
@@ -245,10 +261,20 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold text-slate-800">Painel de Fechamento</h1>
             <p className="text-slate-500 mt-1 font-medium text-sm">Visão geral da integração de dados</p>
           </div>
-          <div className="flex gap-4">
-            <button onClick={loadData} className="flex items-center gap-2 px-4 py-2 text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded shadow-[2px_2px_0px_#cbd5e1] transition-all font-bold text-sm">
-              <RefreshCw size={16} strokeWidth={2.5} /> Atualizar
-            </button>
+          <div className="flex items-center gap-6">
+            <div className="flex flex-col items-end">
+              <div className="flex items-center gap-2 text-slate-400 group">
+                <RefreshCw 
+                  size={14} 
+                  className={`transition-all ${loading ? 'animate-spin text-blue-500' : 'group-hover:text-blue-500 cursor-pointer'}`}
+                  onClick={() => !loading && loadData()}
+                />
+                <span className="text-[10px] font-bold uppercase tracking-wider">Atualização Automática (5 min)</span>
+              </div>
+              <p className="text-xs font-medium text-slate-500 mt-0.5">
+                Atualizado em <span className="text-slate-700 font-bold">{formatDateTime(lastUpdated)}</span>
+              </p>
+            </div>
             <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-900 text-white hover:bg-slate-800 hover:-translate-y-0.5 rounded shadow-[4px_4px_0px_#94a3b8] font-bold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
               <Download size={16} strokeWidth={2.5} /> Exportar Excel
             </button>
@@ -534,13 +560,25 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Placeholders for other tabs */}
-        {(activeTab === 'zaku' || activeTab === 'vk11') && (
+        {activeTab === 'vk11' && (
+          <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-xl border border-slate-200 shadow-sm animate-in fade-in duration-500">
+            <div className="p-4 bg-slate-50 text-slate-400 rounded-full mb-4">
+              <Clock size={48} strokeWidth={1.5} />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800">Funcionalidade em breve</h3>
+            <p className="text-slate-500 mt-2 max-w-sm text-center">
+              A aba VK11 está sendo preparada para as próximas atualizações do painel de controle.
+            </p>
+          </div>
+        )}
+
+        {/* Placeholder for ZAKU tab */}
+        {activeTab === 'zaku' && (
           <div className="flex flex-col items-center justify-center p-20 bg-white rounded-xl border border-dashed border-slate-300 text-slate-400 space-y-4">
             <Clock size={48} className="animate-pulse" />
             <div className="text-center">
               <h3 className="text-xl font-bold text-slate-600 uppercase">Módulo em Desenvolvimento</h3>
-              <p>A visão detalhada para {activeTab.toUpperCase()} estará disponível em breve.</p>
+              <p>A visão detalhada para ZAKU estará disponível em breve.</p>
             </div>
           </div>
         )}

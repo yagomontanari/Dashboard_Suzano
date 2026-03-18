@@ -1,4 +1,4 @@
-# Dashboard MVP (Agente Suzano)
+# Dashboard Suzano
 
 Este é o repositório principal do projeto contendo o **Backend (FastAPI)** e o **Frontend (React/Vite)**. Todo o sistema é projetado para rodar exclusivamente via Docker, simplificando ambientes locais e produção.
 
