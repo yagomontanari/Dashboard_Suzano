@@ -88,6 +88,18 @@ QUERY_TOP_CLIENTES = text("""
     ORDER BY valor DESC
     LIMIT 5;
 """)
+
+# Query unificada para evitar múltiplas chamadas simultâneas (Resolvendo erro de concorrência SQLAlchemy)
+QUERY_DASHBOARD_COUNTS = text("""
+    SELECT
+        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_SELLIN) as s) as sellin,
+        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_CLIENTES) as c) as clientes,
+        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_PRODUTOS) as p) as produtos,
+        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_CUTOFF) as cu) as cutoff,
+        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_USUARIOS) as u) as usuarios,
+        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_PAGAMENTOS) as pa) as pagamentos,
+        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_VK11) as v) as vk11
+""")
 # Consultas Detalhadas (Originais)
 QUERY_ORCAMENTO_INTEGRACAO = text("""
     SELECT 

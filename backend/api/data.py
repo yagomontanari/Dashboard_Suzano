@@ -121,27 +121,23 @@ async def get_dashboard_metrics(
             res = await db.execute(count_query, p)
             return res.scalar() or 0
 
-        # PARALELISMO: Disparar todas as queries simultaneamente
-        tasks = [
-            db.execute(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str),
-            db.execute(QUERY_ZAJU_TOTAL, params),
-            db.execute(QUERY_PAGAMENTOS_TOTAL, params),
-            db.execute(QUERY_TOP_CLIENTES, params),
-            get_count(QUERY_ERRO_SELLIN),
-            get_count(QUERY_ERRO_CLIENTES),
-            get_count(QUERY_ERRO_PRODUTOS),
-            get_count(QUERY_ERRO_CUTOFF),
-            get_count(QUERY_ERRO_USUARIOS),
-            get_count(QUERY_ERRO_PAGAMENTOS_LIST),
-            get_count(QUERY_ERRO_VK11_LIST, params_str)
-        ]
+        # CORREÇÃO: SQLAlchemy AsyncSession NÃO suporta operações concorrentes na mesma sessão (asyncio.gather).
+        # Como as queries agora são agregadas e rápidas, executamos sequencialmente para evitar InvalidRequestError.
+        vk11_res = await db.execute(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str)
+        zaju_res = await db.execute(QUERY_ZAJU_TOTAL, params)
+        zver_res = await db.execute(QUERY_PAGAMENTOS_TOTAL, params)
+        top_clients_res = await db.execute(QUERY_TOP_CLIENTES, params)
         
-        results = await asyncio.gather(*tasks)
+        # Contagens de inconsistências
+        sellin_count = await get_count(QUERY_ERRO_SELLIN)
+        clientes_count = await get_count(QUERY_ERRO_CLIENTES)
+        produtos_count = await get_count(QUERY_ERRO_PRODUTOS)
+        cutoff_count = await get_count(QUERY_ERRO_CUTOFF)
+        usuarios_count = await get_count(QUERY_ERRO_USUARIOS)
+        pagamentos_count = await get_count(QUERY_ERRO_PAGAMENTOS_LIST)
+        vk11_count = await get_count(QUERY_ERRO_VK11_LIST, params_str)
         
         # Mapeando os resultados
-        vk11_res, zaju_res, zver_res, top_clients_res = results[:4]
-        counts = results[4:]
-        
         vk11_totals = vk11_res.mappings().one_or_none() or {"success": 0, "pending": 0, "error": 0}
         zaju_totals = zaju_res.mappings().one_or_none() or {"success": 0, "pending": 0, "error": 0, "pending_return": 0, "total": 0}
         zver_totals_raw = zver_res.mappings().one_or_none() or {
@@ -169,13 +165,13 @@ async def get_dashboard_metrics(
             "zaju": dict(zaju_totals),
             "zver": zver_totals,
             "errors": {
-                "sellin": counts[0],
-                "clientes": counts[1],
-                "produtos": counts[2],
-                "cutoff": counts[3],
-                "usuarios": counts[4],
-                "pagamentos": counts[5],
-                "vk11": counts[6]
+                "sellin": sellin_count,
+                "clientes": clientes_count,
+                "produtos": produtos_count,
+                "cutoff": cutoff_count,
+                "usuarios": usuarios_count,
+                "pagamentos": pagamentos_count,
+                "vk11": vk11_count
             }
         }
     except Exception as e:
