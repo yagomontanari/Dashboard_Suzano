@@ -372,13 +372,13 @@ async def export_zaju_report(
             bg_generate_zaju_report, 
             start_dt, 
             end_dt, 
-            user.get("email"), 
-            user.get("nome", "Usuário")
+            user.email, 
+            user.nome
         )
         
         return {
             "status": "success",
-            "message": f"O relatório está sendo gerado e será enviado para {user.get('email')} em instantes."
+            "message": f"O relatório está sendo gerado e será enviado para {user.email} em instantes."
         }
         
     except Exception as e:

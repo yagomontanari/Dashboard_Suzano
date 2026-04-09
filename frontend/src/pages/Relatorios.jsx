@@ -53,7 +53,7 @@ export default function Relatorios() {
             
             <div className="p-8 space-y-8">
               <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                Extração de amostra (100 linhas) de Ajustes de Provisão, Memória de Cálculo e Sell-in para conferência mensal com o cliente.
+                Extração detalhada de Ajustes de Provisão, Memória de Cálculo e Sell-in para conferência mensal, processada em segundo plano e enviada por e-mail.
               </p>
               
               <div className="space-y-6">
