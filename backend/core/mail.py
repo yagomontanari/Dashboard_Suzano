@@ -43,29 +43,29 @@ class MailService:
 
         return f"""
         <html>
-            <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1e293b; margin: 0; padding: 0; background-color: #f8fafc;">
-                <div style="max-width: 600px; margin: 20px auto; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+            <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #334155; margin: 0; padding: 0; background-color: #f1f5f9;">
+                <div style="max-width: 550px; margin: 40px auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);">
                     <!-- Header -->
-                    <div style="background-color: #0f172a; padding: 30px; text-align: center;">
-                        <img src="{logo_suzano}" alt="Suzano" style="height: 40px; margin-bottom: 10px;">
-                        <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 800; tracking-tight: -0.025em;">Dashboard Suzano</h1>
+                    <div style="background-color: #0f172a; padding: 40px 20px; text-align: center;">
+                        <img src="{logo_suzano}" alt="Suzano" style="height: 45px; margin-bottom: 12px; display: inline-block;">
+                        <div style="height: 1px; width: 40px; background-color: #334155; margin: 15px auto;"></div>
+                        <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase;">Dashboard Suzano</h1>
                     </div>
                     
-                    <!-- Content -->
-                    <div style="padding: 40px; background-color: #ffffff;">
+                    <!-- Content Body -->
+                    <div style="padding: 40px 35px; background-color: #ffffff;">
                         {content}
                     </div>
                     
                     <!-- Footer -->
-                    <div style="background-color: #f1f5f9; padding: 30px; text-align: center;">
-                        <p style="margin: 0 0 20px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em;">Powered by</p>
-                        <div style="display: inline-block; vertical-align: middle;">
-                            <img src="{logo_tradelinks}" alt="TradeLinks" style="height: 30px; margin: 0 15px; vertical-align: middle;">
-                            <img src="{logo_magalu}" alt="Magalu Cloud" style="height: 30px; margin: 0 15px; vertical-align: middle;">
+                    <div style="background-color: #f8fafc; padding: 35px; text-align: center; border-top: 1px solid #f1f5f9;">
+                        <p style="margin: 0 0 15px 0; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.15em;">Powered by</p>
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <img src="{logo_tradelinks}" alt="TradeLinks" style="height: 24px; margin: 0 10px; vertical-align: middle;">
+                            <img src="{logo_magalu}" alt="Magalu Cloud" style="height: 24px; margin: 0 10px; vertical-align: middle;">
                         </div>
-                        <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 20px; font-size: 12px; color: #94a3b8;">
-                            <p style="margin: 0;">&copy; 2026 Suzano S.A. - Todos os direitos reservados.</p>
-                            <p style="margin: 5px 0 0 0;">Este é um e-mail automático do sistema, por favor não responda.</p>
+                        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8;">
+                            <p style="margin: 0;">Este é um envio automático. Não é necessário responder.</p>
                         </div>
                     </div>
                 </div>
@@ -75,48 +75,68 @@ class MailService:
 
     async def send_welcome_email(self, email_to: str, nome: str):
         content = f"""
-        <h2 style="color: #0f172a; font-size: 24px;">Olá, {nome}!</h2>
-        <p>Recebemos sua solicitação de acesso ao <strong>Dashboard Suzano</strong>.</p>
-        <p>Nossa equipe administrativa analisará seu cadastro. Assim que aprovado, você receberá um e-mail de confirmação com suas credenciais de acesso.</p>
-        <div style="margin: 30px 0; padding: 20px; background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; text-align: center;">
-            <p style="margin: 0; font-weight: 700; color: #2563eb;">Status da Solicitação: PENDENTE</p>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #0f172a; font-size: 24px; font-weight: 800; margin-bottom: 10px;">Olá, {nome.split()[0]}!</h2>
+            <p style="font-size: 16px; color: #64748b; margin: 0;">Sua solicitação está em análise.</p>
         </div>
+        <p style="margin-bottom: 20px;">Recebemos seu pedido de acesso ao portal corporativo. Nossa equipe administrativa validará seu perfil em breve.</p>
+        <div style="padding: 20px; background-color: #f0f9ff; border-radius: 12px; text-align: center; border: 1px solid #e0f2fe;">
+            <p style="margin: 0; font-weight: 700; color: #0284c7; font-size: 14px;">Status: AGUARDANDO APROVAÇÃO</p>
+        </div>
+        <p style="margin-top: 25px; font-size: 14px; text-align: center; color: #94a3b8;">Você receberá um novo e-mail assim que seu acesso for liberado.</p>
         """
         await self._send_html_email(email_to, "Solicitação de Acesso - Dashboard Suzano", self._get_base_template(content))
 
     async def send_approval_email(self, email_to: str, nome: str, temp_password: str):
         frontend_url = settings.FRONTEND_URL
         content = f"""
-        <h2 style="color: #0f172a; font-size: 24px;">Boas notícias, {nome}!</h2>
-        <p>Seu acesso ao <strong>Dashboard Suzano</strong> foi aprovado com sucesso.</p>
-        <p>Use as credenciais temporárias abaixo para seu primeiro acesso:</p>
-        <div style="margin: 30px 0; padding: 25px; background-color: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 12px;">
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">E-mail:</p>
-            <p style="margin: 0 0 20px 0; font-size: 18px; font-weight: 700; color: #0f172a;">{email_to}</p>
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">Senha Temporária:</p>
-            <p style="margin: 0; font-size: 28px; font-weight: 800; color: #2563eb; letter-spacing: 2px;">{temp_password}</p>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #0f172a; font-size: 26px; font-weight: 800; margin-bottom: 10px;">Seja bem-vindo(a)!</h2>
+            <p style="font-size: 16px; color: #64748b; margin: 0;">Seu acesso foi liberado com sucesso.</p>
         </div>
-        <p style="color: #64748b; font-size: 14px;"><em>Por segurança, você será solicitado a criar uma nova senha ao entrar.</em></p>
-        <div style="margin-top: 40px; text-align: center;">
-            <a href="{frontend_url}" style="background-color: #2563eb; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 16px; display: inline-block;">Acessar Portal Agora</a>
+        <p style="text-align: center; margin-bottom: 25px;">Utilize as credenciais abaixo para seu primeiro login no portal:</p>
+        
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 25px; margin-bottom: 30px; text-align: center;">
+            <div style="margin-bottom: 20px;">
+                <p style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin: 0 0 5px 0;">Usuário / E-mail</p>
+                <p style="font-size: 16px; font-weight: 600; color: #0f172a; margin: 0;">{email_to}</p>
+            </div>
+            <div>
+                <p style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin: 0 0 5px 0;">Senha Temporária</p>
+                <div style="display: inline-block; background-color: #ffffff; border: 1px solid #cbd5e1; padding: 12px 25px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 24px; font-weight: 800; color: #2563eb; letter-spacing: 3px; margin-top: 5px;">
+                    {temp_password}
+                </div>
+            </div>
         </div>
+        
+        <div style="text-align: center; margin-top: 35px;">
+            <a href="{frontend_url}" style="background-color: #2563eb; color: #ffffff; padding: 18px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">Entrar no Dashboard</a>
+        </div>
+        <p style="margin-top: 30px; font-size: 13px; text-align: center; color: #94a3b8;"><em>Dica: Você deverá trocar esta senha no primeiro acesso.</em></p>
         """
         await self._send_html_email(email_to, "Acesso Liberado - Dashboard Suzano", self._get_base_template(content))
 
     async def send_reset_password_email(self, email_to: str, nome: str, temp_password: str):
         frontend_url = settings.FRONTEND_URL
         content = f"""
-        <h2 style="color: #0f172a; font-size: 24px;">Recuperação de Senha</h2>
-        <p>Olá, {nome}. Conforme solicitado, geramos uma nova senha temporária para sua conta.</p>
-        <div style="margin: 30px 0; padding: 25px; background-color: #fff1f2; border: 1px solid #fecdd3; border-radius: 12px; text-align: center;">
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: #e11d48;">Nova Senha Temporária:</p>
-            <p style="margin: 0; font-size: 28px; font-weight: 800; color: #e11d48; letter-spacing: 2px;">{temp_password}</p>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #0f172a; font-size: 26px; font-weight: 800; margin-bottom: 10px;">Recuperar Senha</h2>
+            <p style="font-size: 16px; color: #64748b; margin: 0;">Uma nova senha foi gerada para você.</p>
         </div>
-        <p>Acesse o portal para redefinir sua senha definitiva:</p>
-        <div style="margin-top: 40px; text-align: center;">
-            <a href="{frontend_url}" style="background-color: #0f172a; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 16px; display: inline-block;">Redefinir Senha</a>
+        <p style="text-align: center; margin-bottom: 25px;">Olá, {nome.split()[0]}. Confira abaixo seu código de acesso temporário:</p>
+        
+        <div style="background-color: #fef2f2; border: 1px solid #fee2e2; border-radius: 16px; padding: 30px; margin-bottom: 30px; text-align: center;">
+            <p style="font-size: 12px; font-weight: 700; color: #ef4444; text-transform: uppercase; margin: 0 0 10px 0;">Sua Nova Senha</p>
+            <div style="display: inline-block; background-color: #ffffff; border: 1px solid #fecdd3; padding: 15px 30px; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 28px; font-weight: 800; color: #dc2626; letter-spacing: 4px;">
+                {temp_password}
+            </div>
         </div>
+        
+        <div style="text-align: center; margin-top: 35px;">
+            <a href="{frontend_url}" style="background-color: #0f172a; color: #ffffff; padding: 18px 40px; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; display: inline-block;">Redefinir Agora</a>
+        </div>
+        <p style="margin-top: 30px; font-size: 13px; text-align: center; color: #94a3b8;">Se você não solicitou este reset, ignore este e-mail ou contate o suporte.</p>
         """
-        await self._send_html_email(email_to, "Nova Senha Gerada - Dashboard Suzano", self._get_base_template(content))
+        await self._send_html_email(email_to, "Recuperação de Senha - Dashboard Suzano", self._get_base_template(content))
 
 mail_service = MailService()
