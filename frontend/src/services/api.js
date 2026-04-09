@@ -39,13 +39,28 @@ export const getAdminUsers = async () => {
     return response.data;
 }
 
+export const updateUser = async (userId, data) => {
+    const response = await api.put(`/auth/admin/users/${userId}`, data);
+    return response.data;
+}
+
 export const approveUser = async (userId) => {
-    const response = await api.post(`/auth/admin/approve/${userId}`);
+    const response = await api.post(`/auth/admin/users/${userId}/approve`);
     return response.data;
 }
 
 export const rejectUser = async (userId) => {
-    const response = await api.post(`/auth/admin/reject/${userId}`);
+    const response = await api.post(`/auth/admin/users/${userId}/reject`);
+    return response.data;
+}
+
+export const resetUserPassword = async (userId) => {
+    const response = await api.post(`/auth/admin/users/${userId}/reset-password`);
+    return response.data;
+}
+
+export const unlockUser = async (userId) => {
+    const response = await api.post(`/auth/admin/users/${userId}/unlock`);
     return response.data;
 }
 

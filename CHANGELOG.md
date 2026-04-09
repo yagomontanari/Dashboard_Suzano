@@ -1,0 +1,59 @@
+# Changelog - Dashboard Suzano
+
+Todas as alterações notáveis neste projeto serão documentadas neste arquivo. O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) e este projeto segue a [Semântica de Versionamento](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [1.4.0] - 2026-04-09
+### Adicionado
+- **Políticas de Segurança Críticas**:
+  - Bloqueio automático de conta (Lockout) após 5 tentativas de login incorretas por 1 hora.
+  - Expiração obrigatória de senha a cada 90 dias.
+  - Histórico de senhas: Proibição de reutilização das últimas 12 senhas utilizadas.
+- **UX de Senha**: Componente de checklist em tempo real com validação dinâmica de complexidade (Regex).
+- **Gestão Admin**: Botão de desbloqueio manual de usuários bloqueados por segurança.
+
+---
+
+## [1.3.0] - 2026-04-09
+### Adicionado
+- **Gestão de Usuários Completa**:
+  - Edição de Nome, E-mail e Perfil (Role) por Administradores.
+  - Controle de Status: Ativar/Inativar contas manualmente.
+  - Reset de Senha Administrativo com geração de senha temporária.
+- **Segurança**: Trava de segurança para impedir a auto-inativação de administradores.
+
+### Corrigido
+- Ajuste de roteamento no Vercel (remoção de prefixo redundante `/api`) que causava erro 404 no login.
+
+---
+
+## [1.2.0] - 2026-04-09
+### Adicionado
+- **Sistema de Autenticação Persistente (Supabase)**:
+  - Migração do sistema de usuários mockados para banco de dados real no Supabase.
+  - Fluxo de Registro: Novas solicitações entram com status `PENDENTE`.
+  - Controle de Acesso Baseado em Perfil (RBAC): Perfis `ADMIN` e `CONSULTA`.
+  - Proteção de rotas no Frontend e Backend.
+- **Troca de Senha Obrigatória**: Força o usuário a definir uma senha definitiva no primeiro acesso.
+
+---
+
+## [1.1.0] - 2026-04-09
+### Adicionado
+- **Arquitetura de Banco Duplo**:
+  - Separação entre o banco de Métricas Suzano (`db_tradelinks` - Read-Only) e o banco de Aplicação (Supabase - Read/Write).
+- **Estrutura Backend**: Integração com SQLAlchemy Async e Pydantic para validação de dados.
+
+---
+
+## [1.0.0] - 2026-03-20
+### Adicionado
+- **Dashboard Suzano MVP**:
+  - Implementação das métricas de Sell-In, Sell-Out e Positivação.
+  - Integração com o banco de dados PostgreSQL Suzano.
+  - Layout Suzano Premium (Dark Mode, Grades Modernas).
+  - Componentização visual com Lucide React.
+
+---
+*Atualizado em: 09 de Abril de 2026 por Antigravity AI.*

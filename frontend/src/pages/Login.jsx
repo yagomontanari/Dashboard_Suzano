@@ -25,7 +25,13 @@ export default function Login() {
       localStorage.setItem('role', res.role); // Para controle de sidebar
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Usuário ou senha inválidos.');
+      if (err.response?.status === 403) {
+        setError(err.response.data.detail);
+      } else if (err.response?.status === 401) {
+        setError('E-mail ou senha incorretos. Verifique suas credenciais.');
+      } else {
+        setError('Ocorreu um erro ao realizar o login. Tente novamente mais tarde.');
+      }
     }
   };
 
