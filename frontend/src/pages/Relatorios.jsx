@@ -4,45 +4,30 @@ import { exportRelatorioZaju } from '../services/api';
 
 export default function Relatorios() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleExportZaju = async () => {
     setLoading(true);
     setError(null);
+    setSuccess(null);
     try {
-      // Calculate first and last day of the month
       const year = Number.parseInt(selectedMonth.split('-')[0]);
-      const month = Number.parseInt(selectedMonth.split('-')[1]) - 1; // 0-based
+      const month = Number.parseInt(selectedMonth.split('-')[1]) - 1;
       
       const startDate = new Date(year, month, 1).toISOString().split('T')[0];
-      const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0]; // last day of month
+      const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
 
-      const response = await exportRelatorioZaju(startDate, endDate);
+      const data = await exportRelatorioZaju(startDate, endDate);
       
-      // Create a URL for the blob
-      const url = globalThis.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
-      const link = document.createElement('a');
-      link.href = url;
-      
-      // Extract filename from header if available, else use default
-      const contentDisposition = response.headers['content-disposition'];
-      let filename = `relatorio_zaju_${selectedMonth}.xlsx`;
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename=(.+)/);
-        if (filenameMatch && filenameMatch.length > 1) {
-          filename = filenameMatch[1];
-        }
+      // Como agora o export é assíncrono, mostramos a mensagem de sucesso
+      if (data.status === 'success') {
+        setSuccess(data.message);
       }
-      
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      globalThis.URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Erro ao exportar relatório:', err);
-      setError('Falha ao gerar o relatório. Verifique sua conexão e tente novamente.');
+      setError('Falha ao solicitar o relatório. Verifique sua conexão e tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -86,6 +71,15 @@ export default function Relatorios() {
                   </div>
                 </div>
               </div>
+
+              {success && (
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center gap-3 text-blue-700 text-xs font-bold animate-in fade-in slide-in-from-top-1">
+                  <div className="p-1.5 bg-blue-600 rounded-lg text-white">
+                    <Download size={14} strokeWidth={3} />
+                  </div>
+                  {success}
+                </div>
+              )}
 
               {error && (
                 <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-center gap-3 text-red-700 text-xs font-bold animate-in fade-in slide-in-from-top-1">

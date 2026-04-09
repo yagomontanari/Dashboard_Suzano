@@ -22,18 +22,55 @@ class MailService:
     def __init__(self):
         self.fm = FastMail(conf)
 
-    async def _send_html_email(self, email_to: str, subject: str, body: str):
+    async def _send_html_email(self, email_to: str, subject: str, body: str, attachments: list = None):
         message = MessageSchema(
             subject=subject,
             recipients=[email_to],
             body=body,
-            subtype=MessageType.html
+            subtype=MessageType.html,
+            attachments=attachments
         )
         try:
             await self.fm.send_message(message)
             logger.info(f"Email enviado com sucesso para {email_to}")
         except Exception as e:
-            logger.error(f"Erro ao enviar email para {email_to}: {e}")
+            logger.error(f"Email error for {email_to}: {e}")
+
+    async def send_report_email(self, email_to: str, nome: str, report_name: str, file_content: bytes, filename: str):
+        content = f"""
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #0f172a; font-size: 26px; font-weight: 800; margin-bottom: 10px;">Relatório Pronto!</h2>
+            <p style="font-size: 16px; color: #64748b; margin: 0;">O arquivo que você solicitou já foi gerado.</p>
+        </div>
+        <p>Olá, {nome.split()[0]}. O processamento do <strong>{report_name}</strong> foi concluído com sucesso.</p>
+        <p>Você encontrará o arquivo em anexo neste e-mail.</p>
+        
+        <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 24px;">📄</div>
+            <div>
+                <p style="margin: 0; font-weight: 700; color: #0f172a; font-size: 14px;">{filename}</p>
+                <p style="margin: 0; color: #94a3b8; font-size: 12px;">Planilha Excel (XLSX)</p>
+            </div>
+        </div>
+        
+        <p style="font-size: 13px; color: #94a3b8; text-align: center; margin-top: 30px;">
+            Dica: Se o relatório tiver muitas linhas, o download pode demorar alguns segundos dependendo da sua conexão.
+        </p>
+        """
+        
+        # Attachments format for fastapi-mail with bytes
+        attachments = [{
+            "file": file_content,
+            "filename": filename,
+            "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }]
+        
+        await self._send_html_email(
+            email_to, 
+            f"Relatório Disponível: {report_name}", 
+            self._get_base_template(content),
+            attachments=attachments
+        )
 
     def _get_base_template(self, content: str):
         frontend_url = settings.FRONTEND_URL.rstrip('/')

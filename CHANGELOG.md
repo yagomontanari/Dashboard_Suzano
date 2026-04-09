@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.7.0] - 2026-04-09
+### Adicionado
+- **Exportação Assíncrona (ZAJU)**: Implementado sistema de geração de relatórios em segundo plano para evitar timeouts. O arquivo Excel agora é enviado diretamente para o e-mail do usuário.
+- **Mensageria**: Adicionado suporte a anexos de arquivos no `MailService`.
+- **UI de Relatórios**: Novo feedback visual informando o processamento do relatório solicitado.
+
+---
+
 ## [1.6.2] - 2026-04-09
 ### Alterado
 - **Personalização Estética de E-mail**:

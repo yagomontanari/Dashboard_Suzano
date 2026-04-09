@@ -85,8 +85,7 @@ export const getInconsistenciasData = async (category, page = 1, size = 20, sort
 
 export const exportRelatorioZaju = async (startDate, endDate) => {
     const response = await api.get('/data/export/zaju', {
-        params: { start_date: startDate, end_date: endDate },
-        responseType: 'blob'
+        params: { start_date: startDate, end_date: endDate }
     });
-    return response;
+    return response.data;
 }

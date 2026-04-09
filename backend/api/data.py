@@ -1,14 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
 from jose import JWTError, jwt
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
 import traceback
+from typing import List, Dict, Any
 
-from core.database import get_db
+from core.database import get_db, async_session_factory
 from core.security import SECRET_KEY, ALGORITHM
+from core.mail import mail_service
 from api.queries import (
     QUERY_ERRO_SELLIN,
     QUERY_ERRO_CLIENTES,
@@ -304,17 +307,48 @@ async def get_inconsistencies(
             "total_pages": 2
         }
 
+async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: str, nome: str):
+    """Função de background para gerar o Excel e enviar por e-mail"""
+    try:
+        # Precisamos de uma nova sessão para o background task
+        async with async_session_factory() as db:
+            params = {"start_date": start_dt, "end_date": end_dt}
+            result = await db.execute(text(QUERY_RELATORIO_ZAJU), params)
+            rows = result.mappings().all()
+
+            if not rows:
+                # Opcional: enviar e-mail avisando que não há dados
+                return
+
+            df = pd.DataFrame(rows)
+            output = io.BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                df.to_excel(writer, index=False, sheet_name='Relatório ZAJU')
+            
+            filename = f"relatorio_zaju_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
+            await mail_service.send_report_email(
+                email_to=email,
+                nome=nome,
+                report_name="Relatório Mensal ZAJU",
+                file_content=output.getvalue(),
+                filename=filename
+            )
+            logger.info(f"Relatório ZAJU enviado com sucesso para {email}")
+
+    except Exception as e:
+        logger.error(f"Erro no background task de exportação ZAJU: {e}")
+
 @router.get("/export/zaju")
 async def export_zaju_report(
+    background_tasks: BackgroundTasks,
     start_date: str = None, 
     end_date: str = None, 
-    db: AsyncSession = Depends(get_db),
-    user: str = Depends(get_current_user)
+    user: dict = Depends(get_current_user)
 ):
     try:
         today = datetime.now()
         
-        # Date parsing logic (consistent with dashboard)
+        # Lógica de parsing de datas
         if not start_date or start_date == "2024-01-01":
             start_dt = datetime(today.year, today.month, 1)
         else:
@@ -333,30 +367,22 @@ async def export_zaju_report(
                 last_day = calendar.monthrange(today.year, today.month)[1]
                 end_dt = datetime(today.year, today.month, last_day, 23, 59, 59)
 
-        params = {"start_date": start_dt, "end_date": end_dt}
-        
-        # Execute query
-        result = await db.execute(QUERY_RELATORIO_ZAJU, params)
-        rows = result.mappings().all()
-
-        # Excel Generation using pandas
-        df = pd.DataFrame(rows)
-        
-        output = io.BytesIO()
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Relatório ZAJU')
-        
-        output.seek(0)
-        filename = f"relatorio_zaju_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
-        
-        return StreamingResponse(
-            io.BytesIO(output.getvalue()),
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        # Dispara o processamento em background
+        background_tasks.add_task(
+            bg_generate_zaju_report, 
+            start_dt, 
+            end_dt, 
+            user.get("email"), 
+            user.get("nome", "Usuário")
         )
         
+        return {
+            "status": "success",
+            "message": f"O relatório está sendo gerado e será enviado para {user.get('email')} em instantes."
+        }
+        
     except Exception as e:
-        logger.error(f"Erro ao exportar relatório ZAJU: {e}")
-        import traceback
+        logger.error(f"Erro ao solicitar exportação ZAJU: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao processar solicitação de exportação.")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
