@@ -88,6 +88,70 @@ QUERY_TOP_CLIENTES = text("""
     ORDER BY valor DESC
     LIMIT 5;
 """)
+# Consultas Detalhadas (Originais)
+QUERY_ORCAMENTO_INTEGRACAO = text("""
+    SELECT 
+        soi.id_orcamento,
+        o.descricao,
+        soi.tipo_integracao,
+        soi.id_ajuste_verba,
+        count(1) FILTER (WHERE soi.status = 'INTEGRADO') AS integrado,
+        count(1) FILTER (WHERE soi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+        count(1) FILTER (WHERE soi.status = 'ERRO') AS erro
+    FROM suzano_orcamento_integracao soi
+    INNER JOIN orcamento o ON o.id = soi.id_orcamento
+    WHERE soi.valid_from >= :start_date AND soi.valid_from < :end_date
+    GROUP BY soi.id_orcamento, o.descricao, soi.tipo_integracao, soi.id_ajuste_verba
+    ORDER BY soi.id_orcamento DESC;
+""")
+
+QUERY_ZAJU = text("""
+    SELECT 
+        sapmc.id_orcamento,
+        otv.descricao AS tipo_verba,
+        o.descricao,
+        sapmc.id_ajuste_verba,
+        oav.tipo_ajuste,
+        oav.dta_alteracao,
+        sapmc.purch_no_c,
+        COUNT(1) FILTER (WHERE sapmc.status = 'INTEGRADO') AS integrado,
+        COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+        COUNT(1) FILTER (WHERE sapmc.status = 'ERRO') AS erro,
+        COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_RETORNO') AS pendente_retorno,
+        COUNT(sapmc.status IN ('INTEGRADO', 'PENDENTE_INTEGRACAO')) AS total_zaju
+    FROM suzano_ajuste_provisao_memoria_calculo sapmc
+    INNER JOIN orcamento o ON sapmc.id_orcamento = o.id
+    LEFT JOIN orcamento_ajuste_verba oav ON sapmc.id_ajuste_verba = oav.id
+    INNER JOIN orcamento_tipo_verba otv ON o.id_tipo_verba = otv.id
+    WHERE sapmc.cond_value != 0
+      AND sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao < :end_date
+      AND sapmc.status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
+      AND sapmc.purch_no_c IS NOT NULL
+    GROUP BY sapmc.id_orcamento, otv.descricao, o.descricao, sapmc.id_ajuste_verba, oav.tipo_ajuste, oav.dta_alteracao, sapmc.purch_no_c 
+    ORDER BY sapmc.purch_no_c ASC;
+""")
+
+QUERY_PAGAMENTOS = text("""
+    SELECT 
+        c.id_externo AS id_cliente,
+        c.nom_cliente,
+        COUNT(1) FILTER (WHERE spi.status = 'INTEGRADO') AS integrado,
+        COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+        COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS pendente_retorno,
+        COUNT(1) FILTER (WHERE spi.status = 'ERRO') AS erro,
+        COUNT(1) FILTER (WHERE spi.status IN ('INTEGRADO', 'PENDENTE_INTEGRACAO', 'PENDENTE_RETORNO', 'ERRO')) AS total_pagamentos,
+        
+        -- Valores Financeiros
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'INTEGRADO') AS valor_integrado,
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS valor_pendente_integracao,
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS valor_pendente_retorno,
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'ERRO' AND pa.vlr_final IS NOT NULL) AS valor_erro
+    FROM suzano_pagamento_integracao spi
+    INNER JOIN cliente c ON spi.id_cliente = c.id
+    INNER JOIN pagamento_acao pa ON spi.id_pagamento = pa.id 
+    WHERE spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
+    GROUP BY c.id_externo, c.nom_cliente;
+""")
 
 # ================================
 # ERROS E INCONSISTÊNCIAS

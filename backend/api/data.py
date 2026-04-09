@@ -10,9 +10,6 @@ import traceback
 from core.database import get_db
 from core.security import SECRET_KEY, ALGORITHM
 from api.queries import (
-    QUERY_ORCAMENTO_INTEGRACAO,
-    QUERY_ZAJU,
-    QUERY_PAGAMENTOS,
     QUERY_ERRO_SELLIN,
     QUERY_ERRO_CLIENTES,
     QUERY_ERRO_PRODUTOS,
@@ -24,13 +21,17 @@ from api.queries import (
     QUERY_ERRO_CUTOFF_PAGINATED,
     QUERY_ERRO_USUARIOS_PAGINATED,
     QUERY_ERRO_PAGAMENTOS_LIST,
-    QUERY_ERRO_VK11_LIST_PAGINATED,
+    QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED,
     QUERY_PAGAMENTOS_SUCESSO_LIST,
     QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED,
     QUERY_ERRO_VK11_LIST,
     QUERY_ERRO_VK11_LIST_PAGINATED,
     QUERY_RELATORIO_ZAJU,
-    # Novas queries agregadas
+    # Queries originais restauradas para compatibilidade
+    QUERY_ORCAMENTO_INTEGRACAO,
+    QUERY_ZAJU,
+    QUERY_PAGAMENTOS,
+    # Novas queries agregadas de performance
     QUERY_ORCAMENTO_INTEGRACAO_TOTAL,
     QUERY_ZAJU_TOTAL,
     QUERY_PAGAMENTOS_TOTAL,
