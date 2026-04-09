@@ -9,7 +9,7 @@ import calendar
 import traceback
 from typing import List, Dict, Any
 
-from core.database import get_db, async_session_factory
+from core.database import get_db, AsyncSessionLocal
 from core.security import SECRET_KEY, ALGORITHM
 from core.mail import mail_service
 from api.queries import (
@@ -311,7 +311,7 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
     """Função de background para gerar o Excel e enviar por e-mail"""
     try:
         # Precisamos de uma nova sessão para o background task
-        async with async_session_factory() as db:
+        async with AsyncSessionLocal() as db:
             params = {"start_date": start_dt, "end_date": end_dt}
             result = await db.execute(text(QUERY_RELATORIO_ZAJU), params)
             rows = result.mappings().all()
