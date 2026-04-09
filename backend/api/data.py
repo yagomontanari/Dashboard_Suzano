@@ -17,38 +17,7 @@ from core.security import SECRET_KEY, ALGORITHM
 from core.mail import mail_service
 from core.utils import parse_date_range
 from api.queries import *
-from .auth import get_current_user
-from api.queries import (
-    QUERY_ERRO_SELLIN,
-    QUERY_ERRO_CLIENTES,
-    QUERY_ERRO_PRODUTOS,
-    QUERY_ERRO_CUTOFF,
-    QUERY_ERRO_USUARIOS,
-    QUERY_ERRO_SELLIN_PAGINATED,
-    QUERY_ERRO_CLIENTES_PAGINATED,
-    QUERY_ERRO_PRODUTOS_PAGINATED,
-    QUERY_ERRO_CUTOFF_PAGINATED,
-    QUERY_ERRO_USUARIOS_PAGINATED,
-    QUERY_ERRO_PAGAMENTOS_LIST,
-    QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED,
-    QUERY_PAGAMENTOS_SUCESSO_LIST,
-    QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED,
-    QUERY_ERRO_VK11_LIST,
-    QUERY_ERRO_VK11_LIST_PAGINATED,
-    QUERY_RELATORIO_ZAJU,
-    # Queries originais restauradas para compatibilidade
-    QUERY_ORCAMENTO_INTEGRACAO,
-    QUERY_ZAJU,
-    QUERY_PAGAMENTOS,
-    # Novas queries agregadas de performance
-    QUERY_ORCAMENTO_INTEGRACAO_TOTAL,
-    QUERY_ZAJU_TOTAL,
-    QUERY_PAGAMENTOS_TOTAL,
-    QUERY_TOP_CLIENTES
-)
 from fastapi.responses import StreamingResponse
-import io
-import pandas as pd
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
