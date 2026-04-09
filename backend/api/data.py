@@ -24,12 +24,17 @@ from api.queries import (
     QUERY_ERRO_CUTOFF_PAGINATED,
     QUERY_ERRO_USUARIOS_PAGINATED,
     QUERY_ERRO_PAGAMENTOS_LIST,
-    QUERY_ERRO_PAGAMENTOS_LIST_PAGINATED,
+    QUERY_ERRO_VK11_LIST_PAGINATED,
     QUERY_PAGAMENTOS_SUCESSO_LIST,
     QUERY_PAGAMENTOS_SUCESSO_LIST_PAGINATED,
     QUERY_ERRO_VK11_LIST,
     QUERY_ERRO_VK11_LIST_PAGINATED,
-    QUERY_RELATORIO_ZAJU
+    QUERY_RELATORIO_ZAJU,
+    # Novas queries agregadas
+    QUERY_ORCAMENTO_INTEGRACAO_TOTAL,
+    QUERY_ZAJU_TOTAL,
+    QUERY_PAGAMENTOS_TOTAL,
+    QUERY_TOP_CLIENTES
 )
 from fastapi.responses import StreamingResponse
 import io
@@ -106,13 +111,7 @@ async def get_dashboard_metrics(
         }
         
         from sqlalchemy import text
-        
-        # Executando consultas no PostgreSQL
-        # Orcamento Integracao requer string (VARCHAR)
-        vk11_res = await db.execute(QUERY_ORCAMENTO_INTEGRACAO, params_str)
-        # O restante requer timestamp
-        zaju_res = await db.execute(QUERY_ZAJU, params)
-        zver_res = await db.execute(QUERY_PAGAMENTOS, params)
+        import asyncio
         
         # Otimização: contando inconsistências direto via SQL para não sobrecarregar a memória
         async def get_count(q, p=params):
@@ -121,76 +120,61 @@ async def get_dashboard_metrics(
             res = await db.execute(count_query, p)
             return res.scalar() or 0
 
-        sellin_count = await get_count(QUERY_ERRO_SELLIN)
-        clientes_count = await get_count(QUERY_ERRO_CLIENTES)
-        produtos_count = await get_count(QUERY_ERRO_PRODUTOS)
-        cutoff_count = await get_count(QUERY_ERRO_CUTOFF)
-        usuarios_count = await get_count(QUERY_ERRO_USUARIOS)
-        pagamentos_count = await get_count(QUERY_ERRO_PAGAMENTOS_LIST)
-        vk11_count = await get_count(QUERY_ERRO_VK11_LIST, params_str)
-
-        # Consolidando (agregando linhas separadas de volta num painel geral do dashboard)
-        vk11_rows = vk11_res.mappings().all()
-        vk11_totals = {
-            "success": sum(r["integrado"] or 0 for r in vk11_rows),
-            "pending": sum(r["pendente_integracao"] or 0 for r in vk11_rows),
-            "error": sum(r["erro"] or 0 for r in vk11_rows)
-        }
-
-        zaju_rows = zaju_res.mappings().all()
-        zaju_totals = {
-            "success": sum(r["integrado"] or 0 for r in zaju_rows),
-            "pending": sum(r["pendente_integracao"] or 0 for r in zaju_rows),
-            "error": sum(r["erro"] or 0 for r in zaju_rows),
-            "pending_return": sum(r["pendente_retorno"] or 0 for r in zaju_rows)
-        }
-        zaju_totals["total"] = (
-            zaju_totals["success"] + 
-            zaju_totals["pending"] + 
-            zaju_totals["error"] + 
-            zaju_totals["pending_return"]
-        )
-
-        zver_rows = zver_res.mappings().all()
-        
-        # Obter Top 5 clientes por valor integrado
-        zver_rows_sorted = sorted(zver_rows, key=lambda x: x["valor_integrado"] or 0, reverse=True)
-        top_5_clients = [
-            {
-                "id": r["id_cliente"],
-                "nome": r["nom_cliente"],
-                "valor": float(r["valor_integrado"] or 0),
-                "qtd": r["integrado"] or 0
-            }
-            for r in zver_rows_sorted[:5] if (r["valor_integrado"] or 0) > 0
+        # PARALELISMO: Disparar todas as queries simultaneamente
+        tasks = [
+            db.execute(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str),
+            db.execute(QUERY_ZAJU_TOTAL, params),
+            db.execute(QUERY_PAGAMENTOS_TOTAL, params),
+            db.execute(QUERY_TOP_CLIENTES, params),
+            get_count(QUERY_ERRO_SELLIN),
+            get_count(QUERY_ERRO_CLIENTES),
+            get_count(QUERY_ERRO_PRODUTOS),
+            get_count(QUERY_ERRO_CUTOFF),
+            get_count(QUERY_ERRO_USUARIOS),
+            get_count(QUERY_ERRO_PAGAMENTOS_LIST),
+            get_count(QUERY_ERRO_VK11_LIST, params_str)
         ]
-
+        
+        results = await asyncio.gather(*tasks)
+        
+        # Mapeando os resultados
+        vk11_res, zaju_res, zver_res, top_clients_res = results[:4]
+        counts = results[4:]
+        
+        vk11_totals = vk11_res.mappings().one_or_none() or {"success": 0, "pending": 0, "error": 0}
+        zaju_totals = zaju_res.mappings().one_or_none() or {"success": 0, "pending": 0, "error": 0, "pending_return": 0, "total": 0}
+        zver_totals_raw = zver_res.mappings().one_or_none() or {
+            "success": 0, "pending": 0, "pending_return": 0, "error": 0,
+            "value_success": 0.0, "value_pending": 0.0, "value_pending_return": 0.0, "value_error": 0.0
+        }
+        
+        top_clients = [dict(r) for r in top_clients_res.mappings().all()]
+        
         zver_totals = {
-            "success": sum(r["integrado"] or 0 for r in zver_rows),
-            "pending": sum(r["pendente_integracao"] or 0 for r in zver_rows),
-            "error": sum(r["erro"] or 0 for r in zver_rows),
-            "pending_return": sum(r["pendente_retorno"] or 0 for r in zver_rows),
-            "value_success": float(sum(r["valor_integrado"] or 0 for r in zver_rows)),
-            "value_pending": float(sum(r["valor_pendente_integracao"] or 0 for r in zver_rows)),
-            "value_pending_return": float(sum(r["valor_pendente_retorno"] or 0 for r in zver_rows)),
-            "value_error": float(sum(r["valor_erro"] or 0 for r in zver_rows)),
-            "top_clients": top_5_clients
+            "success": zver_totals_raw["success"],
+            "pending": zver_totals_raw["pending"],
+            "pending_return": zver_totals_raw["pending_return"],
+            "error": zver_totals_raw["error"],
+            "value_success": float(zver_totals_raw["value_success"]),
+            "value_pending": float(zver_totals_raw["value_pending"]),
+            "value_pending_return": float(zver_totals_raw["value_pending_return"]),
+            "value_error": float(zver_totals_raw["value_error"]),
+            "top_clients": top_clients
         }
 
-        # Contagem de inconsistências que afetam o BD
         return {
             "source": "postgresql",
-            "vk11": vk11_totals,
-            "zaju": zaju_totals,
+            "vk11": dict(vk11_totals),
+            "zaju": dict(zaju_totals),
             "zver": zver_totals,
             "errors": {
-                "sellin": sellin_count,
-                "clientes": clientes_count,
-                "produtos": produtos_count,
-                "cutoff": cutoff_count,
-                "usuarios": usuarios_count,
-                "pagamentos": pagamentos_count,
-                "vk11": vk11_count
+                "sellin": counts[0],
+                "clientes": counts[1],
+                "produtos": counts[2],
+                "cutoff": counts[3],
+                "usuarios": counts[4],
+                "pagamentos": counts[5],
+                "vk11": counts[6]
             }
         }
     except Exception as e:

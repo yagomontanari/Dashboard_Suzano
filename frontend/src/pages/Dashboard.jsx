@@ -19,7 +19,9 @@ import {
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
+import DashboardSkeleton from '../components/DashboardSkeleton';
 import * as XLSX from 'xlsx';
+import { useMemo } from 'react';
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -230,21 +232,23 @@ export default function Dashboard() {
 
   const exportInconsistencyCategory = () => exportCategory(selectedInconsistency, totalCount);
 
+  const chartData = useMemo(() => {
+    if (!data) return [];
+    return [
+      { name: 'PROVISÃO (VK11)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error },
+      { name: 'ZAJUS', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error },
+      { name: 'ZVER', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error }
+    ];
+  }, [data]);
+
+  const totalErrors = useMemo(() => {
+    if (!data) return 0;
+    return Object.values(data.errors).reduce((a, b) => a + b, 0);
+  }, [data]);
+
   if (loading || !data) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="animate-spin text-blue-600"><RefreshCw size={32} /></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
-
-  const chartData = [
-    { name: 'PROVISÃO (VK11)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error },
-    { name: 'ZAJUS', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error },
-    { name: 'ZVER', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error }
-  ];
-
-  const totalErrors = Object.values(data.errors).reduce((a, b) => a + b, 0);
 
   const tabs = [
     { id: 'geral', label: 'Geral' },

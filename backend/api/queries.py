@@ -3,72 +3,90 @@ from sqlalchemy import text
 # Pagination and sorting constants
 PAGINATION_SORT_SUFFIX = " ORDER BY dta_alteracao DESC LIMIT :limit OFFSET :offset;"
 
-# ================================
-# INTEGRAÇÕES (KPIs Principais)
-# ================================
-
-QUERY_ORCAMENTO_INTEGRACAO = text("""
+# Queries Agregadas para o Dashboard (Otimização de Performance)
+QUERY_ORCAMENTO_INTEGRACAO_TOTAL = text("""
     SELECT 
-        soi.id_orcamento,
-        o.descricao,
-        soi.tipo_integracao,
-        soi.id_ajuste_verba,
-        count(1) FILTER (WHERE soi.status = 'INTEGRADO') AS integrado,
-        count(1) FILTER (WHERE soi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
-        count(1) FILTER (WHERE soi.status = 'ERRO') AS erro
-    FROM suzano_orcamento_integracao soi
-    INNER JOIN orcamento o ON o.id = soi.id_orcamento
-    WHERE soi.valid_from >= :start_date AND soi.valid_from < :end_date
-    GROUP BY soi.id_orcamento, o.descricao, soi.tipo_integracao, soi.id_ajuste_verba
-    ORDER BY soi.id_orcamento DESC;
+        COALESCE(SUM(integrado), 0) as success,
+        COALESCE(SUM(pendente_integracao), 0) as pending,
+        COALESCE(SUM(erro), 0) as error
+    FROM (
+        SELECT 
+            count(1) FILTER (WHERE status = 'INTEGRADO') AS integrado,
+            count(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+            count(1) FILTER (WHERE status = 'ERRO') AS erro
+        FROM suzano_orcamento_integracao
+        WHERE valid_from >= :start_date AND valid_from < :end_date
+        GROUP BY id_orcamento, tipo_integracao
+    ) as sub;
 """)
 
-QUERY_ZAJU = text("""
+QUERY_ZAJU_TOTAL = text("""
     SELECT 
-        sapmc.id_orcamento,
-        otv.descricao AS tipo_verba,
-        o.descricao,
-        sapmc.id_ajuste_verba,
-        oav.tipo_ajuste,
-        oav.dta_alteracao,
-        sapmc.purch_no_c,
-        COUNT(1) FILTER (WHERE sapmc.status = 'INTEGRADO') AS integrado,
-        COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
-        COUNT(1) FILTER (WHERE sapmc.status = 'ERRO') AS erro,
-        COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_RETORNO') AS pendente_retorno,
-        COUNT(sapmc.status IN ('INTEGRADO', 'PENDENTE_INTEGRACAO')) AS total_zaju
-    FROM suzano_ajuste_provisao_memoria_calculo sapmc
-    INNER JOIN orcamento o ON sapmc.id_orcamento = o.id
-    LEFT JOIN orcamento_ajuste_verba oav ON sapmc.id_ajuste_verba = oav.id
-    INNER JOIN orcamento_tipo_verba otv ON o.id_tipo_verba = otv.id
-    WHERE sapmc.cond_value != 0
-      AND sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao < :end_date
-      AND sapmc.status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
-      AND sapmc.purch_no_c IS NOT NULL
-    GROUP BY sapmc.id_orcamento, otv.descricao, o.descricao, sapmc.id_ajuste_verba, oav.tipo_ajuste, oav.dta_alteracao, sapmc.purch_no_c 
-    ORDER BY sapmc.purch_no_c ASC;
+        COALESCE(SUM(integrado), 0) as success,
+        COALESCE(SUM(pendente_integracao), 0) as pending,
+        COALESCE(SUM(erro), 0) as error,
+        COALESCE(SUM(pendente_retorno), 0) as pending_return,
+        COALESCE(SUM(total_zaju), 0) as total
+    FROM (
+        SELECT 
+            COUNT(1) FILTER (WHERE status = 'INTEGRADO') AS integrado,
+            COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+            COUNT(1) FILTER (WHERE status = 'ERRO') AS erro,
+            COUNT(1) FILTER (WHERE status = 'PENDENTE_RETORNO') AS pendente_retorno,
+            COUNT(1) AS total_zaju
+        FROM suzano_ajuste_provisao_memoria_calculo
+        WHERE cond_value != 0
+          AND dta_alteracao >= :start_date AND dta_alteracao < :end_date
+          AND status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
+          AND purch_no_c IS NOT NULL
+        GROUP BY purch_no_c
+    ) as sub;
 """)
 
-QUERY_PAGAMENTOS = text("""
+QUERY_PAGAMENTOS_TOTAL = text("""
     SELECT 
-        c.id_externo AS id_cliente,
-        c.nom_cliente,
-        COUNT(1) FILTER (WHERE spi.status = 'INTEGRADO') AS integrado,
-        COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
-        COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS pendente_retorno,
-        COUNT(1) FILTER (WHERE spi.status = 'ERRO') AS erro,
-        COUNT(1) FILTER (WHERE spi.status IN ('INTEGRADO', 'PENDENTE_INTEGRACAO', 'PENDENTE_RETORNO', 'ERRO')) AS total_pagamentos,
+        COALESCE(SUM(integrado), 0) as success,
+        COALESCE(SUM(pendente_integracao), 0) as pending,
+        COALESCE(SUM(pendente_retorno), 0) as pending_return,
+        COALESCE(SUM(erro), 0) as error,
         
         -- Valores Financeiros
-        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'INTEGRADO') AS valor_integrado,
-        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS valor_pendente_integracao,
-        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS valor_pendente_retorno,
-        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'ERRO' AND pa.vlr_final IS NOT NULL) AS valor_erro
+        COALESCE(SUM(valor_integrado), 0) AS value_success,
+        COALESCE(SUM(valor_pendente_integracao), 0) AS value_pending,
+        COALESCE(SUM(valor_pendente_retorno), 0) AS value_pending_return,
+        COALESCE(SUM(valor_erro), 0) AS value_error
+    FROM (
+        SELECT 
+            COUNT(1) FILTER (WHERE spi.status = 'INTEGRADO') AS integrado,
+            COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+            COUNT(1) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS pendente_retorno,
+            COUNT(1) FILTER (WHERE spi.status = 'ERRO') AS erro,
+            
+            SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'INTEGRADO') AS valor_integrado,
+            SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_INTEGRACAO') AS valor_pendente_integracao,
+            SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'PENDENTE_RETORNO') AS valor_pendente_retorno,
+            SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) FILTER (WHERE spi.status = 'ERRO' AND pa.vlr_final IS NOT NULL) AS valor_erro
+        FROM suzano_pagamento_integracao spi
+        INNER JOIN pagamento_acao pa ON spi.id_pagamento = pa.id 
+        WHERE spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
+        GROUP BY spi.id_cliente
+    ) as sub;
+""")
+
+QUERY_TOP_CLIENTES = text("""
+    SELECT 
+        c.id_externo AS id,
+        c.nom_cliente AS nome,
+        SUM(CAST(REPLACE(pa.vlr_final::TEXT, ',', '.') AS NUMERIC(15, 2))) AS valor,
+        COUNT(1) AS qtd
     FROM suzano_pagamento_integracao spi
     INNER JOIN cliente c ON spi.id_cliente = c.id
     INNER JOIN pagamento_acao pa ON spi.id_pagamento = pa.id 
-    WHERE spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
-    GROUP BY c.id_externo, c.nom_cliente;
+    WHERE spi.status = 'INTEGRADO'
+      AND spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
+    GROUP BY c.id_externo, c.nom_cliente
+    ORDER BY valor DESC
+    LIMIT 5;
 """)
 
 # ================================
