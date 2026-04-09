@@ -4,6 +4,17 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.0] - 2026-04-09
+### Adicionado
+- **Segurança**: Centralização de `SECRET_KEY` e configurações de `ALLOWED_ORIGINS` (CORS) em variáveis de ambiente.
+- **Resiliência Frontend**: Interceptor global de resposta para redirecionar usuários para login em caso de sessão expirada (401).
+- **Utilitários**: Novo helper `parse_date_range` em `core/utils.py` para centralizar lógica de filtros temporais.
+### Alterado
+- **Refatoração (DRY)**: Eliminação de duplicidade de código no tratamento de datas em múltiplos endpoints do backend.
+- **Backend**: Organização e limpeza de imports seguindo PEP 8.
+
+---
+
 ## [1.7.0] - 2026-04-09
 ### Adicionado
 - **Exportação Assíncrona (ZAJU)**: Implementado sistema de geração de relatórios em segundo plano para evitar timeouts. O arquivo Excel agora é enviado diretamente para o e-mail do usuário.

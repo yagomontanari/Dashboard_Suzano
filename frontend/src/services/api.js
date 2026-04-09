@@ -12,6 +12,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Interceptor de resposta para tratar erros globais (ex: 401)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 // --- AUTH ---
 
 export const login = async (username, password) => {

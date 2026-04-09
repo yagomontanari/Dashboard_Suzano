@@ -5,6 +5,10 @@ class Settings(BaseSettings):
     SUPABASE_DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/dashboard_app"
     FRONTEND_URL: str = "http://localhost:5173"
     
+    # Segurança
+    SECRET_KEY: str = "suzanodashboardsecretkey" # DEVE ser alterado via env em prod
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173", "https://dashboard-suzano.vercel.app"]
+    
     # Manter retrocompatibilidade se necessário
     DATABASE_URL: str | None = None
 

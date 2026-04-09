@@ -4,7 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 from jose import JWTError, jwt
 import logging
-from datetime import datetime, timedelta
+import asyncio
+import io
+import pandas as pd
+from datetime import datetime
 import calendar
 import traceback
 from typing import List, Dict, Any
@@ -12,6 +15,9 @@ from typing import List, Dict, Any
 from core.database import get_db, AsyncSessionLocal
 from core.security import SECRET_KEY, ALGORITHM
 from core.mail import mail_service
+from core.utils import parse_date_range
+from api.queries import *
+from .auth import get_current_user
 from api.queries import (
     QUERY_ERRO_SELLIN,
     QUERY_ERRO_CLIENTES,
@@ -85,25 +91,7 @@ async def get_dashboard_metrics(
     user: str = Depends(get_current_user)
 ):
     try:
-        today = datetime.now()
-        
-        if not start_date or start_date == "2024-01-01":
-            start_dt = datetime(today.year, today.month, 1)
-        else:
-            try:
-                start_dt = datetime.strptime(start_date[:10], "%Y-%m-%d")
-            except ValueError:
-                start_dt = datetime(today.year, today.month, 1)
-                
-        if not end_date or end_date == "2026-12-31":
-            last_day = calendar.monthrange(today.year, today.month)[1]
-            end_dt = datetime(today.year, today.month, last_day, 23, 59, 59)
-        else:
-            try:
-                end_dt = datetime.strptime(end_date[:10], "%Y-%m-%d").replace(hour=23, minute=59, second=59)
-            except ValueError:
-                last_day = calendar.monthrange(today.year, today.month)[1]
-                end_dt = datetime(today.year, today.month, last_day, 23, 59, 59)
+        start_dt, end_dt = parse_date_range(start_date, end_date)
             
         params_str = {
             "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"), 
@@ -113,9 +101,6 @@ async def get_dashboard_metrics(
             "start_date": start_dt, 
             "end_date": end_dt
         }
-        
-        from sqlalchemy import text
-        import asyncio
         
         # Otimização: contando inconsistências direto via SQL para não sobrecarregar a memória
         async def get_count(q, p=params):
@@ -197,26 +182,7 @@ async def get_inconsistencies(
 ):
     try:
         offset = (page - 1) * size
-        
-        today = datetime.now()
-        
-        if not start_date or start_date == "2024-01-01":
-            start_dt = datetime(today.year, today.month, 1)
-        else:
-            try:
-                start_dt = datetime.strptime(start_date[:10], "%Y-%m-%d")
-            except ValueError:
-                start_dt = datetime(today.year, today.month, 1)
-                
-        if not end_date or end_date == "2026-12-31":
-            last_day = calendar.monthrange(today.year, today.month)[1]
-            end_dt = datetime(today.year, today.month, last_day, 23, 59, 59)
-        else:
-            try:
-                end_dt = datetime.strptime(end_date[:10], "%Y-%m-%d").replace(hour=23, minute=59, second=59)
-            except ValueError:
-                last_day = calendar.monthrange(today.year, today.month)[1]
-                end_dt = datetime(today.year, today.month, last_day, 23, 59, 59)
+        start_dt, end_dt = parse_date_range(start_date, end_date)
 
         params = {"start_date": start_dt, "end_date": end_dt, "limit": size, "offset": offset}
         params_count = {"start_date": start_dt, "end_date": end_dt}
@@ -313,7 +279,7 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
         # Precisamos de uma nova sessão para o background task
         async with AsyncSessionLocal() as db:
             params = {"start_date": start_dt, "end_date": end_dt}
-            result = await db.execute(text(QUERY_RELATORIO_ZAJU), params)
+            result = await db.execute(QUERY_RELATORIO_ZAJU, params)
             rows = result.mappings().all()
 
             if not rows:
@@ -346,26 +312,7 @@ async def export_zaju_report(
     user: dict = Depends(get_current_user)
 ):
     try:
-        today = datetime.now()
-        
-        # Lógica de parsing de datas
-        if not start_date or start_date == "2024-01-01":
-            start_dt = datetime(today.year, today.month, 1)
-        else:
-            try:
-                start_dt = datetime.strptime(start_date[:10], "%Y-%m-%d")
-            except ValueError:
-                start_dt = datetime(today.year, today.month, 1)
-                
-        if not end_date or end_date == "2026-12-31":
-            last_day = calendar.monthrange(today.year, today.month)[1]
-            end_dt = datetime(today.year, today.month, last_day, 23, 59, 59)
-        else:
-            try:
-                end_dt = datetime.strptime(end_date[:10], "%Y-%m-%d").replace(hour=23, minute=59, second=59)
-            except ValueError:
-                last_day = calendar.monthrange(today.year, today.month)[1]
-                end_dt = datetime(today.year, today.month, last_day, 23, 59, 59)
+        start_dt, end_dt = parse_date_range(start_date, end_date)
 
         # Dispara o processamento em background
         background_tasks.add_task(
