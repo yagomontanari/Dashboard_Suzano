@@ -32,6 +32,11 @@ export const changePassword = async (old_password, new_password, token) => {
   return response.data;
 };
 
+export const forgotPassword = async (email) => {
+  const response = await api.post('/auth/forgot-password', { email });
+  return response.data;
+};
+
 // --- ADMIN ---
 
 export const getAdminUsers = async () => {

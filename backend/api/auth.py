@@ -16,6 +16,7 @@ from core.security import (
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
 from datetime import datetime
+from core.mail import mail_service
 
 router = APIRouter()
 
@@ -38,6 +39,9 @@ class RegisterRequest(BaseModel):
 class ChangePasswordRequest(BaseModel):
     old_password: str
     new_password: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
 
 class UserResponse(BaseModel):
     id: int
@@ -149,6 +153,7 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_app_db)
     
     db.add(new_user)
     await db.commit()
+    
     return {"message": "Solicitação enviada com sucesso! Aguarde a aprovação do administrador."}
 
 @router.post("/change-password")
@@ -266,9 +271,13 @@ async def approve_user(
     user.active = True
     
     await db.commit()
+    
+    # Enviar email de aprovação com a senha temporária
+    await mail_service.send_approval_email(user.email, user.nome, temp_pwd)
+    
     return {
-        "message": "Usuário aprovado!",
-        "temporary_password": temp_pwd
+        "message": "Usuário aprovado e credenciais enviadas por e-mail!",
+        "temporary_password": temp_pwd # Mantido para retorno imediato se necessário
     }
 
 @router.post("/admin/users/{user_id}/reject")
@@ -302,8 +311,12 @@ async def reset_password(
     user.must_change_password = True
     
     await db.commit()
+    
+    # Enviar email de reset (ação do admin)
+    await mail_service.send_reset_password_email(user.email, user.nome, temp_pwd)
+    
     return {
-        "message": "Senha resetada com sucesso!",
+        "message": "Senha resetada com sucesso e enviada ao usuário!",
         "temporary_password": temp_pwd
     }
 
@@ -322,4 +335,27 @@ async def unlock_user(
     user.locked_until = None
     user.failed_login_attempts = 0
     await db.commit()
+    
+    # (Opcional) Notificar usuário do desbloqueio se quiser
+    
     return {"message": "Usuário desbloqueado com sucesso!"}
+
+@router.post("/forgot-password")
+async def forgot_password(data: ForgotPasswordRequest, db: AsyncSession = Depends(get_app_db)):
+    result = await db.execute(select(User).where(User.email == data.email))
+    user = result.scalar_one_or_none()
+    
+    # Por segurança, mesmo que o usuário não exista, não informamos.
+    if not user or not user.active:
+        return {"message": "Se o e-mail estiver cadastrado, uma nova senha será enviada."}
+    
+    temp_pwd = generate_temp_password()
+    user.hashed_password = get_password_hash(temp_pwd)
+    user.must_change_password = True
+    
+    await db.commit()
+    
+    # Enviar email de reset
+    await mail_service.send_reset_password_email(user.email, user.nome, temp_pwd)
+    
+    return {"message": "Uma nova senha temporária foi enviada para o seu e-mail."}

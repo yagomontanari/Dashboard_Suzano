@@ -17,8 +17,8 @@ export default function Register() {
     setError('');
     try {
       await registerRequest(nome, email);
-      setSuccess('Sua solicitação foi enviada! O administrador entrará em contato assim que seu acesso for aprovado.');
-      setTimeout(() => navigate('/'), 5000);
+      setSuccess('Sua solicitação foi recebida! Um administrador irá revisar seu acesso e você receberá suas credenciais por e-mail assim que aprovado.');
+      setTimeout(() => navigate('/'), 8000);
     } catch (err) {
       setError(err.response?.data?.detail || 'Erro ao enviar solicitação.');
     } finally {

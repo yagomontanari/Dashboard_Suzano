@@ -4,6 +4,19 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.6.0] - 2026-04-09
+### Adicionado
+- **Integração de E-mail (SMTP Gmail)**:
+  - Implementação do serviço `MailService` com suporte a envio assíncrono via Gmail.
+  - Criação de templates HTML customizados (Azul/Verde Suzano) para Boas-vindas, Aprovação e Reset de Senha.
+- **Recuperação de Senha (Autoatendimento)**:
+  - Novo endpoint `/api/auth/forgot-password` para usuários solicitarem nova senha de forma autônoma.
+  - Modal "Esqueci minha senha" integrado à tela de login com feedback em tempo real.
+- **Automação de Credenciais**:
+  - Envio automático de senhas temporárias por e-mail no momento da aprovação pelo administrador.
+
+---
+
 ## [1.5.0] - 2026-04-09
 ### Adicionado
 - **Otimização de Performance (Backend)**:
