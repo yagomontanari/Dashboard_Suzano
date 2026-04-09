@@ -1,0 +1,162 @@
+import PropTypes from 'prop-types';
+import { ChevronLeft, ChevronRight, Loader2, AlertCircle, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
+
+const formatDateTime = (value) => {
+  if (!value) return '-';
+  try {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yy = String(date.getFullYear()).slice(-2);
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    return `${dd}/${mm}/${yy} ${hh}:${min}:${ss}`;
+  } catch {
+    return value;
+  }
+};
+
+const DATE_KEYS = new Set(['dta_criacao', 'dta_envio_integracao', 'data_emissao', 'valid_from']);
+
+const formatCellValue = (key, value) => {
+  if (DATE_KEYS.has(key)) return formatDateTime(value);
+  return value || '-';
+};
+
+export default function PaginatedTable({
+  data,
+  columns, // Array of { key: 'str', label: 'str' }
+  loading,
+  error,
+  currentPage,
+  totalPages,
+  totalCount,
+  onPageChange,
+  sortConfig, // { key: 'str', direction: 'asc'|'desc' }
+  onSort // Function (key) => void
+}) {
+
+  const renderSortIcon = (key) => {
+    if (!onSort) return null;
+    if (sortConfig?.key !== key) return <ArrowUpDown size={14} className="ml-1 opacity-20 group-hover:opacity-60 transition-opacity" />;
+    return sortConfig.direction === 'asc' ? 
+        <ArrowUp size={14} className="ml-1 text-blue-600" /> : 
+        <ArrowDown size={14} className="ml-1 text-blue-600" />;
+  };
+
+  if (loading && (!data || data.length === 0)) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-slate-500">
+        <Loader2 className="animate-spin mb-4" size={32} />
+        <p className="font-medium text-sm">Carregando dados da tabela...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-red-500">
+        <AlertCircle className="mb-4" size={32} />
+        <p className="font-medium text-sm font-bold">Erro ao carregar os dados.</p>
+        <p className="text-xs text-red-400 mt-1">{error}</p>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-slate-500">
+        <p className="font-medium text-sm">Nenhum registro encontrado.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full bg-white">
+      <div className="overflow-x-auto border-b border-slate-200">
+        <table className="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr className="bg-slate-100 border-b-2 border-slate-300">
+              {columns.map((col) => (
+                <th 
+                    key={col.key} 
+                    className={`py-3 px-4 font-bold text-slate-700 whitespace-nowrap group ${onSort ? 'cursor-pointer select-none' : ''}`}
+                    onClick={() => onSort && onSort(col.key)}
+                >
+                  <div className="flex items-center">
+                    {col.label}
+                    {renderSortIcon(col.key)}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {data.map((row, i) => (
+              <tr key={i} className={`hover:bg-slate-50 transition-colors ${loading ? 'opacity-50' : ''}`}>
+                {columns.map((col) => {
+                  const display = formatCellValue(col.key, row[col.key]);
+                  return (
+                    <td key={col.key} className="py-3 px-4 text-slate-600 truncate max-w-xs" title={display?.toString()}>
+                      {display}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination Footer */}
+      <div className="flex items-center justify-between px-6 py-4 bg-slate-50 min-h-[64px]">
+        <div className="text-sm font-medium text-slate-500">
+          <span>Total de <strong className="text-slate-800">{totalCount}</strong> registros</span>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <span className="text-sm font-medium text-slate-600">
+            Página <strong className="text-slate-800">{currentPage}</strong> de {totalPages}
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage <= 1 || loading}
+              className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft size={16} strokeWidth={2.5} />
+            </button>
+            <button
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage >= totalPages || loading}
+              className="p-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight size={16} strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+PaginatedTable.propTypes = {
+  data: PropTypes.array,
+  columns: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+  })).isRequired,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  sortConfig: PropTypes.shape({
+    key: PropTypes.string,
+    direction: PropTypes.oneOf(['asc', 'desc'])
+  }),
+  onSort: PropTypes.func
+};
