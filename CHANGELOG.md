@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.6.2] - 2026-04-09
+### Alterado
+- **Personalização Estética de E-mail**:
+  - Novo design system aplicado aos e-mails (Paleta Slate/Blue).
+  - Inclusão de logos da Suzano, Tradelinks e Magalu Cloud (Powered by).
+  - Configuração de `FRONTEND_URL` para suporte a imagens e links absolutos.
+
+---
+
 ## [1.6.1] - 2026-04-09
 ### Corrigido
 - **Acesso (Frontend)**: Restaurado import do `useState` em `Login.jsx` que impedia o carregamento da tela inicial.

@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     METRICS_DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/db_tradelinks"
     SUPABASE_DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/dashboard_app"
+    FRONTEND_URL: str = "http://localhost:5173"
     
     # Manter retrocompatibilidade se necessário
     DATABASE_URL: str | None = None
