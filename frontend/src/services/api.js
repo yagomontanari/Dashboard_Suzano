@@ -12,12 +12,45 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// --- AUTH ---
+
 export const login = async (username, password) => {
   const response = await api.post('/auth/login', { username, password });
   return response.data;
 };
 
-// Real data fetch via backend
+export const registerRequest = async (nome, email) => {
+  const response = await api.post('/auth/register', { nome, email });
+  return response.data;
+};
+
+export const changePassword = async (old_password, new_password, token) => {
+  const response = await api.post('/auth/change-password', 
+    { old_password, new_password },
+    { params: { token } }
+  );
+  return response.data;
+};
+
+// --- ADMIN ---
+
+export const getAdminUsers = async () => {
+    const response = await api.get('/auth/admin/users');
+    return response.data;
+}
+
+export const approveUser = async (userId) => {
+    const response = await api.post(`/auth/admin/approve/${userId}`);
+    return response.data;
+}
+
+export const rejectUser = async (userId) => {
+    const response = await api.post(`/auth/admin/reject/${userId}`);
+    return response.data;
+}
+
+// --- DATA ---
+
 export const getDashboardData = async () => {
     const response = await api.get('/data/dashboard');
     return response.data;

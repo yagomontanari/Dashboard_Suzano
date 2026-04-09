@@ -13,10 +13,19 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await login(username, password);
+      
+      // Se precisar trocar senha, salvamos um token temporário e redirecionamos
+      if (res.must_change_password) {
+        localStorage.setItem('token_temp', res.access_token);
+        navigate('/change-password');
+        return;
+      }
+
       localStorage.setItem('token', res.access_token);
+      localStorage.setItem('role', res.role); // Para controle de sidebar
       navigate('/dashboard');
     } catch (err) {
-      setError('Usuário ou senha inválidos.');
+      setError(err.response?.data?.detail || 'Usuário ou senha inválidos.');
     }
   };
 
@@ -49,7 +58,7 @@ export default function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder="Usuário"
+                placeholder="E-mail"
                 required
               />
             </div>
@@ -74,6 +83,19 @@ export default function Login() {
             >
               Login
             </button>
+
+            <div className="text-center pt-4 border-t border-slate-100">
+                <p className="text-slate-500 text-sm">
+                    Ainda não tem acesso? {' '}
+                    <button 
+                        type="button"
+                        onClick={() => navigate('/register')}
+                        className="text-blue-600 font-bold hover:underline"
+                    >
+                        Solicitar Acesso
+                    </button>
+                </p>
+            </div>
           </form>
         </div>
       </div>

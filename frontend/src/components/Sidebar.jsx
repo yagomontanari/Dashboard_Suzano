@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
+  const role = localStorage.getItem('role');
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.clear(); // Limpa tudo (token, role, etc)
     navigate('/');
   };
 
@@ -73,6 +74,24 @@ export default function Sidebar() {
             Relatórios
           </span>
         </NavLink>
+
+        {role === 'ADMIN' && (
+          <NavLink 
+            to="/usuarios"
+            className={({ isActive }) => 
+              `flex items-center gap-4 px-3 py-3 rounded-md transition-all group overflow-hidden whitespace-nowrap ${
+                isActive 
+                  ? 'bg-blue-600/10 text-blue-400 border-l-2 border-blue-500' 
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200 border-l-2 border-transparent'
+              }`
+            }
+          >
+            <Users size={20} className="shrink-0" />
+            <span className={`transition-all duration-300 font-medium ${expanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
+              Gestão de Usuários
+            </span>
+          </NavLink>
+        )}
       </nav>
 
       {/* Partner Logos */}

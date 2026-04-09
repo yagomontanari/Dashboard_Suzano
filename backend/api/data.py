@@ -40,15 +40,33 @@ logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+from core.database_app import get_app_db
+from core.models_app import User, UserStatus
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), 
+    db_app: AsyncSession = Depends(get_app_db)
+):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-        return username
+        email: str = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
+        
+        # Busca o usuário no banco da aplicação (Supabase)
+        from sqlalchemy.future import select
+        result = await db_app.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+        
+        if not user or user.status != UserStatus.APPROVED:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, 
+                detail="Usuário não autorizado ou pendente de aprovação"
+            )
+            
+        return user
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
 
 @router.get("/dashboard")
 async def get_dashboard_metrics(
