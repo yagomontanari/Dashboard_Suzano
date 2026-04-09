@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.6.1] - 2026-04-09
+### Corrigido
+- **Acesso (Frontend)**: Restaurado import do `useState` em `Login.jsx` que impedia o carregamento da tela inicial.
+- **Fluxo de E-mail**: Removido disparo redundante de e-mail de "Aguardando Aprovação" no cadastro (conforme solicitado).
+
+---
+
 ## [1.6.0] - 2026-04-09
 ### Adicionado
 - **Integração de E-mail (SMTP Gmail)**:
