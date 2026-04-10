@@ -12,9 +12,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Divisão dinâmica do relatório de ZAJU por abas no Excel (`Verbas de Contrato` e `Promo & Ações`) dependendo dos subtipos dos IDs informados na query.
   - Estilização corporativa aplicada nas colunas do cabeçalho de planilhas exportadas através da injeção do UI `openpyxl`.
 ### Alterado
+- **Exportação ZAJU (Formatação BRL e Percentuais)**:
+  - Renomeada e remapeada renderização final da métrica base `% Verba Bruto` para o escopo lógico solicitado como `Provisão % SAP`.
+  - Tratativa das máscaras financeiras: Conversão das tipagens de Ponto Flutuantes (`.`) nos Dataframes do Backend para Strings de notação regionalizadas (`1.000,00`) para colunas monetárias e atrelamento contextual `%` em campos percentuais (ex: `15,30%`).
 - **Design de E-mail (UI/UX)**:
   - Largura do modal central dos avisos por e-mail unificada e expandida (de 550px para 700px), conferindo maior espaço e conforto na leitura.
-  - Reconstrução do componente que representa o anexo do Excel com o aviso orientativo em destaque `[Baixar no Anexo ↓]`.
 - **Exportação ZAJU (Reordenação de Colunas)**:
   - A query `QUERY_RELATORIO_ZAJU` sofreu refatoração total de renomeação de Headers e ordenação textual colunar obedecendo rigorosamente o output esperado pela área de auditoria / produto.
 - **Performance (Dashboard)**:

@@ -265,6 +265,27 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
             # Garantir a ordenação exata (keys do dict podem quebrar a ordem dependendo da versão do pandas)
             df = pd.DataFrame([dict(r) for r in rows])
             
+            # Ajuste de pontuação para o Padrão BRL (Vírgula em decimais, ponto em milhares)
+            colunas_numericas = [
+                "Valor Bruto", "Valor Líquido", "Provisão Original", "Provisão % SAP",
+                "Contrato COM % Bruto", "Contrato COM % Liquido", "Contrato LOG % Bruto",
+                "Contrato LOG % Líquido", "Contrato CRE % Bruto", "Contrato CRE % Líquido",
+                "Valor Provisão"
+            ]
+            for col in colunas_numericas:
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors='coerce').apply(
+                        lambda x: f"{x:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.') if pd.notna(x) else ""
+                    )
+            
+            # Ajuste para campos puramente Percentuais
+            colunas_percentuais = ["% Original", "% Atual"]
+            for col in colunas_percentuais:
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors='coerce').apply(
+                        lambda x: f"{x:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.') + "%" if pd.notna(x) else ""
+                    )
+            
             # Separar Contrato vs Promo & Ações
             if not df.empty and 'id_tipo_verba' in df.columns:
                 df_contrato = df[df['id_tipo_verba'].isin([9, 10])].drop(columns=['id_tipo_verba'])
@@ -276,7 +297,7 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
             ordem_colunas = [
                 "Orçamento", "ID Ajuste Verba", "Linha de Investimento", "Tipo Linha Investimento",
                 "Cód. Cliente", "Nome Cliente", "Nº Nota Fiscal", "VKORG", "Nº Documento",
-                "Valor Bruto", "Valor Líquido", "% Original", "Provisão Original", "% Verba Bruto",
+                "Valor Bruto", "Valor Líquido", "% Original", "Provisão Original", "Provisão % SAP",
                 "Contrato COM % Bruto", "Contrato COM % Liquido", "Contrato LOG % Bruto", "Contrato LOG % Líquido",
                 "Contrato CRE % Bruto", "Contrato CRE % Líquido", "% Atual", "Valor Provisão",
                 "Cutoff", "Data Criação", "Purch. No C", "Tipo Doc", "Sequencial", "Cod. Material",

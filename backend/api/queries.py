@@ -460,7 +460,7 @@ QUERY_RELATORIO_ZAJU = text("""
         s.valor_liquido AS "Valor Líquido",
         sapmc.vlr_percentual_original AS "% Original",
         sapmc.vlr_provisao_original AS "Provisão Original",
-        s.verba_perc_bruto AS "% Verba Bruto",
+        s.verba_perc_bruto AS "Provisão % SAP",
         s.contrato_perc_bruto AS "Contrato COM % Bruto",
         s.contrato_perc_liq AS "Contrato COM % Liquido",
         s.contrato_log_bruto AS "Contrato LOG % Bruto",

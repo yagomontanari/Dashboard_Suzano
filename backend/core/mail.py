@@ -56,14 +56,11 @@ class MailService:
         <p>Olá, {nome.split()[0]}. O processamento do <strong>{report_name}</strong> foi concluído com sucesso.</p>
         <p>Você encontrará o arquivo em anexo neste e-mail (geralmente localizado no final desta mensagem ou no cabeçalho do seu provedor).</p>
         
-        <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer;" title="Por favor, baixe o anexo nativo do seu e-mail.">
+        <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
             <div style="font-size: 24px;">📄</div>
-            <div style="flex-grow: 1;">
+            <div>
                 <p style="margin: 0; font-weight: 700; color: #0f172a; font-size: 14px;">{filename}</p>
                 <p style="margin: 0; color: #94a3b8; font-size: 12px;">Planilha Excel (XLSX)</p>
-            </div>
-            <div style="color: #3b82f6; font-size: 12px; font-weight: bold;">
-                 [Baixar no Anexo ↓]
             </div>
         </div>
         
