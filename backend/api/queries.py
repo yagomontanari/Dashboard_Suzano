@@ -123,6 +123,7 @@ QUERY_LAST_SYNC = text("""
     FROM suzano_integracao_servico
     WHERE tipo IN ('ORCAMENTO', 'PAGAMENTO', 'DADOS_PROVISOES', 'AJUSTE_PROVISAO')
     GROUP BY tipo
+    ORDER BY dta DESC
 """)
 
 # Consultas Detalhadas (Originais)

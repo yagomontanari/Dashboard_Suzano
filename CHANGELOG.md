@@ -21,8 +21,8 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Implementação completa da nova aba do dashboard dedicada aos orçamentos.
   - Visão reestruturada: agrupamento de dados eliminando redundâncias de tipo de integração, focando estritamente em orçamentos do mês corrente (verificado rigorosamente através do período real de vigência nas colunas `valid_from` e `valid_to`).
   - Reformulação de **UX e Legibilidade Visual**:
-    - Substituição do "banner escuro" redundante por um grid polido com 4 *KPI Cards* responsivos: *Volume Total, Sucesso, Aguardando Integração* e *Falha de Integração*, incluindo iconografia Lucide e animações *hover*.
-    - Humanização dos cabeçalhos da tabela técnica (ex: `pendente_integracao` -> `Pendentes`) para linguagem executiva de negócios.
+    - Substituição do "banner escuro" redundante por um grid polido com 4 *KPI Cards* responsivos: *Volume Total, Sucesso, Aguardando Integração* e *Falha de Integração*, incluindo iconografia Lucide e animações *hover*. O card "Volume Total" assumiu um tom escuro premium (`slate-900`) e Sucesso verde orgânico (`emerald-600`), equilibrando a paleta.
+    - O card de **Falhas de Integração** agora contêm um botão rápido e contextual de `EXPORTAR`, integrado com o gerador `.xlsx` preexistente da classe, facilitando os recortes contábeis da base.    - Humanização dos cabeçalhos da tabela técnica (ex: `pendente_integracao` -> `Pendentes`) para linguagem executiva de negócios.
     - Aplicação de máscara de cores inteligente na tabela de detalhamento: a ausência de gargalos (valores zerados) em pendências ou erros passou a receber uma fonte cinza neutra, limpando ruído visual e ajudando alertas coloridos a saltarem aos olhos de imediato.
 - **Modernização do Dashboard (UI/UX)**:
   - Implementação de gráficos de rosca (`Donut Charts`) para monitoramento de saúde de integração, com aumento de escala (raio maior) para melhor visualização.
@@ -33,6 +33,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - Captura de **Dados de Entrada (Inbound)**: Via `integracao_requisicao`, incluindo rastreabilidade por número de **Lote**.
     - Captura de **Dados de Saída (Outbound)**: Via `suzano_integracao_servico` para monitoramento de envios ao SAP (ZVER, VK11, ZAJU).
     - Interface refinada com selos direcionais aumentados (`↑ TL -> SAP` / `↓ SAP -> TL`), inclusão de data completa (`DD/MM`) e iconografia especializada para cada processo (Logística, Financeiro, Cadastro).
+    - **Ordenação Reversa (Chronological Sort)**: O painel passou a ordenar globalmente todos os itens (SQL `ORDER BY dta DESC`), exibindo rigorosamente primeiro a última integração recebida ou enviada.
+  - **Aba Geral (Overview)**:
+    - Correção de layout no painel de "Inconsistências de Cadastro", alterando sua restrição de altura vertical para `h-fit`, o que elimina os incômodos espaços em branco no bloco quando renderizado ao lado do Log de Integrações.
   - Melhoria de **Acessibilidade e UX**: Inclusão de tooltips (balões informativos) nos itens do menu lateral quando recolhido.
   - Implementação de **Notificador de Gestão**: Badge dinâmica (círculo vermelho pulsante) no menu lateral para alertar sobre solicitações de acesso pendentes (exclusivo para administradores).
   - Corrigido: Ativada a funcionalidade do botão de **Reprovar Solicitação** na Gestão de Usuários (anteriormente exibia um alerta estático).

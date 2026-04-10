@@ -569,7 +569,7 @@ export default function Dashboard() {
                 <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
                    <Target size={20} className="text-rose-600" /> Inconsistências de Cadastro
                 </h2>
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex-grow">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
                   <div className="space-y-4">
                     {Object.entries(data.errors).map(([key, value]) => {
                       const isZero = value === 0;
@@ -758,17 +758,17 @@ export default function Dashboard() {
           <div className="space-y-8 animate-in fade-in duration-500">
             {/* KPI Cards Polidos */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-blue-600 p-6 rounded-xl border border-blue-500 shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all text-white">
+              <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm shadow-slate-900/20 hover:shadow-md hover:shadow-slate-900/40 hover:-translate-y-0.5 transition-all text-white">
                 <div className="flex justify-between items-start mb-2">
-                  <p className="text-[11px] font-black text-blue-100 uppercase tracking-widest">Volume Total</p>
-                  <div className="p-2 bg-blue-500/50 text-white rounded-lg"><Calculator size={18} /></div>
+                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Volume Total</p>
+                  <div className="p-2 bg-slate-800 text-slate-300 rounded-lg"><Calculator size={18} /></div>
                 </div>
                 <h3 className="text-3xl font-black text-white">{data.vk11.success + data.vk11.pending + data.vk11.error}</h3>
               </div>
 
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div className="flex justify-between items-start mb-2">
-                  <p className="text-[11px] font-black text-emerald-500 uppercase tracking-widest">Sucesso</p>
+                  <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Sucesso</p>
                   <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={18} /></div>
                 </div>
                 <h3 className="text-3xl font-black text-emerald-600">{data.vk11.success}</h3>
@@ -776,7 +776,7 @@ export default function Dashboard() {
 
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div className="flex justify-between items-start mb-2">
-                  <p className="text-[11px] font-black text-amber-400 uppercase tracking-widest">Aguardando Integração</p>
+                  <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Aguardando Integração</p>
                   <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={18} /></div>
                 </div>
                 <h3 className="text-3xl font-black text-amber-500">{data.vk11.pending}</h3>
@@ -784,10 +784,21 @@ export default function Dashboard() {
 
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div className="flex justify-between items-start mb-2">
-                  <p className="text-[11px] font-black text-rose-400 uppercase tracking-widest">Falha de Integração</p>
+                  <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Falha de Integração</p>
                   <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={18} /></div>
                 </div>
-                <h3 className="text-3xl font-black text-rose-600">{data.vk11.error}</h3>
+                <div className="flex justify-between items-end mt-2">
+                  <h3 className="text-3xl font-black text-rose-600">{data.vk11.error}</h3>
+                  {data.vk11.error > 0 && (
+                    <button 
+                      onClick={() => exportCategory('vk11', data.vk11.error)} 
+                      disabled={inconsistencyLoading}
+                      className="text-[10px] bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-1.5 rounded font-bold uppercase tracking-wider flex items-center gap-1 transition-colors disabled:opacity-50"
+                    >
+                      <Download size={14} /> EXPORTAR
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
