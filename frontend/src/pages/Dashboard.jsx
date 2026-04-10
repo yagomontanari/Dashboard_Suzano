@@ -29,13 +29,13 @@ const IntegrationHealthCard = ({ title, success, pending, error }) => {
   const total = success + pending + error;
   
   const data = [
-    { name: 'SUCCESS', value: success, color: '#3b82f6' },
-    { name: 'PENDING', value: pending, color: '#f59e0b' },
-    { name: 'ERROR', value: error, color: '#ef4444' }
+    { name: 'Sucesso', value: success, color: '#3b82f6' },
+    { name: 'Pendente', value: pending, color: '#f59e0b' },
+    { name: 'Erro', value: error, color: '#ef4444' }
   ].filter(item => item.value > 0);
 
   // Se tudo for zero, mostra um anel cinza
-  const displayData = data.length > 0 ? data : [{ name: 'EMPTY', value: 1, color: '#e2e8f0' }];
+  const displayData = data.length > 0 ? data : [{ name: 'Vazio', value: 1, color: '#e2e8f0' }];
   
   const getPercentage = (val) => total > 0 ? ((val / total) * 100).toFixed(1) : "0";
 
@@ -45,18 +45,18 @@ const IntegrationHealthCard = ({ title, success, pending, error }) => {
         <h3 className="font-bold text-slate-800 tracking-tight text-sm uppercase tracking-wide">{title}</h3>
       </div>
       
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col items-center gap-6">
         {/* Donut Chart */}
-        <div className="w-32 h-32 relative flex-shrink-0">
+        <div className="w-44 h-44 relative flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={displayData}
                 cx="50%"
                 cy="50%"
-                innerRadius={38}
-                outerRadius={55}
-                paddingAngle={2}
+                innerRadius={55}
+                outerRadius={75}
+                paddingAngle={3}
                 dataKey="value"
                 stroke="none"
               >
@@ -73,29 +73,29 @@ const IntegrationHealthCard = ({ title, success, pending, error }) => {
         </div>
 
         {/* Custom Legend (Image Style) */}
-        <div className="flex-grow space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="w-3 h-3 rounded-sm bg-blue-500 mt-1"></div>
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-slate-400 leading-none">SUCCESS</span>
-              <span className="text-sm font-black text-slate-700">{success} <span className="text-slate-400 font-bold">({getPercentage(success)}%)</span></span>
+        <div className="w-full space-y-3 pt-2">
+          <div className="flex items-center justify-between border-b border-slate-50 pb-2">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Sucesso</span>
             </div>
+            <span className="text-sm font-black text-slate-700">{success} <span className="text-slate-400 font-bold">({getPercentage(success)}%)</span></span>
           </div>
           
-          <div className="flex items-start gap-3">
-            <div className="w-3 h-3 rounded-sm bg-amber-500 mt-1"></div>
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-slate-400 leading-none">PENDING</span>
-              <span className="text-sm font-black text-slate-700">{pending} <span className="text-slate-400 font-bold">({getPercentage(pending)}%)</span></span>
+          <div className="flex items-center justify-between border-b border-slate-50 pb-2">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-sm bg-amber-500"></div>
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Pendente</span>
             </div>
+            <span className="text-sm font-black text-slate-700">{pending} <span className="text-slate-400 font-bold">({getPercentage(pending)}%)</span></span>
           </div>
 
-          <div className="flex items-start gap-3">
-             <div className="w-3 h-3 rounded-sm bg-rose-500 mt-1"></div>
-             <div className="flex flex-col">
-               <span className="text-[10px] font-black text-slate-400 leading-none">ERROR</span>
-               <span className="text-sm font-black text-slate-700">{error} <span className="text-slate-400 font-bold">({getPercentage(error)}%)</span></span>
+          <div className="flex items-center justify-between">
+             <div className="flex items-center gap-3">
+               <div className="w-3 h-3 rounded-sm bg-rose-500"></div>
+               <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Erro</span>
              </div>
+             <span className="text-sm font-black text-slate-700">{error} <span className="text-slate-400 font-bold">({getPercentage(error)}%)</span></span>
           </div>
         </div>
       </div>
@@ -432,12 +432,10 @@ export default function Dashboard() {
                 <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
                   <Activity size={20} className="text-blue-600" /> Saúde das Integrações
                 </h2>
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                  <IntegrationHealthCard title="ZAJUS (Ajustes de Provisão)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} />
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                  <IntegrationHealthCard title="ZAJUS (Ajustes)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} />
                   <IntegrationHealthCard title="PROVISÃO (VK11)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
-                  <div className="xl:col-span-2">
-                    <IntegrationHealthCard title="ZVER (Pagamentos)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} />
-                  </div>
+                  <IntegrationHealthCard title="ZVER (Pagamentos)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} />
                 </div>
               </div>
 
