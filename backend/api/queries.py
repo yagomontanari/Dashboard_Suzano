@@ -502,7 +502,7 @@ QUERY_ERRO_ZAJU_LIST = text("""
     LEFT JOIN orcamento_tipo_investimento oti ON oti.id = oli.id_tipo_investimento
     LEFT JOIN produto p ON sapmc.material = p.id_externo
     LEFT JOIN cliente c ON c.id = s.id_cliente
-    WHERE sapmc.dta_criacao >= :start_date AND sapmc.dta_criacao < :end_date 
+    WHERE sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao < :end_date 
       AND sapmc.cond_value != 0 
       AND sapmc.status = 'ERRO'
 """)

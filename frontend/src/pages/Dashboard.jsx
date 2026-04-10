@@ -381,10 +381,10 @@ export default function Dashboard() {
       case 'zaju': return [
         {key: 'purch_no_c', label: 'ID Ajuste'}, 
         {key: 'orcamento', label: 'Orçamento'}, 
-        {key: 'LINHA_INVESTIMENTO', label: 'Linha Invest.'}, 
-        {key: 'COD_CLIENTE', label: 'Cód. Cliente'}, 
-        {key: 'NOME_CLIENTE', label: 'Cliente'}, 
-        {key: 'NRO_NOTA_FISCAL', label: 'Nota Fiscal'}, 
+        {key: 'linha_investimento', label: 'Linha Invest.'}, 
+        {key: 'cod_cliente', label: 'Cód. Cliente'}, 
+        {key: 'nome_cliente', label: 'Cliente'}, 
+        {key: 'nro_nota_fiscal', label: 'Nota Fiscal'}, 
         {key: 'valor_provisao', label: 'Vlr. Provisão'}, 
         {key: 'mensagem_retorno_integracao', label: 'Erros'}
       ];
