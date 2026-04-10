@@ -71,38 +71,45 @@ async def get_dashboard_metrics(
             "end_date": end_dt
         }
         
-        # Otimização: contando inconsistências direto via SQL para não sobrecarregar a memória
-        async def get_count(q, p=params):
-            raw_text = q.text.strip().rstrip(';')
-            count_query = text(f"SELECT COUNT(1) AS total FROM ({raw_text}) AS subquery")
-            res = await db.execute(count_query, p)
-            return res.scalar() or 0
+        # Otimização: Paralelizando 11 chamadas utilizando conexões via polling para baixar o tempo de 6s para 1~2s.
+        async def fetch_data(q, p, is_count=False):
+            async with AsyncSessionLocal() as session:
+                if is_count:
+                    raw_text = q.text.strip().rstrip(';')
+                    count_query = text(f"SELECT COUNT(1) AS total FROM ({raw_text}) AS subquery")
+                    res = await session.execute(count_query, p)
+                    return res.scalar() or 0
+                else:
+                    res = await session.execute(q, p)
+                    return [dict(row) for row in res.mappings().all()]
 
-        # CORREÇÃO: SQLAlchemy AsyncSession NÃO suporta operações concorrentes na mesma sessão (asyncio.gather).
-        # Como as queries agora são agregadas e rápidas, executamos sequencialmente para evitar InvalidRequestError.
-        vk11_res = await db.execute(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str)
-        zaju_res = await db.execute(QUERY_ZAJU_TOTAL, params)
-        zver_res = await db.execute(QUERY_PAGAMENTOS_TOTAL, params)
-        top_clients_res = await db.execute(QUERY_TOP_CLIENTES, params)
-        
-        # Contagens de inconsistências
-        sellin_count = await get_count(QUERY_ERRO_SELLIN)
-        clientes_count = await get_count(QUERY_ERRO_CLIENTES)
-        produtos_count = await get_count(QUERY_ERRO_PRODUTOS)
-        cutoff_count = await get_count(QUERY_ERRO_CUTOFF)
-        usuarios_count = await get_count(QUERY_ERRO_USUARIOS)
-        pagamentos_count = await get_count(QUERY_ERRO_PAGAMENTOS_LIST)
-        vk11_count = await get_count(QUERY_ERRO_VK11_LIST, params_str)
+        results = await asyncio.gather(
+            fetch_data(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str),
+            fetch_data(QUERY_ZAJU_TOTAL, params),
+            fetch_data(QUERY_PAGAMENTOS_TOTAL, params),
+            fetch_data(QUERY_TOP_CLIENTES, params),
+            fetch_data(QUERY_ERRO_SELLIN, params, is_count=True),
+            fetch_data(QUERY_ERRO_CLIENTES, params, is_count=True),
+            fetch_data(QUERY_ERRO_PRODUTOS, params, is_count=True),
+            fetch_data(QUERY_ERRO_CUTOFF, params, is_count=True),
+            fetch_data(QUERY_ERRO_USUARIOS, params, is_count=True),
+            fetch_data(QUERY_ERRO_PAGAMENTOS_LIST, params, is_count=True),
+            fetch_data(QUERY_ERRO_VK11_LIST, params_str, is_count=True)
+        )
+
+        (vk11_res, zaju_res, zver_res, top_clients_res,
+         sellin_count, clientes_count, produtos_count, cutoff_count, 
+         usuarios_count, pagamentos_count, vk11_count) = results
         
         # Mapeando os resultados
-        vk11_totals = vk11_res.mappings().one_or_none() or {"success": 0, "pending": 0, "error": 0}
-        zaju_totals = zaju_res.mappings().one_or_none() or {"success": 0, "pending": 0, "error": 0, "pending_return": 0, "total": 0}
-        zver_totals_raw = zver_res.mappings().one_or_none() or {
+        vk11_totals = vk11_res[0] if vk11_res else {"success": 0, "pending": 0, "error": 0}
+        zaju_totals = zaju_res[0] if zaju_res else {"success": 0, "pending": 0, "error": 0, "pending_return": 0, "total": 0}
+        zver_totals_raw = zver_res[0] if zver_res else {
             "success": 0, "pending": 0, "pending_return": 0, "error": 0,
             "value_success": 0.0, "value_pending": 0.0, "value_pending_return": 0.0, "value_error": 0.0
         }
         
-        top_clients = [dict(r) for r in top_clients_res.mappings().all()]
+        top_clients = top_clients_res
         
         zver_totals = {
             "success": zver_totals_raw["success"],

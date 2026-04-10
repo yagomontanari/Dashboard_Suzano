@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.1] - 2026-04-10
+### Alterado
+- **Performance (Dashboard)**:
+  - Aumentado o pool de conexões com o `PostgreSQL` (`pool_size=20`, `max_overflow=20`) no `create_async_engine` para comportar pico de múltiplas aberturas de sessão.
+  - Otimização da rota `/dashboard`: Restauração e implementação definitiva da concorrência `asyncio.gather()` nas 11 queries SQL injetando `AsyncSessionLocal()` no escopo bloqueado. Com isso a tela carrega de ~6s para ~1.5s preservando a integridade das conexões.
+
+---
+
 ## [1.8.0] - 2026-04-09
 ### Adicionado
 - **Segurança**: Centralização de `SECRET_KEY` e configurações de `ALLOWED_ORIGINS` (CORS) em variáveis de ambiente.
