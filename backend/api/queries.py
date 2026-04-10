@@ -100,6 +100,29 @@ QUERY_DASHBOARD_COUNTS = text("""
         (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_PAGAMENTOS) as pa) as pagamentos,
         (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_VK11) as v) as vk11
 """)
+
+QUERY_LAST_SYNC = text("""
+    SELECT 
+        'Inbound' as direcao, 
+        tipo as categoria, 
+        MAX(dt_recebimento) as dta, 
+        MAX(lote)::text as lote 
+    FROM integracao_requisicao 
+    WHERE tipo IN ('PRE_CADASTRO_USUARIO', 'CLIENTE', 'PAGAMENTO_LIQUIDADO', 'CUTOFF', 'SELLIN', 'PRODUTO')
+    GROUP BY tipo
+
+    UNION ALL
+
+    SELECT 
+        'Outbound' as direcao, 
+        tipo as categoria, 
+        MAX(dta_requisicao) as dta, 
+        NULL as lote
+    FROM suzano_integracao_servico
+    WHERE tipo IN ('ORCAMENTO', 'PAGAMENTO', 'DADOS_PROVISOES', 'AJUSTE_PROVISAO')
+    GROUP BY tipo
+""")
+
 # Consultas Detalhadas (Originais)
 QUERY_ORCAMENTO_INTEGRACAO = text("""
     SELECT 

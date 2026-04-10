@@ -94,12 +94,13 @@ async def get_dashboard_metrics(
             fetch_data(QUERY_ERRO_CUTOFF, params, is_count=True),
             fetch_data(QUERY_ERRO_USUARIOS, params, is_count=True),
             fetch_data(QUERY_ERRO_PAGAMENTOS_LIST, params, is_count=True),
-            fetch_data(QUERY_ERRO_VK11_LIST, params_str, is_count=True)
+            fetch_data(QUERY_ERRO_VK11_LIST, params_str, is_count=True),
+            fetch_data(QUERY_LAST_SYNC, {})
         )
 
         (vk11_res, zaju_res, zver_res, top_clients_res,
          sellin_count, clientes_count, produtos_count, cutoff_count, 
-         usuarios_count, pagamentos_count, vk11_count) = results
+         usuarios_count, pagamentos_count, vk11_count, last_sync_res) = results
         
         # Mapeando os resultados
         vk11_totals = vk11_res[0] if vk11_res else {"success": 0, "pending": 0, "error": 0}
@@ -136,7 +137,38 @@ async def get_dashboard_metrics(
                 "usuarios": usuarios_count,
                 "pagamentos": pagamentos_count,
                 "vk11": vk11_count
-            }
+            },
+            "last_updates": [
+                {
+                    "categoria": {
+                        "PRE_CADASTRO_USUARIO": "Usuários",
+                        "CLIENTE": "Clientes",
+                        "PAGAMENTO_LIQUIDADO": "Retorno Pagto",
+                        "CUTOFF": "Cutoff",
+                        "SELLIN": "Sell-In",
+                        "PRODUTO": "Produtos",
+                        "ORCAMENTO": "VK11",
+                        "PAGAMENTO": "ZVER",
+                        "DADOS_PROVISOES": "Provisões",
+                        "AJUSTE_PROVISAO": "ZAJU"
+                    }.get(r["categoria"], r["categoria"]),
+                    "data": r["dta"].isoformat() if r["dta"] else None,
+                    "direcao": r["direcao"],
+                    "lote": r["lote"],
+                    "mensagem": {
+                        "PRE_CADASTRO_USUARIO": f"Sincronização de usuários processada{' (Lote ' + r['lote'] + ')' if r['lote'] else ''}.",
+                        "CLIENTE": f"Carga cadastral de clientes recebida{' (Lote ' + r['lote'] + ')' if r['lote'] else ''}.",
+                        "PAGAMENTO_LIQUIDADO": f"Retorno de liquidação SAP recebido{' (Lote ' + r['lote'] + ')' if r['lote'] else ''}.",
+                        "CUTOFF": f"Atualização de calendário cutoff{' (Lote ' + r['lote'] + ')' if r['lote'] else ''}.",
+                        "SELLIN": f"Notas fiscais de Sell-In integradas{' (Lote ' + r['lote'] + ')' if r['lote'] else ''}.",
+                        "PRODUTO": f"Dados mestre de produtos atualizados{' (Lote ' + r['lote'] + ')' if r['lote'] else ''}.",
+                        "ORCAMENTO": "Envio de orçamentos (VK11) para o SAP.",
+                        "PAGAMENTO": "Envio de remessa de pagamentos (ZVER) para o SAP.",
+                        "DADOS_PROVISOES": "Sincronização de base de provisões concluída.",
+                        "AJUSTE_PROVISAO": "Ajuste de provisão (ZAJU) enviado ao SAP."
+                    }.get(r["categoria"], "Sincronização de dados finalizada.")
+                } for r in last_sync_res
+            ]
         }
     except Exception as e:
         logger.error(f"Erro ao conectar ou ler do banco de dados no Dashboard: {e}")
