@@ -18,10 +18,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **Design de E-mail (UI/UX)**:
   - Largura do modal central dos avisos por e-mail unificada e expandida (de 550px para 700px), conferindo maior espaço e conforto na leitura.
 - **Modernização do Dashboard (UI/UX)**:
-  - Substituição do gráfico de barras estático (Recharts) por um novo sistema de `Health Cards` com barras de progresso horizontais customizadas.
-  - Otimização da escala visual: implementada lógica de preenchimento mínimo para garantir que falhas em baixa escala (ex: 1 erro) permaneçam visíveis e não sejam "esmagadas" pelo volume de sucessos.
-  - Reestruturação do Grid Layout: Equilíbrio de 50/50 na tela principal entre a Saúde das Integrações e Inconsistências de Cadastro.
-  - Inclusão de novos ícones de monitoria (`Activity`, `Target`) para melhor semântica visual.
+  - Implementação de gráficos de rosca (`Donut Charts`) para monitoramento de saúde de integração, substituindo o modelo anterior de barras.
+  - Visão detalhada por cartão: centralização do valor "TOTAL" e legenda lateral com contagem e percentual dinâmico para Sucesso, Pendente e Erro.
+  - Otimização do Grid Layout: Refinamento da proporção da tela principal para **60% Integrações** vs **40% Inconsistências de Cadastro** (Grid-10).
+  - Estilização premium com cantos arredondados (`rounded-2xl`) e sombras suaves para melhor profundidade visual.
 - **Exportação ZAJU (Reordenação de Colunas)**:
   - A query `QUERY_RELATORIO_ZAJU` sofreu refatoração total de renomeação de Headers e ordenação textual colunar obedecendo rigorosamente o output esperado pela área de auditoria / produto.
 - **Performance (Dashboard)**:

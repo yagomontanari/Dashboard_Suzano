@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDashboardData, getInconsistenciasData } from '../services/api';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { 
   Download, 
   RefreshCw, 
@@ -27,31 +28,76 @@ import { useMemo } from 'react';
 const IntegrationHealthCard = ({ title, success, pending, error }) => {
   const total = success + pending + error;
   
-  const StatBar = ({ label, value, colorClass }) => (
-    <div className="mb-3">
-      <div className="flex justify-between items-center mb-1">
-        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{label}</span>
-        <span className="text-sm font-black text-slate-700">{value}</span>
-      </div>
-      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-        <div 
-          className={`h-full rounded-full ${colorClass} transition-all duration-1000`} 
-          style={{ width: value > 0 ? Math.max((value / total) * 100, 2) + '%' : '0%' }}
-        ></div>
-      </div>
-    </div>
-  );
+  const data = [
+    { name: 'SUCCESS', value: success, color: '#3b82f6' },
+    { name: 'PENDING', value: pending, color: '#f59e0b' },
+    { name: 'ERROR', value: error, color: '#ef4444' }
+  ].filter(item => item.value > 0);
+
+  // Se tudo for zero, mostra um anel cinza
+  const displayData = data.length > 0 ? data : [{ name: 'EMPTY', value: 1, color: '#e2e8f0' }];
+  
+  const getPercentage = (val) => total > 0 ? ((val / total) * 100).toFixed(1) : "0";
 
   return (
-    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-slate-300 transition-colors">
-      <div className="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
-        <h3 className="font-bold text-slate-800 tracking-tight">{title}</h3>
-        <span className="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Total: {total}</span>
+    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-slate-300 transition-all group">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-bold text-slate-800 tracking-tight text-sm uppercase tracking-wide">{title}</h3>
       </div>
-      <div className="space-y-1">
-        <StatBar label="Sucesso" value={success} colorClass="bg-blue-500" />
-        <StatBar label="Pendente" value={pending} colorClass="bg-amber-500" />
-        <StatBar label="Com Erro" value={error} colorClass="bg-rose-500" />
+      
+      <div className="flex items-center gap-6">
+        {/* Donut Chart */}
+        <div className="w-32 h-32 relative flex-shrink-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={displayData}
+                cx="50%"
+                cy="50%"
+                innerRadius={38}
+                outerRadius={55}
+                paddingAngle={2}
+                dataKey="value"
+                stroke="none"
+              >
+                {displayData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+             <span className="text-[10px] font-black text-slate-400 uppercase leading-none">TOTAL</span>
+             <span className="text-xl font-black text-slate-800 leading-none mt-0.5">{total}</span>
+          </div>
+        </div>
+
+        {/* Custom Legend (Image Style) */}
+        <div className="flex-grow space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="w-3 h-3 rounded-sm bg-blue-500 mt-1"></div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black text-slate-400 leading-none">SUCCESS</span>
+              <span className="text-sm font-black text-slate-700">{success} <span className="text-slate-400 font-bold">({getPercentage(success)}%)</span></span>
+            </div>
+          </div>
+          
+          <div className="flex items-start gap-3">
+            <div className="w-3 h-3 rounded-sm bg-amber-500 mt-1"></div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black text-slate-400 leading-none">PENDING</span>
+              <span className="text-sm font-black text-slate-700">{pending} <span className="text-slate-400 font-bold">({getPercentage(pending)}%)</span></span>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+             <div className="w-3 h-3 rounded-sm bg-rose-500 mt-1"></div>
+             <div className="flex flex-col">
+               <span className="text-[10px] font-black text-slate-400 leading-none">ERROR</span>
+               <span className="text-sm font-black text-slate-700">{error} <span className="text-slate-400 font-bold">({getPercentage(error)}%)</span></span>
+             </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -380,25 +426,27 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Integrações Health Board */}
-              <div className="flex flex-col space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+              {/* Integrações Health Board (60%) */}
+              <div className="lg:col-span-6 flex flex-col space-y-4">
                 <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
                   <Activity size={20} className="text-blue-600" /> Saúde das Integrações
                 </h2>
-                <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                   <IntegrationHealthCard title="ZAJUS (Ajustes de Provisão)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} />
                   <IntegrationHealthCard title="PROVISÃO (VK11)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
-                  <IntegrationHealthCard title="ZVER (Pagamentos)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} />
+                  <div className="xl:col-span-2">
+                    <IntegrationHealthCard title="ZVER (Pagamentos)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} />
+                  </div>
                 </div>
               </div>
 
-              {/* Errors List */}
-              <div className="flex flex-col space-y-4">
+              {/* Errors List (40%) */}
+              <div className="lg:col-span-4 flex flex-col space-y-4">
                 <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
                    <Target size={20} className="text-rose-600" /> Inconsistências de Cadastro
                 </h2>
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex-grow">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex-grow">
                   <div className="space-y-4">
                     {Object.entries(data.errors).map(([key, value]) => {
                       const isZero = value === 0;
