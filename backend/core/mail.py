@@ -18,6 +18,9 @@ conf = ConnectionConfig(
     VALIDATE_CERTS=True
 )
 
+import os
+import tempfile
+
 class MailService:
     def __init__(self):
         self.fm = FastMail(conf)
@@ -58,19 +61,25 @@ class MailService:
         </p>
         """
         
-        # Attachments format for fastapi-mail with bytes
-        attachments = [{
-            "file": file_content,
-            "filename": filename,
-            "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        }]
+        # Para evitar erros de tipo no fastapi-mail, salvamos em um arquivo temporário
+        # e passamos o caminho para a biblioteca
+        temp_dir = tempfile.gettempdir()
+        temp_path = os.path.join(temp_dir, filename)
         
-        await self._send_html_email(
-            email_to, 
-            f"Relatório Disponível: {report_name}", 
-            self._get_base_template(content),
-            attachments=attachments
-        )
+        with open(temp_path, "wb") as f:
+            f.write(file_content)
+            
+        try:
+            await self._send_html_email(
+                email_to, 
+                f"Relatório Disponível: {report_name}", 
+                self._get_base_template(content),
+                attachments=[temp_path]
+            )
+        finally:
+            # Garante a limpeza do arquivo temporário após o envio
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
 
     def _get_base_template(self, content: str):
         frontend_url = settings.FRONTEND_URL.rstrip('/')
