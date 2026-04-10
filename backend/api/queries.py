@@ -461,10 +461,10 @@ QUERY_RELATORIO_ZAJU = text("""
         sapmc.vlr_percentual_original AS "% Original",
         sapmc.vlr_provisao_original AS "Provisão Original",
         s.verba_perc_bruto AS "% Verba Bruto",
-        s.contrato_perc_bruto AS "% Contrato Bruto",
-        s.contrato_perc_liq AS "% Contrato Líquido",
-        s.contrato_log_bruto AS "Contrato Log. Bruto",
-        s.contrato_log_liq AS "Contrato Log. Líquido",
+        s.contrato_perc_bruto AS "Contrato COM % Bruto",
+        s.contrato_perc_liq AS "Contrato COM % Liquido",
+        s.contrato_log_bruto AS "Contrato LOG % Bruto",
+        s.contrato_log_liq AS "Contrato LOG % Líquido",
         s.contrato_cre_perc_bruto AS "Contrato CRE % Bruto",
         s.contrato_cre_perc_liq AS "Contrato CRE % Líquido",
         sapmc.vlr_percentual AS "% Atual",
@@ -474,16 +474,17 @@ QUERY_RELATORIO_ZAJU = text("""
         sapmc.purch_no_c AS "Purch. No C",
         sapmc.doc_type AS "Tipo Doc",
         sapmc.sequencial AS "Sequencial",
-        sapmc.material AS "Material",
-        p.nom_produto AS "Nome Produto",
+        sapmc.material AS "Cod. Material",
+        p.nom_produto AS "Material",
         sapmc.target_qty AS "Unidade Medida",
         sapmc.cond_type AS "Cond. Type",
         sapmc.currency AS "Moeda",
         sapmc.status AS "Status",
-        sapmc.numov AS "Numov Integração",
         sapmc.numfat AS "Numfat Integração",
+        sapmc.numov AS "Numov Integração",
         sapmc.dta_integracao AS "Data Integração",
-        sapmc.msg AS "Mensagem Retorno"
+        sapmc.msg AS "Mensagem Retorno",
+        o.id_tipo_verba AS "id_tipo_verba"
     FROM suzano_ajuste_provisao_memoria_calculo sapmc
     LEFT JOIN orcamento o ON o.id = sapmc.id_orcamento
     LEFT JOIN sellin s ON sapmc.id_sellin = s.id 

@@ -263,9 +263,38 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
                 return
 
             df = pd.DataFrame(rows)
+            
+            # Separar Contrato vs Promo & Ações
+            if not df.empty and 'id_tipo_verba' in df.columns:
+                df_contrato = df[df['id_tipo_verba'].isin([9, 10])].drop(columns=['id_tipo_verba'])
+                df_promo = df[df['id_tipo_verba'].isin([5, 6])].drop(columns=['id_tipo_verba'])
+            else:
+                df_contrato = pd.DataFrame()
+                df_promo = pd.DataFrame()
+
             output = io.BytesIO()
+            from openpyxl.styles import PatternFill, Font
+            
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                df.to_excel(writer, index=False, sheet_name='Relatório ZAJU')
+                if not df_contrato.empty:
+                    df_contrato.to_excel(writer, index=False, sheet_name='Verbas de Contrato')
+                else:
+                    pd.DataFrame(columns=df.columns.drop('id_tipo_verba') if 'id_tipo_verba' in df.columns else df.columns).to_excel(writer, index=False, sheet_name='Verbas de Contrato')
+                    
+                if not df_promo.empty:
+                    df_promo.to_excel(writer, index=False, sheet_name='Promo & Ações')
+                else:
+                    pd.DataFrame(columns=df.columns.drop('id_tipo_verba') if 'id_tipo_verba' in df.columns else df.columns).to_excel(writer, index=False, sheet_name='Promo & Ações')
+                
+                # Identidade Visual no Cabeçalho (Azul Marinho)
+                header_fill = PatternFill(start_color="0F2744", end_color="0F2744", fill_type="solid")
+                header_font = Font(color="FFFFFF", bold=True)
+                
+                for sheet_name in writer.sheets:
+                    worksheet = writer.sheets[sheet_name]
+                    for cell in worksheet[1]:
+                        cell.fill = header_fill
+                        cell.font = header_font
             
             filename = f"relatorio_zaju_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
             await mail_service.send_report_email(
