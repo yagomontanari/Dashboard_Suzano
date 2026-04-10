@@ -59,6 +59,17 @@ export default function UserManagement() {
     }
   };
 
+  const handleReject = async (userId, userName) => {
+    if (window.confirm(`Deseja reprovar a solicitação de ${userName}?`)) {
+      try {
+        await rejectUser(userId);
+        fetchUsers();
+      } catch (err) {
+        alert('Falha ao reprovar usuário.');
+      }
+    }
+  };
+
   const handleResetPassword = async (userId, userName) => {
     if (window.confirm(`Deseja resetar a senha de ${userName}? Uma nova senha temporária será gerada.`)) {
       try {
@@ -201,7 +212,7 @@ export default function UserManagement() {
                         <button onClick={() => handleApprove(user.id, user.nome)} className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Aprovar">
                           <UserCheck className="h-5 w-5" />
                         </button>
-                        <button onClick={() => alert('Use o Reset se desejar reprovar e manter.')} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Recusar">
+                        <button onClick={() => handleReject(user.id, user.nome)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Recusar">
                           <UserX className="h-5 w-5" />
                         </button>
                       </>

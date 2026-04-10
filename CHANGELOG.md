@@ -28,6 +28,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - Interface refinada com selos direcionais aumentados (`↑ TL -> SAP` / `↓ SAP -> TL`), inclusão de data completa (`DD/MM`) e iconografia especializada para cada processo (Logística, Financeiro, Cadastro).
   - Melhoria de **Acessibilidade e UX**: Inclusão de tooltips (balões informativos) nos itens do menu lateral quando recolhido.
   - Implementação de **Notificador de Gestão**: Badge dinâmica (círculo vermelho pulsante) no menu lateral para alertar sobre solicitações de acesso pendentes (exclusivo para administradores).
+  - Corrigido: Ativada a funcionalidade do botão de **Reprovar Solicitação** na Gestão de Usuários (anteriormente exibia um alerta estático).
   - Estilização premium com cantos arredondados (`rounded-2xl`) e sombras suaves para melhor profundidade visual.
 - **Exportação ZAJU (Reordenação de Colunas)**:
   - A query `QUERY_RELATORIO_ZAJU` sofreu refatoração total de renomeação de Headers e ordenação textual colunar obedecendo rigorosamente o output esperado pela área de auditoria / produto.
