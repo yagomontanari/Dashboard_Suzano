@@ -467,6 +467,48 @@ QUERY_ERRO_VK11_LIST = text("""
 
 QUERY_ERRO_VK11_LIST_PAGINATED = text(QUERY_ERRO_VK11_LIST.text + PAGINATION_SORT_SUFFIX)
 
+QUERY_ERRO_ZAJU_LIST = text("""
+    SELECT DISTINCT
+        o.id,
+        o.descricao as orcamento,
+        oli.descricao as LINHA_INVESTIMENTO,
+        oti.nome as TIPO_LINHA_INVESTIMENTO,
+        c.id_externo as COD_CLIENTE,
+        c.nom_cliente as NOME_CLIENTE,
+        s.nro_nota_fiscal as NRO_NOTA_FISCAL,
+        s.vkorg,
+        s.nro_documento as NRO_DOCUMENTO,
+        s.valor_total as VALOR_BRUTO,
+        s.valor_liquido as VALOR_LIQUIDO,
+        sapmc.cond_value as valor_provisao,
+        sapmc.dta_criacao as dta_criacao,
+        sapmc.purch_no_c,
+        sapmc.doc_type as tipo_doc,
+        sapmc.sequencial,
+        sapmc.material,
+        p.nom_produto as nome_produto,
+        sapmc.target_qty as unidade_medida,
+        sapmc.cond_type,
+        sapmc.status,
+        sapmc.numov as numov_integracao,
+        sapmc.numfat as numfat_integracao,
+        sapmc.dta_integracao as data_integracao,
+        sapmc.msg as mensagem_retorno_integracao,
+        sapmc.dta_alteracao
+    FROM suzano_ajuste_provisao_memoria_calculo sapmc
+    INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
+    INNER JOIN sellin s ON sapmc.id_sellin = s.id 
+    INNER JOIN orcamento_linha_investimento oli ON sapmc.id_linha_investimento = oli.id 
+    LEFT JOIN orcamento_tipo_investimento oti ON oti.id = oli.id_tipo_investimento
+    LEFT JOIN produto p ON sapmc.material = p.id_externo
+    LEFT JOIN cliente c ON c.id = s.id_cliente
+    WHERE sapmc.dta_criacao >= :start_date AND sapmc.dta_criacao < :end_date 
+      AND sapmc.cond_value != 0 
+      AND sapmc.status = 'ERRO'
+""")
+
+QUERY_ERRO_ZAJU_LIST_PAGINATED = text(QUERY_ERRO_ZAJU_LIST.text + PAGINATION_SORT_SUFFIX)
+
 # ================================
 # RELATÓRIOS (Exportação)
 # ================================

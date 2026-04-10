@@ -378,7 +378,16 @@ export default function Dashboard() {
       ];
       case 'pagamentos': return [{key: 'cod_pagamento', label: 'Cod. Pagamento'}, {key: 'cliente', label: 'Cliente'}, {key: 'sequencial', label: 'Sequencial'}, {key: 'purch_no_c', label: 'Identificador'}, {key: 'dta_criacao', label: 'Data Registro'}, {key: 'dta_envio_integracao', label: 'Data Integração'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
       case 'vk11': return [{key: 'id_orcamento', label: 'ID Orçamento'}, {key: 'descricao', label: 'Descrição'}, {key: 'tipo_integracao', label: 'Tipo'}, {key: 'valid_from', label: 'Válido De'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
-      case 'zaju': return [{key: 'purch_no_c', label: 'ID Zaju'}, {key: 'cond_value', label: 'Valor'}, {key: 'dta_alteracao', label: 'Data'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
+      case 'zaju': return [
+        {key: 'purch_no_c', label: 'ID Ajuste'}, 
+        {key: 'orcamento', label: 'Orçamento'}, 
+        {key: 'LINHA_INVESTIMENTO', label: 'Linha Invest.'}, 
+        {key: 'COD_CLIENTE', label: 'Cód. Cliente'}, 
+        {key: 'NOME_CLIENTE', label: 'Cliente'}, 
+        {key: 'NRO_NOTA_FISCAL', label: 'Nota Fiscal'}, 
+        {key: 'valor_provisao', label: 'Vlr. Provisão'}, 
+        {key: 'mensagem_retorno_integracao', label: 'Erros'}
+      ];
       default: return [{key: 'id', label: 'ID'}];
     }
   };
@@ -588,14 +597,13 @@ export default function Dashboard() {
                       {['pagamentos', 'vk11', 'zaju'].map((key) => {
                         const value = data.errors[key] || 0;
                         const isZero = value === 0;
-                        const isLocked = key === 'zaju'; // Zaju locked until query is ready
                         
                         return (
                           <button 
                             key={key} 
-                            onClick={() => !isLocked && handleOpenModal(key)}
-                            disabled={isZero || isLocked}
-                            className={`w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group ${isLocked ? 'cursor-not-allowed' : ''}`}
+                            onClick={() => handleOpenModal(key)}
+                            disabled={isZero}
+                            className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
                           >
                             <span className="font-bold text-slate-700 uppercase text-xs tracking-wider group-hover:text-blue-600 transition-colors">
                               {key === 'pagamentos' ? 'Pagamentos (ZVER)' : key === 'vk11' ? 'Provisão (VK11)' : 'Ajustes (ZAJU)'}
