@@ -25,7 +25,7 @@ class MailService:
     def __init__(self):
         self.fm = FastMail(conf)
 
-    async def _send_html_email(self, email_to: str, subject: str, body: str, attachments: list = None):
+    async def _send_html_email(self, email_to: str, subject: str, body: str, attachments: list = []):
         message = MessageSchema(
             subject=subject,
             recipients=[email_to],
