@@ -494,6 +494,5 @@ QUERY_RELATORIO_ZAJU = text("""
     WHERE sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao <= :end_date
       AND sapmc.cond_value != 0
       AND sapmc.status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
-    ORDER BY sapmc.dta_criacao DESC
-    LIMIT 100;
+    ORDER BY sapmc.dta_criacao DESC;
 """)
