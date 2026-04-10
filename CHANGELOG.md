@@ -20,8 +20,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **Aba Provisão (VK11)**:
   - Implementação completa da nova aba do dashboard dedicada aos orçamentos.
   - Visão reestruturada: agrupamento de dados eliminando redundâncias de tipo de integração, focando estritamente em orçamentos do mês corrente (verificado rigorosamente através do período real de vigência nas colunas `valid_from` e `valid_to`).
-  - Cards de resumo estilizados (Integrados, Pendentes, Erros) e área de destaque com totais processados seguindo a identidade visual premium.
-  - Tabela de detalhamento técnico consolidada por orçamento, incluindo ID Orçamento, Descrição e métricas agregadas de sincronização.
+  - Reformulação de **UX e Legibilidade Visual**:
+    - Substituição do "banner escuro" redundante por um grid polido com 4 *KPI Cards* responsivos: *Volume Total, Sucesso, Aguardando Integração* e *Falha de Integração*, incluindo iconografia Lucide e animações *hover*.
+    - Humanização dos cabeçalhos da tabela técnica (ex: `pendente_integracao` -> `Pendentes`) para linguagem executiva de negócios.
+    - Aplicação de máscara de cores inteligente na tabela de detalhamento: a ausência de gargalos (valores zerados) em pendências ou erros passou a receber uma fonte cinza neutra, limpando ruído visual e ajudando alertas coloridos a saltarem aos olhos de imediato.
 - **Modernização do Dashboard (UI/UX)**:
   - Implementação de gráficos de rosca (`Donut Charts`) para monitoramento de saúde de integração, com aumento de escala (raio maior) para melhor visualização.
   - Visão detalhada por cartão: centralização do valor "TOTAL" e legenda lateral com contagem e percentual dinâmico.

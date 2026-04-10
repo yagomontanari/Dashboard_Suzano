@@ -756,42 +756,38 @@ export default function Dashboard() {
 
         {activeTab === 'vk11' && (
           <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Cards estilo ZAJU */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integrados</p>
-                <h3 className="text-3xl font-bold text-blue-600 text-center">{data.vk11.success}</h3>
+            {/* KPI Cards Polidos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div className="flex justify-between items-start mb-2">
+                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Volume Total</p>
+                  <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Calculator size={18} /></div>
+                </div>
+                <h3 className="text-3xl font-black text-slate-800">{data.vk11.success + data.vk11.pending + data.vk11.error}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integração Pendente</p>
-                <h3 className="text-3xl font-bold text-amber-600 text-center">{data.vk11.pending}</h3>
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div className="flex justify-between items-start mb-2">
+                  <p className="text-[11px] font-black text-blue-400 uppercase tracking-widest">Sucesso</p>
+                  <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><CheckCircle2 size={18} /></div>
+                </div>
+                <h3 className="text-3xl font-black text-blue-600">{data.vk11.success}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Erros</p>
-                <h3 className="text-3xl font-bold text-rose-600 text-center">{data.vk11.error}</h3>
-              </div>
-            </div>
-
-            {/* Total Highlight estilo ZAJU */}
-            <div className="bg-slate-900 p-10 rounded-xl shadow-[8px_8px_0px_#94a3b8] border border-slate-800 flex flex-col md:flex-row items-center justify-around gap-8">
-              <div className="text-center">
-                <p className="text-blue-400 font-black text-xs uppercase tracking-[0.2em] mb-2">Processamento de Orçamentos</p>
-                <h2 className="text-6xl font-black text-white tracking-tighter">
-                  {data.vk11.success}
-                </h2>
-                <p className="text-slate-400 font-bold text-sm mt-2">Integrados com Sucesso</p>
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div className="flex justify-between items-start mb-2">
+                  <p className="text-[11px] font-black text-amber-400 uppercase tracking-widest">Aguardando Integração</p>
+                  <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={18} /></div>
+                </div>
+                <h3 className="text-3xl font-black text-amber-500">{data.vk11.pending}</h3>
               </div>
 
-              <div className="h-20 w-px bg-slate-800 hidden md:block"></div>
-
-              <div className="text-center">
-                <p className="text-rose-500 font-black text-xs uppercase tracking-[0.2em] mb-2">Volume Total de Registros</p>
-                <h2 className="text-6xl font-black text-white tracking-tighter">
-                  {data.vk11.success + data.vk11.pending + data.vk11.error}
-                </h2>
-                <p className="text-slate-400 font-bold text-sm mt-2">Total na Base de Dados</p>
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div className="flex justify-between items-start mb-2">
+                  <p className="text-[11px] font-black text-rose-400 uppercase tracking-widest">Falha de Integração</p>
+                  <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={18} /></div>
+                </div>
+                <h3 className="text-3xl font-black text-rose-600">{data.vk11.error}</h3>
               </div>
             </div>
 
@@ -806,28 +802,28 @@ export default function Dashboard() {
                  <table className="w-full text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200">
                       <tr>
-                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter">id_orcamento</th>
-                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter">descricao</th>
-                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">integrado</th>
-                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">pendente_integracao</th>
-                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">erro</th>
+                        <th className="px-5 py-3 font-black text-slate-400 uppercase tracking-wider">Cód. Orçamento</th>
+                        <th className="px-5 py-3 font-black text-slate-400 uppercase tracking-wider">Orçamento</th>
+                        <th className="px-5 py-3 font-black text-slate-400 uppercase tracking-wider text-center">Sucesso</th>
+                        <th className="px-5 py-3 font-black text-slate-400 uppercase tracking-wider text-center">Pendentes</th>
+                        <th className="px-5 py-3 font-black text-slate-400 uppercase tracking-wider text-center">Erros</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {vk11Loading ? (
-                        <tr><td colSpan="7" className="p-8 text-center text-slate-400">Carregando dados...</td></tr>
+                        <tr><td colSpan="5" className="p-8 text-center text-slate-400">Carregando dados...</td></tr>
                       ) : vk11Details.length > 0 ? (
                         vk11Details.map((row, idx) => (
                           <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                            <td className="px-4 py-3 font-bold text-slate-700">{row.id_orcamento}</td>
-                            <td className="px-4 py-3 text-slate-600 font-medium">{row.descricao}</td>
-                            <td className="px-4 py-3 text-center font-black text-blue-600">{row.integrado}</td>
-                            <td className="px-4 py-3 text-center font-black text-amber-500">{row.pendente_integracao}</td>
-                            <td className="px-4 py-3 text-center font-black text-rose-500">{row.erro}</td>
+                            <td className="px-5 py-3 font-bold text-slate-700">{row.id_orcamento}</td>
+                            <td className="px-5 py-3 text-slate-600 font-medium">{row.descricao}</td>
+                            <td className="px-5 py-3 text-center font-black text-blue-600">{row.integrado}</td>
+                            <td className={`px-5 py-3 text-center font-black ${row.pendente_integracao > 0 ? 'text-amber-500' : 'text-slate-300'}`}>{row.pendente_integracao}</td>
+                            <td className={`px-5 py-3 text-center font-black ${row.erro > 0 ? 'text-rose-500' : 'text-slate-300'}`}>{row.erro}</td>
                           </tr>
                         ))
                       ) : (
-                        <tr><td colSpan="7" className="p-8 text-center text-slate-400 italic">Nenhum detalhamento encontrado para o período.</td></tr>
+                        <tr><td colSpan="5" className="p-8 text-center text-slate-400 italic">Nenhum detalhamento encontrado para o período.</td></tr>
                       )}
                     </tbody>
                  </table>
