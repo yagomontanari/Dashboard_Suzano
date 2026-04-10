@@ -11,12 +11,14 @@ QUERY_ORCAMENTO_INTEGRACAO_TOTAL = text("""
         COALESCE(SUM(erro), 0) as error
     FROM (
         SELECT 
-            count(1) FILTER (WHERE status = 'INTEGRADO') AS integrado,
-            count(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
-            count(1) FILTER (WHERE status = 'ERRO') AS erro
-        FROM suzano_orcamento_integracao
-        WHERE valid_from >= :start_date AND valid_from < :end_date
-        GROUP BY id_orcamento, tipo_integracao
+            count(1) FILTER (WHERE soi.status = 'INTEGRADO') AS integrado,
+            count(1) FILTER (WHERE soi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+            count(1) FILTER (WHERE soi.status = 'ERRO') AS erro
+        FROM suzano_orcamento_integracao soi
+        INNER JOIN orcamento o ON o.id = soi.id_orcamento
+        WHERE TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') >= soi.valid_from 
+          AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') <= soi.valid_to
+        GROUP BY soi.id_orcamento
     ) as sub;
 """)
 
@@ -128,15 +130,14 @@ QUERY_ORCAMENTO_INTEGRACAO = text("""
     SELECT 
         soi.id_orcamento,
         o.descricao,
-        soi.tipo_integracao,
-        soi.id_ajuste_verba,
         count(1) FILTER (WHERE soi.status = 'INTEGRADO') AS integrado,
         count(1) FILTER (WHERE soi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
         count(1) FILTER (WHERE soi.status = 'ERRO') AS erro
     FROM suzano_orcamento_integracao soi
     INNER JOIN orcamento o ON o.id = soi.id_orcamento
-    WHERE soi.valid_from >= :start_date AND soi.valid_from < :end_date
-    GROUP BY soi.id_orcamento, o.descricao, soi.tipo_integracao, soi.id_ajuste_verba
+    WHERE TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') >= soi.valid_from 
+      AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') <= soi.valid_to
+    GROUP BY soi.id_orcamento, o.descricao
     ORDER BY soi.id_orcamento DESC;
 """)
 
@@ -458,7 +459,8 @@ QUERY_ERRO_VK11_LIST = text("""
     FROM suzano_orcamento_integracao soi
     INNER JOIN orcamento o ON o.id = soi.id_orcamento
     WHERE soi.status = 'ERRO'
-      AND soi.valid_from >= :start_date AND soi.valid_from < :end_date
+      AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') >= soi.valid_from 
+      AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') <= soi.valid_to
 """)
 
 

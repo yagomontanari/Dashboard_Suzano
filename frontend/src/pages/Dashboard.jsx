@@ -808,8 +808,6 @@ export default function Dashboard() {
                       <tr>
                         <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter">id_orcamento</th>
                         <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter">descricao</th>
-                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">tipo_integracao</th>
-                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">id_ajuste_verba</th>
                         <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">integrado</th>
                         <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">pendente_integracao</th>
                         <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">erro</th>
@@ -823,8 +821,6 @@ export default function Dashboard() {
                           <tr key={idx} className="hover:bg-slate-50 transition-colors">
                             <td className="px-4 py-3 font-bold text-slate-700">{row.id_orcamento}</td>
                             <td className="px-4 py-3 text-slate-600 font-medium">{row.descricao}</td>
-                            <td className="px-4 py-3 text-center text-[10px] font-bold text-slate-400">{row.tipo_integracao}</td>
-                            <td className="px-4 py-3 text-center text-slate-600">{row.id_ajuste_verba || '-'}</td>
                             <td className="px-4 py-3 text-center font-black text-blue-600">{row.integrado}</td>
                             <td className="px-4 py-3 text-center font-black text-amber-500">{row.pendente_integracao}</td>
                             <td className="px-4 py-3 text-center font-black text-rose-500">{row.erro}</td>
