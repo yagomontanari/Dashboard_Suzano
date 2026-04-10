@@ -7,7 +7,11 @@ class Settings(BaseSettings):
     
     # Segurança
     SECRET_KEY: str = "suzanodashboardsecretkey" # DEVE ser alterado via env em prod
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173", "https://dashboard-suzano.vercel.app"]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:5173", 
+        "http://localhost:3001",
+        "https://dashboard-suzano.vercel.app"
+    ]
     
     # Manter retrocompatibilidade se necessário
     DATABASE_URL: str | None = None
