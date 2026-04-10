@@ -35,8 +35,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - Interface refinada com selos direcionais aumentados (`↑ TL -> SAP` / `↓ SAP -> TL`), inclusão de data completa (`DD/MM`) e iconografia especializada para cada processo (Logística, Financeiro, Cadastro).
     - **Ordenação Reversa (Chronological Sort)**: O painel passou a ordenar globalmente todos os itens (SQL `ORDER BY dta DESC`), exibindo rigorosamente primeiro a última integração recebida ou enviada.
   - **Aba Geral (Overview)**:
-    - Ajuste de nomenclatura nos cards de topo para linguagem executiva: `Registros Integrados` -> `Integrados com sucesso` e `Pendentes Gerais` -> `Integrações Pendentes`.
-    - Padronização das legendas nos **Gráficos de Saúde**: os status foram renomeados para maior clareza, com `Pendente` passando a ser `Integrações Pendentes` e `Erro` agora detalhado como `Erros de Integração`.
+    - Otimização do Grid Layout: Refinamento da proporção da tela principal e ajuste de espaçamento (`gap-6`) para melhor respiro visual entre componentes.
+    - Up-scale dos **Gráficos de Saúde**: aumento da área dos donuts (`w-48`) e ajuste de raios (`60/80`) para facilitar a leitura dos indicadores.
+    - Ajuste de nomenclatura nos cards de topo para linguagem executiva: `Integrados com sucesso` e `Integrações Pendentes`.
+    - Refinamento das legendas nos gráficos: retorno do termo simplificado `Pendentes` (anteriormente `Integrações Pendentes`) para otimização de espaço e legibilidade nos componentes de rosca.
     - O card de **Integrados com sucesso** foi migrado para o tema escuro (`slate-900`) com o valor numérico em verde esmeralda.
     - Expansão dos indicadores de saúde: Inclusão do status **Aguardando Retorno SAP** nos gráficos de *Ajustes de Provisão (ZAJU)* e *Pagamentos (ZVER)*.
     - Padronização da nomenclatura acadêmica nos headers de saúde para linguagem corporativa: `Ajustes de Provisão (ZAJU)`, `Provisão (VK11)` e `Pagamentos (ZVER)`.

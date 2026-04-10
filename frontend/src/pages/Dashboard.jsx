@@ -65,15 +65,15 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
       
       <div className="flex flex-col items-center gap-6">
         {/* Donut Chart */}
-        <div className="w-44 h-44 relative flex-shrink-0">
+        <div className="w-48 h-48 relative flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={displayData}
                 cx="50%"
                 cy="50%"
-                innerRadius={55}
-                outerRadius={75}
+                innerRadius={60}
+                outerRadius={80}
                 paddingAngle={3}
                 dataKey="value"
                 stroke="none"
@@ -103,7 +103,7 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
           <div className="flex items-center justify-between border-b border-slate-50 pb-2">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 rounded-sm bg-amber-500"></div>
-              <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Integrações Pendentes</span>
+               <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Pendentes</span>
             </div>
             <span className="text-sm font-black text-slate-700">{pending} <span className="text-slate-400 font-bold">({getPercentage(pending)}%)</span></span>
           </div>
@@ -565,7 +565,7 @@ export default function Dashboard() {
                 <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
                   <Activity size={20} className="text-blue-600" /> Saúde das Integrações
                 </h2>
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                   <IntegrationHealthCard title="Ajustes de Provisão (ZAJU)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} pendingReturn={data.zaju.pending_return} />
                   <IntegrationHealthCard title="Provisão (VK11)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
                   <IntegrationHealthCard title="Pagamentos (ZVER)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} pendingReturn={data.zver.pending_return} />
