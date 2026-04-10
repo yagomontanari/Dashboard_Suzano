@@ -42,13 +42,14 @@ import DashboardSkeleton from '../components/DashboardSkeleton';
 import * as XLSX from 'xlsx';
 import { useMemo } from 'react';
 
-const IntegrationHealthCard = ({ title, success, pending, error }) => {
-  const total = success + pending + error;
+const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn = null }) => {
+  const total = success + pending + error + (pendingReturn || 0);
   
   const data = [
-    { name: 'Sucesso', value: success, color: '#3b82f6' },
+    { name: 'Sucesso', value: success, color: '#10b981' },
     { name: 'Pendente', value: pending, color: '#f59e0b' },
-    { name: 'Erro', value: error, color: '#ef4444' }
+    { name: 'Erro', value: error, color: '#ef4444' },
+    ...(pendingReturn !== null ? [{ name: 'Pendente Retorno', value: pendingReturn, color: '#4f46e5' }] : [])
   ].filter(item => item.value > 0);
 
   // Se tudo for zero, mostra um anel cinza
@@ -93,7 +94,7 @@ const IntegrationHealthCard = ({ title, success, pending, error }) => {
         <div className="w-full space-y-3 pt-2">
           <div className="flex items-center justify-between border-b border-slate-50 pb-2">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
+              <div className="w-3 h-3 rounded-sm bg-emerald-500"></div>
               <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Sucesso</span>
             </div>
             <span className="text-sm font-black text-slate-700">{success} <span className="text-slate-400 font-bold">({getPercentage(success)}%)</span></span>
@@ -107,13 +108,23 @@ const IntegrationHealthCard = ({ title, success, pending, error }) => {
             <span className="text-sm font-black text-slate-700">{pending} <span className="text-slate-400 font-bold">({getPercentage(pending)}%)</span></span>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between border-b border-slate-50 pb-2">
              <div className="flex items-center gap-3">
                <div className="w-3 h-3 rounded-sm bg-rose-500"></div>
                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Erro</span>
              </div>
              <span className="text-sm font-black text-slate-700">{error} <span className="text-slate-400 font-bold">({getPercentage(error)}%)</span></span>
           </div>
+
+          {pendingReturn !== null && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-sm bg-indigo-600"></div>
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Aguardando Retorno</span>
+              </div>
+              <span className="text-sm font-black text-slate-700">{pendingReturn} <span className="text-slate-400 font-bold">({getPercentage(pendingReturn)}%)</span></span>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -501,15 +512,15 @@ export default function Dashboard() {
           <>
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+              <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm shadow-slate-900/20 hover:shadow-md hover:shadow-slate-900/40 transition-all text-white">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-slate-500 mb-1">Registros Integrados</p>
-                    <h3 className="text-3xl font-bold text-slate-800">
+                    <p className="text-sm font-medium text-slate-400 mb-1">Registros Integrados</p>
+                    <h3 className="text-3xl font-bold text-emerald-500">
                         {data.vk11.success + data.zaju.success + data.zver.success}
                     </h3>
                   </div>
-                  <div className="p-3 bg-blue-50 text-blue-600 rounded-lg"><CheckCircle2 size={24} /></div>
+                  <div className="p-3 bg-slate-800 text-emerald-500 rounded-lg"><CheckCircle2 size={24} /></div>
                 </div>
               </div>
               
@@ -555,9 +566,9 @@ export default function Dashboard() {
                   <Activity size={20} className="text-blue-600" /> Saúde das Integrações
                 </h2>
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-                  <IntegrationHealthCard title="ZAJUS (Ajustes)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} />
-                  <IntegrationHealthCard title="PROVISÃO (VK11)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
-                  <IntegrationHealthCard title="ZVER (Pagamentos)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} />
+                  <IntegrationHealthCard title="Ajustes de Provisão (ZAJU)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} pendingReturn={data.zaju.pending_return} />
+                  <IntegrationHealthCard title="Provisão (VK11)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
+                  <IntegrationHealthCard title="Pagamentos (ZVER)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} pendingReturn={data.zver.pending_return} />
                 </div>
 
                 {/* Integration Log */}
@@ -758,7 +769,7 @@ export default function Dashboard() {
           <div className="space-y-8 animate-in fade-in duration-500">
             {/* KPI Cards Polidos */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm shadow-slate-900/20 hover:shadow-md hover:shadow-slate-900/40 hover:-translate-y-0.5 transition-all text-white">
+              <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm shadow-slate-900/20 hover:shadow-md hover:shadow-slate-900/40 transition-all text-white">
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Volume Total</p>
                   <div className="p-2 bg-slate-800 text-slate-300 rounded-lg"><Calculator size={18} /></div>
@@ -766,7 +777,7 @@ export default function Dashboard() {
                 <h3 className="text-3xl font-black text-white">{data.vk11.success + data.vk11.pending + data.vk11.error}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Sucesso</p>
                   <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={18} /></div>
@@ -774,7 +785,7 @@ export default function Dashboard() {
                 <h3 className="text-3xl font-black text-emerald-600">{data.vk11.success}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Aguardando Integração</p>
                   <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={18} /></div>
@@ -782,7 +793,7 @@ export default function Dashboard() {
                 <h3 className="text-3xl font-black text-amber-500">{data.vk11.pending}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Falha de Integração</p>
                   <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={18} /></div>
