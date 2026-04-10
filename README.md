@@ -35,8 +35,6 @@ docker compose up --build -d
 Após o deploy feito pelo comando acima, os serviços estarão disponíveis nas portas a seguir:
 
 - **Frontend (Painel)**: [http://localhost:3001](http://localhost:3001)
-  - **Usuário:** `admin`
-  - **Senha:** `admin123`
 - **Backend (API)**: [http://localhost:8001](http://localhost:8001)
 - **Dozzle (Logs Web)**: [http://localhost:8889](http://localhost:8889)
 
