@@ -35,9 +35,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - Interface refinada com selos direcionais aumentados (`↑ TL -> SAP` / `↓ SAP -> TL`), inclusão de data completa (`DD/MM`) e iconografia especializada para cada processo (Logística, Financeiro, Cadastro).
     - **Ordenação Reversa (Chronological Sort)**: O painel passou a ordenar globalmente todos os itens (SQL `ORDER BY dta DESC`), exibindo rigorosamente primeiro a última integração recebida ou enviada.
   - **Aba Geral (Overview)**:
-    - O card de **Registros Integrados** foi migrado para o tema escuro (`slate-900`) com o valor numérico em verde esmeralda, criando paridade com a nova identidade visual da aba VK11.
-    - Atualização da paleta cromática nos **Gráficos de Saúde**: a cor azul de sucesso foi substituída pelo verde esmeralda (#10b981) em todos os componentes de rosca e legendas.
-    - Expansão dos indicadores de saúde: Inclusão do status **Aguardando Retorno SAP** nos gráficos de *Ajustes de Provisão (ZAJU)* e *Pagamentos (ZVER)*, utilizando a cor índigo (#4f46e5) para manter paridade com as abas de detalhamento.
+    - Ajuste de nomenclatura nos cards de topo para linguagem executiva: `Registros Integrados` -> `Integrados com sucesso` e `Pendentes Gerais` -> `Integrações Pendentes`.
+    - Padronização das legendas nos **Gráficos de Saúde**: os status foram renomeados para maior clareza, com `Pendente` passando a ser `Integrações Pendentes` e `Erro` agora detalhado como `Erros de Integração`.
+    - O card de **Integrados com sucesso** foi migrado para o tema escuro (`slate-900`) com o valor numérico em verde esmeralda.
+    - Expansão dos indicadores de saúde: Inclusão do status **Aguardando Retorno SAP** nos gráficos de *Ajustes de Provisão (ZAJU)* e *Pagamentos (ZVER)*.
     - Padronização da nomenclatura acadêmica nos headers de saúde para linguagem corporativa: `Ajustes de Provisão (ZAJU)`, `Provisão (VK11)` e `Pagamentos (ZVER)`.
     - Correção de layout no painel de "Inconsistências de Cadastro", alterando sua restrição de altura vertical para `h-fit`, o que elimina os incômodos espaços em branco no bloco quando renderizado ao lado do Log de Integrações.
   - Melhoria de **Acessibilidade e UX**: Inclusão de tooltips (balões informativos) nos itens do menu lateral quando recolhido.
