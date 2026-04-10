@@ -6,10 +6,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ## [1.8.1] - 2026-04-10
 ### Adicionado
+- **Exportação ZAJU (E-mail)**:
+  - Novo parser automatizado que extrai e decodifica o mês e ano de referência diretamente do arquivo gerado (ex: `Março/2026`) para exibição descritiva no corpo do e-mail.
 - **Exportação ZAJU (Planilhas e Abas)**:
   - Divisão dinâmica do relatório de ZAJU por abas no Excel (`Verbas de Contrato` e `Promo & Ações`) dependendo dos subtipos dos IDs informados na query.
   - Estilização corporativa aplicada nas colunas do cabeçalho de planilhas exportadas através da injeção do UI `openpyxl`.
 ### Alterado
+- **Design de E-mail (UI/UX)**:
+  - Largura do modal central dos avisos por e-mail unificada e expandida (de 550px para 700px), conferindo maior espaço e conforto na leitura.
+  - Reconstrução do componente que representa o anexo do Excel com o aviso orientativo em destaque `[Baixar no Anexo ↓]`.
 - **Exportação ZAJU (Reordenação de Colunas)**:
   - A query `QUERY_RELATORIO_ZAJU` sofreu refatoração total de renomeação de Headers e ordenação textual colunar obedecendo rigorosamente o output esperado pela área de auditoria / produto.
 - **Performance (Dashboard)**:

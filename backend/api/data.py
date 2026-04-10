@@ -262,7 +262,8 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
                 # Opcional: enviar e-mail avisando que não há dados
                 return
 
-            df = pd.DataFrame(rows)
+            # Garantir a ordenação exata (keys do dict podem quebrar a ordem dependendo da versão do pandas)
+            df = pd.DataFrame([dict(r) for r in rows])
             
             # Separar Contrato vs Promo & Ações
             if not df.empty and 'id_tipo_verba' in df.columns:
@@ -271,6 +272,22 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
             else:
                 df_contrato = pd.DataFrame()
                 df_promo = pd.DataFrame()
+            
+            ordem_colunas = [
+                "Orçamento", "ID Ajuste Verba", "Linha de Investimento", "Tipo Linha Investimento",
+                "Cód. Cliente", "Nome Cliente", "Nº Nota Fiscal", "VKORG", "Nº Documento",
+                "Valor Bruto", "Valor Líquido", "% Original", "Provisão Original", "% Verba Bruto",
+                "Contrato COM % Bruto", "Contrato COM % Liquido", "Contrato LOG % Bruto", "Contrato LOG % Líquido",
+                "Contrato CRE % Bruto", "Contrato CRE % Líquido", "% Atual", "Valor Provisão",
+                "Cutoff", "Data Criação", "Purch. No C", "Tipo Doc", "Sequencial", "Cod. Material",
+                "Material", "Unidade Medida", "Cond. Type", "Moeda", "Status", "Numfat Integração",
+                "Numov Integração", "Data Integração", "Mensagem Retorno"
+            ]
+            
+            if not df_contrato.empty:
+                df_contrato = df_contrato[[c for c in ordem_colunas if c in df_contrato.columns]]
+            if not df_promo.empty:
+                df_promo = df_promo[[c for c in ordem_colunas if c in df_promo.columns]]
 
             output = io.BytesIO()
             from openpyxl.styles import PatternFill, Font

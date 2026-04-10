@@ -40,24 +40,35 @@ class MailService:
             logger.error(f"Email error for {email_to}: {e}")
 
     async def send_report_email(self, email_to: str, nome: str, report_name: str, file_content: bytes, filename: str):
+        import re
+        mes_ref = ""
+        match = re.search(r'_(\d{4})(\d{2})\d{2}_', filename)
+        if match:
+            ano, mes = match.groups()
+            meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+            mes_ref = f" referente a <strong>{meses[int(mes)]}/{ano}</strong>"
+
         content = f"""
         <div style="text-align: center; margin-bottom: 30px;">
             <h2 style="color: #0f172a; font-size: 26px; font-weight: 800; margin-bottom: 10px;">Relatório Pronto!</h2>
-            <p style="font-size: 16px; color: #64748b; margin: 0;">O arquivo que você solicitou já foi gerado.</p>
+            <p style="font-size: 16px; color: #64748b; margin: 0;">O arquivo que você solicitou{mes_ref} já foi gerado.</p>
         </div>
         <p>Olá, {nome.split()[0]}. O processamento do <strong>{report_name}</strong> foi concluído com sucesso.</p>
-        <p>Você encontrará o arquivo em anexo neste e-mail.</p>
+        <p>Você encontrará o arquivo em anexo neste e-mail (geralmente localizado no final desta mensagem ou no cabeçalho do seu provedor).</p>
         
-        <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+        <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer;" title="Por favor, baixe o anexo nativo do seu e-mail.">
             <div style="font-size: 24px;">📄</div>
-            <div>
+            <div style="flex-grow: 1;">
                 <p style="margin: 0; font-weight: 700; color: #0f172a; font-size: 14px;">{filename}</p>
                 <p style="margin: 0; color: #94a3b8; font-size: 12px;">Planilha Excel (XLSX)</p>
+            </div>
+            <div style="color: #3b82f6; font-size: 12px; font-weight: bold;">
+                 [Baixar no Anexo ↓]
             </div>
         </div>
         
         <p style="font-size: 13px; color: #94a3b8; text-align: center; margin-top: 30px;">
-            Dica: Se o relatório tiver muitas linhas, o download pode demorar alguns segundos dependendo da sua conexão.
+            Dica: Se o relatório tiver muitas linhas, o download do anexo pode demorar alguns segundos dependendo da sua conexão.
         </p>
         """
         
@@ -90,7 +101,7 @@ class MailService:
         return f"""
         <html>
             <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #334155; margin: 0; padding: 0; background-color: #f1f5f9;">
-                <div style="max-width: 550px; margin: 40px auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);">
+                <div style="max-width: 700px; margin: 40px auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);">
                     <!-- Header -->
                     <div style="background-color: #0f172a; padding: 40px 20px; text-align: center;">
                         <img src="{logo_suzano}" alt="Suzano" style="height: 45px; margin-bottom: 12px; display: inline-block;">
