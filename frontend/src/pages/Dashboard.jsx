@@ -758,20 +758,20 @@ export default function Dashboard() {
           <div className="space-y-8 animate-in fade-in duration-500">
             {/* KPI Cards Polidos */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div className="bg-blue-600 p-6 rounded-xl border border-blue-500 shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all text-white">
                 <div className="flex justify-between items-start mb-2">
-                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Volume Total</p>
-                  <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Calculator size={18} /></div>
+                  <p className="text-[11px] font-black text-blue-100 uppercase tracking-widest">Volume Total</p>
+                  <div className="p-2 bg-blue-500/50 text-white rounded-lg"><Calculator size={18} /></div>
                 </div>
-                <h3 className="text-3xl font-black text-slate-800">{data.vk11.success + data.vk11.pending + data.vk11.error}</h3>
+                <h3 className="text-3xl font-black text-white">{data.vk11.success + data.vk11.pending + data.vk11.error}</h3>
               </div>
 
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div className="flex justify-between items-start mb-2">
-                  <p className="text-[11px] font-black text-blue-400 uppercase tracking-widest">Sucesso</p>
-                  <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><CheckCircle2 size={18} /></div>
+                  <p className="text-[11px] font-black text-emerald-500 uppercase tracking-widest">Sucesso</p>
+                  <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={18} /></div>
                 </div>
-                <h3 className="text-3xl font-black text-blue-600">{data.vk11.success}</h3>
+                <h3 className="text-3xl font-black text-emerald-600">{data.vk11.success}</h3>
               </div>
 
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
@@ -817,7 +817,7 @@ export default function Dashboard() {
                           <tr key={idx} className="hover:bg-slate-50 transition-colors">
                             <td className="px-5 py-3 font-bold text-slate-700">{row.id_orcamento}</td>
                             <td className="px-5 py-3 text-slate-600 font-medium">{row.descricao}</td>
-                            <td className="px-5 py-3 text-center font-black text-blue-600">{row.integrado}</td>
+                            <td className="px-5 py-3 text-center font-black text-emerald-600">{row.integrado}</td>
                             <td className={`px-5 py-3 text-center font-black ${row.pendente_integracao > 0 ? 'text-amber-500' : 'text-slate-300'}`}>{row.pendente_integracao}</td>
                             <td className={`px-5 py-3 text-center font-black ${row.erro > 0 ? 'text-rose-500' : 'text-slate-300'}`}>{row.erro}</td>
                           </tr>
