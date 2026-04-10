@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDashboardData, getInconsistenciasData } from '../services/api';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { 
   Download, 
   RefreshCw, 
@@ -15,13 +14,48 @@ import {
   TrendingUp,
   Filter,
   Trophy,
-  Users
+  Users,
+  Activity,
+  Target
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 import * as XLSX from 'xlsx';
 import { useMemo } from 'react';
+
+const IntegrationHealthCard = ({ title, success, pending, error }) => {
+  const total = success + pending + error;
+  
+  const StatBar = ({ label, value, colorClass }) => (
+    <div className="mb-3">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{label}</span>
+        <span className="text-sm font-black text-slate-700">{value}</span>
+      </div>
+      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+        <div 
+          className={`h-full rounded-full ${colorClass} transition-all duration-1000`} 
+          style={{ width: value > 0 ? Math.max((value / total) * 100, 2) + '%' : '0%' }}
+        ></div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-slate-300 transition-colors">
+      <div className="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+        <h3 className="font-bold text-slate-800 tracking-tight">{title}</h3>
+        <span className="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Total: {total}</span>
+      </div>
+      <div className="space-y-1">
+        <StatBar label="Sucesso" value={success} colorClass="bg-blue-500" />
+        <StatBar label="Pendente" value={pending} colorClass="bg-amber-500" />
+        <StatBar label="Com Erro" value={error} colorClass="bg-rose-500" />
+      </div>
+    </div>
+  );
+};
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -232,15 +266,6 @@ export default function Dashboard() {
 
   const exportInconsistencyCategory = () => exportCategory(selectedInconsistency, totalCount);
 
-  const chartData = useMemo(() => {
-    if (!data) return [];
-    return [
-      { name: 'PROVISÃO (VK11)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error },
-      { name: 'ZAJUS', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error },
-      { name: 'ZVER', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error }
-    ];
-  }, [data]);
-
   const totalErrors = useMemo(() => {
     if (!data) return 0;
     return Object.values(data.errors).reduce((a, b) => a + b, 0);
@@ -355,51 +380,45 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Main Chart */}
-              <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h2 className="text-lg font-bold text-slate-800 mb-6">Visão Geral de Integrações</h2>
-                <div className="h-80 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                      <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-                      <Tooltip 
-                        cursor={{fill: '#f1f5f9'}}
-                        contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
-                      />
-                      <Legend wrapperStyle={{paddingTop: '20px'}} />
-                      <Bar dataKey="Sucesso" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={50} />
-                      <Bar dataKey="Pendente" fill="#f59e0b" radius={[4, 4, 0, 0]} maxBarSize={50} />
-                      <Bar dataKey="Erro" fill="#ef4444" radius={[4, 4, 0, 0]} maxBarSize={50} />
-                    </BarChart>
-                  </ResponsiveContainer>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Integrações Health Board */}
+              <div className="flex flex-col space-y-4">
+                <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
+                  <Activity size={20} className="text-blue-600" /> Saúde das Integrações
+                </h2>
+                <div className="flex flex-col gap-4">
+                  <IntegrationHealthCard title="ZAJUS (Ajustes de Provisão)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} />
+                  <IntegrationHealthCard title="PROVISÃO (VK11)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
+                  <IntegrationHealthCard title="ZVER (Pagamentos)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} />
                 </div>
               </div>
 
               {/* Errors List */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h2 className="text-lg font-bold text-slate-800 mb-6">Inconsistências de Cadastro</h2>
-                <div className="space-y-4">
-                  {Object.entries(data.errors).map(([key, value]) => {
-                    const isZero = value === 0;
-                    return (
-                      <button 
-                        key={key} 
-                        onClick={() => handleOpenModal(key)}
-                        disabled={isZero}
-                        className="w-full text-left flex items-center justify-between p-4 rounded-lg border border-slate-100 bg-slate-50 hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed transition-colors group"
-                      >
-                        <span className="font-semibold text-slate-700 capitalize group-hover:text-blue-600 transition-colors">{key}</span>
-                        <span className={`px-3 py-1 rounded-full text-sm font-bold shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
-                          isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
-                        }`}>
-                          {value} {value === 1 ? 'registro' : 'registros'}
-                        </span>
-                      </button>
-                    );
-                  })}
+              <div className="flex flex-col space-y-4">
+                <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
+                   <Target size={20} className="text-rose-600" /> Inconsistências de Cadastro
+                </h2>
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex-grow">
+                  <div className="space-y-4">
+                    {Object.entries(data.errors).map(([key, value]) => {
+                      const isZero = value === 0;
+                      return (
+                        <button 
+                          key={key} 
+                          onClick={() => handleOpenModal(key)}
+                          disabled={isZero}
+                          className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
+                        >
+                          <span className="font-bold text-slate-700 capitalize group-hover:text-blue-600 transition-colors">{key}</span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-black shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
+                            isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
+                          }`}>
+                            {value} {value === 1 ? 'registro' : 'registros'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

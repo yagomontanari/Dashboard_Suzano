@@ -17,6 +17,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Tratativa das máscaras financeiras: Conversão das tipagens de Ponto Flutuantes (`.`) nos Dataframes do Backend para Strings de notação regionalizadas (`1.000,00`) para colunas monetárias e atrelamento contextual `%` em campos percentuais (ex: `15,30%`).
 - **Design de E-mail (UI/UX)**:
   - Largura do modal central dos avisos por e-mail unificada e expandida (de 550px para 700px), conferindo maior espaço e conforto na leitura.
+- **Modernização do Dashboard (UI/UX)**:
+  - Substituição do gráfico de barras estático (Recharts) por um novo sistema de `Health Cards` com barras de progresso horizontais customizadas.
+  - Otimização da escala visual: implementada lógica de preenchimento mínimo para garantir que falhas em baixa escala (ex: 1 erro) permaneçam visíveis e não sejam "esmagadas" pelo volume de sucessos.
+  - Reestruturação do Grid Layout: Equilíbrio de 50/50 na tela principal entre a Saúde das Integrações e Inconsistências de Cadastro.
+  - Inclusão de novos ícones de monitoria (`Activity`, `Target`) para melhor semântica visual.
 - **Exportação ZAJU (Reordenação de Colunas)**:
   - A query `QUERY_RELATORIO_ZAJU` sofreu refatoração total de renomeação de Headers e ordenação textual colunar obedecendo rigorosamente o output esperado pela área de auditoria / produto.
 - **Performance (Dashboard)**:
