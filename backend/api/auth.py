@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
+from sqlalchemy import select, func
 from datetime import timedelta
 import secrets
 import string
@@ -225,6 +225,15 @@ async def list_users(
     result = await db.execute(select(User).order_by(User.created_at.desc()))
     users = result.scalars().all()
     return users
+
+@router.get("/admin/pending-count")
+async def get_pending_count(
+    db: AsyncSession = Depends(get_app_db),
+    admin: User = Depends(check_admin)
+):
+    result = await db.execute(select(func.count(User.id)).where(User.status == UserStatus.PENDING))
+    count = result.scalar() or 0
+    return {"count": count}
 
 @router.put("/admin/users/{user_id}", response_model=UserResponse)
 async def update_user(

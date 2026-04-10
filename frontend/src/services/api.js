@@ -56,6 +56,11 @@ export const getAdminUsers = async () => {
     return response.data;
 }
 
+export const getPendingUsersCount = async () => {
+    const response = await api.get('/auth/admin/pending-count');
+    return response.data;
+}
+
 export const updateUser = async (userId, data) => {
     const response = await api.put(`/auth/admin/users/${userId}`, data);
     return response.data;

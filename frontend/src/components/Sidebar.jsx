@@ -1,11 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, Users, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { getPendingUsersCount } from '../services/api';
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
   const navigate = useNavigate();
   const role = localStorage.getItem('role');
+
+  useEffect(() => {
+    if (role === 'ADMIN') {
+      const fetchCount = async () => {
+        try {
+          const res = await getPendingUsersCount();
+          setPendingCount(res.count);
+        } catch (err) {
+          console.error("Erro ao buscar pendentes:", err);
+        }
+      };
+      fetchCount();
+      // Atualiza a cada 2 minutos
+      const interval = setInterval(fetchCount, 120000);
+      return () => clearInterval(interval);
+    }
+  }, [role]);
 
   const handleLogout = () => {
     localStorage.clear(); // Limpa tudo (token, role, etc)
@@ -45,6 +64,7 @@ export default function Sidebar() {
       <nav className="flex-1 py-6 px-3 space-y-2 overflow-y-auto overflow-x-hidden">
         <NavLink 
           to="/dashboard"
+          title={!expanded ? "Dashboard" : ""}
           className={({ isActive }) => 
             `flex items-center gap-4 px-3 py-3 rounded-md transition-all group overflow-hidden whitespace-nowrap ${
               isActive 
@@ -61,6 +81,7 @@ export default function Sidebar() {
         
         <NavLink 
           to="/relatorios"
+          title={!expanded ? "Relatórios" : ""}
           className={({ isActive }) => 
             `flex items-center gap-4 px-3 py-3 rounded-md transition-all group overflow-hidden whitespace-nowrap ${
               isActive 
@@ -78,6 +99,7 @@ export default function Sidebar() {
         {role === 'ADMIN' && (
           <NavLink 
             to="/usuarios"
+            title={!expanded ? "Gestão de Usuários" : ""}
             className={({ isActive }) => 
               `flex items-center gap-4 px-3 py-3 rounded-md transition-all group overflow-hidden whitespace-nowrap ${
                 isActive 
@@ -86,7 +108,14 @@ export default function Sidebar() {
               }`
             }
           >
-            <Users size={20} className="shrink-0" />
+            <div className="relative">
+              <Users size={20} className="shrink-0" />
+              {pendingCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center shadow-lg border border-slate-900 animate-pulse">
+                  {pendingCount}
+                </span>
+              )}
+            </div>
             <span className={`transition-all duration-300 font-medium ${expanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
               Gestão de Usuários
             </span>
@@ -107,6 +136,7 @@ export default function Sidebar() {
       <div className="p-4 border-t border-slate-800">
         <button 
           onClick={handleLogout}
+          title={!expanded ? "Sair" : ""}
           className="flex items-center gap-4 px-3 py-2 w-full rounded-md text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-colors group overflow-hidden whitespace-nowrap"
         >
           <LogOut size={20} className="shrink-0 group-hover:scale-110 transition-transform" />
