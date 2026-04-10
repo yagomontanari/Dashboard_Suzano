@@ -42,6 +42,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - O card de **Integrados com sucesso** foi migrado para o tema escuro (`slate-900`) com o valor numérico em verde esmeralda.
     - Expansão dos indicadores de saúde: Inclusão do status **Aguardando Retorno SAP** nos gráficos de *Ajustes de Provisão (ZAJU)* e *Pagamentos (ZVER)*.
     - Padronização da nomenclatura acadêmica nos headers de saúde para linguagem corporativa: `Ajustes de Provisão (ZAJU)`, `Provisão (VK11)` e `Pagamentos (ZVER)`.
+    - **Log de Integrações**: Refinamento de nomenclatura na categoria `Provisões` para `Dados Provisões`, mantendo consistência entre backend e frontend.
+    - **Reestruturação de Inconsistências**: 
+        - Divisão das falhas em dois blocos lógicos: **Inconsistencias Integração** (ZVER, VK11, ZAJU) e **Inconsistências de Cadastro** (Sellin, Clientes, Produtos, Cutoff, Usuários).
+        - A seção de Integração foi priorizada no topo da coluna lateral.
+        - Inclusão da linha **Ajustes (ZAJU)** como indicador visual de erros de integração (funcionalidade de detalhamento via query pendente).
     - Correção de layout no painel de "Inconsistências de Cadastro", alterando sua restrição de altura vertical para `h-fit`, o que elimina os incômodos espaços em branco no bloco quando renderizado ao lado do Log de Integrações.
   - Melhoria de **Acessibilidade e UX**: Inclusão de tooltips (balões informativos) nos itens do menu lateral quando recolhido.
   - Implementação de **Notificador de Gestão**: Badge dinâmica (círculo vermelho pulsante) no menu lateral para alertar sobre solicitações de acesso pendentes (exclusivo para administradores).

@@ -141,7 +141,7 @@ const IntegrationLog = ({ updates }) => {
       case 'ZAJU': return <ArrowDownUp size={18} />;
       case 'ZVER': return <CreditCard size={18} />;
       case 'VK11': return <BarChart3 size={18} />;
-      case 'Provisões': return <ShieldCheck size={18} />;
+      case 'Dados Provisões': return <ShieldCheck size={18} />;
       case 'Retorno Pagto': return <ReceiptText size={18} />;
       case 'Cutoff': return <CalendarClock size={18} />;
       default: return <History size={18} />;
@@ -157,7 +157,7 @@ const IntegrationLog = ({ updates }) => {
       'ZAJU': 'bg-rose-50 text-rose-600',
       'ZVER': 'bg-sky-50 text-sky-600',
       'VK11': 'bg-violet-50 text-violet-600',
-      'Provisões': 'bg-teal-50 text-teal-600',
+      'Dados Provisões': 'bg-teal-50 text-teal-600',
       'Retorno Pagto': 'bg-orange-50 text-orange-600',
       'Cutoff': 'bg-slate-50 text-slate-600'
     };
@@ -378,6 +378,7 @@ export default function Dashboard() {
       ];
       case 'pagamentos': return [{key: 'cod_pagamento', label: 'Cod. Pagamento'}, {key: 'cliente', label: 'Cliente'}, {key: 'sequencial', label: 'Sequencial'}, {key: 'purch_no_c', label: 'Identificador'}, {key: 'dta_criacao', label: 'Data Registro'}, {key: 'dta_envio_integracao', label: 'Data Integração'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
       case 'vk11': return [{key: 'id_orcamento', label: 'ID Orçamento'}, {key: 'descricao', label: 'Descrição'}, {key: 'tipo_integracao', label: 'Tipo'}, {key: 'valid_from', label: 'Válido De'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
+      case 'zaju': return [{key: 'purch_no_c', label: 'ID Zaju'}, {key: 'cond_value', label: 'Valor'}, {key: 'dta_alteracao', label: 'Data'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
       default: return [{key: 'id', label: 'ID'}];
     }
   };
@@ -576,30 +577,68 @@ export default function Dashboard() {
               </div>
 
               {/* Errors List (40%) */}
-              <div className="lg:col-span-4 flex flex-col space-y-4">
-                <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
-                   <Target size={20} className="text-rose-600" /> Inconsistências de Cadastro
-                </h2>
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
-                  <div className="space-y-4">
-                    {Object.entries(data.errors).map(([key, value]) => {
-                      const isZero = value === 0;
-                      return (
-                        <button 
-                          key={key} 
-                          onClick={() => handleOpenModal(key)}
-                          disabled={isZero}
-                          className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
-                        >
-                          <span className="font-bold text-slate-700 capitalize group-hover:text-blue-600 transition-colors">{key}</span>
-                          <span className={`px-3 py-1 rounded-full text-xs font-black shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
-                            isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
-                          }`}>
-                            {value} {value === 1 ? 'registro' : 'registros'}
-                          </span>
-                        </button>
-                      );
-                    })}
+              <div className="lg:col-span-4 flex flex-col space-y-8">
+                {/* Integração Section */}
+                <div className="flex flex-col space-y-4">
+                  <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
+                    <History size={20} className="text-indigo-600" /> Inconsistencias Integração
+                  </h2>
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
+                    <div className="space-y-3">
+                      {['pagamentos', 'vk11', 'zaju'].map((key) => {
+                        const value = data.errors[key] || 0;
+                        const isZero = value === 0;
+                        const isLocked = key === 'zaju'; // Zaju locked until query is ready
+                        
+                        return (
+                          <button 
+                            key={key} 
+                            onClick={() => !isLocked && handleOpenModal(key)}
+                            disabled={isZero || isLocked}
+                            className={`w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group ${isLocked ? 'cursor-not-allowed' : ''}`}
+                          >
+                            <span className="font-bold text-slate-700 uppercase text-xs tracking-wider group-hover:text-blue-600 transition-colors">
+                              {key === 'pagamentos' ? 'Pagamentos (ZVER)' : key === 'vk11' ? 'Provisão (VK11)' : 'Ajustes (ZAJU)'}
+                            </span>
+                            <span className={`px-3 py-1 rounded-full text-xs font-black shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
+                              isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
+                            }`}>
+                              {value} {value === 1 ? 'erro' : 'erros'}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cadastro Section */}
+                <div className="flex flex-col space-y-4">
+                  <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
+                     <Target size={20} className="text-rose-600" /> Inconsistências de Cadastro
+                  </h2>
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
+                    <div className="space-y-3">
+                      {['sellin', 'clientes', 'produtos', 'cutoff', 'usuarios'].map((key) => {
+                        const value = data.errors[key] || 0;
+                        const isZero = value === 0;
+                        return (
+                          <button 
+                            key={key} 
+                            onClick={() => handleOpenModal(key)}
+                            disabled={isZero}
+                            className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
+                          >
+                            <span className="font-bold text-slate-700 capitalize group-hover:text-blue-600 transition-colors">{key}</span>
+                            <span className={`px-3 py-1 rounded-full text-xs font-black shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
+                              isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
+                            }`}>
+                              {value} {value === 1 ? 'erro' : 'erros'}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>

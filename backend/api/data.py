@@ -136,7 +136,8 @@ async def get_dashboard_metrics(
                 "cutoff": cutoff_count,
                 "usuarios": usuarios_count,
                 "pagamentos": pagamentos_count,
-                "vk11": vk11_count
+                "vk11": vk11_count,
+                "zaju": zaju_totals.get("error", 0)
             },
             "last_updates": [
                 {
@@ -149,7 +150,7 @@ async def get_dashboard_metrics(
                         "PRODUTO": "Produtos",
                         "ORCAMENTO": "VK11",
                         "PAGAMENTO": "ZVER",
-                        "DADOS_PROVISOES": "Provisões",
+                        "DADOS_PROVISOES": "Dados Provisões",
                         "AJUSTE_PROVISAO": "ZAJU"
                     }.get(r["categoria"], r["categoria"]),
                     "data": r["dta"].isoformat() if r["dta"] else None,
