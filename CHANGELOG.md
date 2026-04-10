@@ -22,10 +22,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Visão detalhada por cartão: centralização do valor "TOTAL" e legenda lateral com contagem e percentual dinâmico.
   - Tradução e padronização das legendas para o padrão BRL: `Sucesso`, `Pendente` e `Erro`.
   - Otimização do Grid Layout: Refinamento da proporção da tela principal para **60% Integrações** vs **40% Inconsistências de Cadastro** (Grid-10), com as integrações agora distribuídas em 3 colunas iguais.
-  - Implementação do **Log de Sincronização (Conversa SAP)**: Seção dedicada para monitoramento em tempo real do tráfego de dados entre SAP e Tradelinks.
+  - Implementação do **Log de Integrações**: Seção dedicada para monitoramento em tempo real do tráfego de dados entre SAP e Tradelinks.
     - Captura de **Dados de Entrada (Inbound)**: Via `integracao_requisicao`, incluindo rastreabilidade por número de **Lote**.
     - Captura de **Dados de Saída (Outbound)**: Via `suzano_integracao_servico` para monitoramento de envios ao SAP (ZVER, VK11, ZAJU).
-    - Interface com selos direcionais dinâmica (`↑ TL -> SAP` / `↓ SAP -> TL`) e mensagens amigáveis baseadas no tipo de serviço.
+    - Interface refinada com selos direcionais aumentados (`↑ TL -> SAP` / `↓ SAP -> TL`), inclusão de data completa (`DD/MM`) e iconografia especializada para cada processo (Logística, Financeiro, Cadastro).
   - Estilização premium com cantos arredondados (`rounded-2xl`) e sombras suaves para melhor profundidade visual.
 - **Exportação ZAJU (Reordenação de Colunas)**:
   - A query `QUERY_RELATORIO_ZAJU` sofreu refatoração total de renomeação de Headers e ordenação textual colunar obedecendo rigorosamente o output esperado pela área de auditoria / produto.

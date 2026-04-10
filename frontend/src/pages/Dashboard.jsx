@@ -24,7 +24,17 @@ import {
   UserCheck,
   FileText,
   CreditCard,
-  Settings
+  Settings,
+  Truck,
+  Contact,
+  Package,
+  Calculator,
+  BarChart3,
+  ShieldCheck,
+  ReceiptText,
+  CalendarClock,
+  HandCoins,
+  ArrowDownUp
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
@@ -113,16 +123,16 @@ const IntegrationHealthCard = ({ title, success, pending, error }) => {
 const IntegrationLog = ({ updates }) => {
   const getIcon = (category) => {
     switch(category) {
-      case 'Sell-In': return <FileText size={18} />;
-      case 'Clientes': return <Users size={18} />;
-      case 'Produtos': return <Database size={18} />;
+      case 'Sell-In': return <HandCoins size={18} />;
+      case 'Clientes': return <Contact size={18} />;
+      case 'Produtos': return <Package size={18} />;
       case 'Usuários': return <UserCheck size={18} />;
-      case 'ZAJU': return <Settings size={18} />;
+      case 'ZAJU': return <ArrowDownUp size={18} />;
       case 'ZVER': return <CreditCard size={18} />;
-      case 'VK11': return <Activity size={18} />;
-      case 'Provisões': return <Target size={18} />;
-      case 'Retorno Pagto': return <Trophy size={18} />;
-      case 'Cutoff': return <Clock size={18} />;
+      case 'VK11': return <BarChart3 size={18} />;
+      case 'Provisões': return <ShieldCheck size={18} />;
+      case 'Retorno Pagto': return <ReceiptText size={18} />;
+      case 'Cutoff': return <CalendarClock size={18} />;
       default: return <History size={18} />;
     }
   };
@@ -144,15 +154,19 @@ const IntegrationLog = ({ updates }) => {
   };
 
   const formatTime = (isoDate) => {
-    if (!isoDate) return "--:--";
-    return new Date(isoDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    if (!isoDate) return "--/-- --:--";
+    const date = new Date(isoDate);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return `${day}/${month} ${time}`;
   };
 
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col max-h-[400px]">
       <div className="flex items-center gap-2 mb-6 border-b border-slate-100 pb-4">
         <List size={20} className="text-slate-400" />
-        <h3 className="font-bold text-slate-800">Status de Sincronização (Conversa SAP)</h3>
+        <h3 className="font-bold text-slate-800">Log de Integrações</h3>
       </div>
       
       <div className="space-y-6 overflow-y-auto pr-2 custom-scrollbar">
@@ -166,7 +180,7 @@ const IntegrationLog = ({ updates }) => {
                 <h4 className="font-bold text-slate-800 text-[15px] leading-tight group-hover:text-blue-600 transition-colors">
                   {update.categoria}
                 </h4>
-                <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded-md border ${
+                <span className={`text-[10px] uppercase font-black px-3 py-1 rounded-md border shadow-sm ${
                   update.direcao === 'Inbound' 
                     ? 'bg-blue-50 text-blue-600 border-blue-100' 
                     : 'bg-slate-50 text-slate-500 border-slate-200'
