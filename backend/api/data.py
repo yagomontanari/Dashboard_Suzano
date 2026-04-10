@@ -281,6 +281,31 @@ async def get_inconsistencies(
             "total_pages": 2
         }
 
+@router.get("/dashboard/details/vk11")
+async def get_vk11_details(
+    start_date: str = None, 
+    end_date: str = None, 
+    db: AsyncSession = Depends(get_db),
+    user: str = Depends(get_current_user)
+):
+    try:
+        start_dt, end_dt = parse_date_range(start_date, end_date)
+        params_str = {
+            "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"), 
+            "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        result = await db.execute(QUERY_ORCAMENTO_INTEGRACAO, params_str)
+        rows = [dict(row) for row in result.mappings().all()]
+        
+        return {
+            "source": "postgresql",
+            "data": rows
+        }
+    except Exception as e:
+        logger.error(f"Erro ao buscar detalhes VK11: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: str, nome: str):
     """Função de background para gerar o Excel e enviar por e-mail"""
     try:

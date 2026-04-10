@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDashboardData, getInconsistenciasData } from '../services/api';
+import { getDashboardData, getInconsistenciasData, getVk11Details } from '../services/api';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { 
   Download, 
@@ -216,6 +216,11 @@ export default function Dashboard() {
   const [totalCount, setTotalCount] = useState(0);
   const [sortConfig, setSortConfig] = useState(null);
 
+  // VK11 Specific States
+  const [vk11Details, setVk11Details] = useState([]);
+  const [vk11Loading, setVk11Loading] = useState(false);
+  const [vk11Error, setVk11Error] = useState(null);
+
   const [activeTab, setActiveTab] = useState('geral');
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
@@ -253,6 +258,26 @@ export default function Dashboard() {
     const interval = setInterval(loadData, 300000); // 5 minutes
     return () => clearInterval(interval);
   }, [loadData]);
+
+  const fetchVk11Details = useCallback(async () => {
+    setVk11Loading(true);
+    setVk11Error(null);
+    try {
+      const res = await getVk11Details();
+      setVk11Details(res.data || []);
+    } catch (err) {
+      console.error("Erro ao buscar detalhes VK11:", err);
+      setVk11Error(err.message || 'Erro ao carregar dados');
+    } finally {
+      setVk11Loading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'vk11') {
+      fetchVk11Details();
+    }
+  }, [activeTab, fetchVk11Details]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
@@ -421,7 +446,7 @@ export default function Dashboard() {
   const tabs = [
     { id: 'geral', label: 'Geral' },
     { id: 'pagamentos', label: 'Pagamentos' },
-    { id: 'vk11', label: 'VK11' },
+    { id: 'vk11', label: 'Provisão (VK11)' },
     { id: 'zaku', label: 'Ajuste de Provisão (ZAJU)' }
   ];
 
@@ -730,14 +755,88 @@ export default function Dashboard() {
         )}
 
         {activeTab === 'vk11' && (
-          <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-xl border border-slate-200 shadow-sm animate-in fade-in duration-500">
-            <div className="p-4 bg-slate-50 text-slate-400 rounded-full mb-4">
-              <Clock size={48} strokeWidth={1.5} />
+          <div className="space-y-8 animate-in fade-in duration-500">
+            {/* Cards estilo ZAJU */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integrados</p>
+                <h3 className="text-3xl font-bold text-blue-600 text-center">{data.vk11.success}</h3>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integração Pendente</p>
+                <h3 className="text-3xl font-bold text-amber-600 text-center">{data.vk11.pending}</h3>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Erros</p>
+                <h3 className="text-3xl font-bold text-rose-600 text-center">{data.vk11.error}</h3>
+              </div>
             </div>
-            <h3 className="text-xl font-bold text-slate-800">Funcionalidade em breve</h3>
-            <p className="text-slate-500 mt-2 max-w-sm text-center">
-              A aba VK11 está sendo preparada para as próximas atualizações do painel de controle.
-            </p>
+
+            {/* Total Highlight estilo ZAJU */}
+            <div className="bg-slate-900 p-10 rounded-xl shadow-[8px_8px_0px_#94a3b8] border border-slate-800 flex flex-col md:flex-row items-center justify-around gap-8">
+              <div className="text-center">
+                <p className="text-blue-400 font-black text-xs uppercase tracking-[0.2em] mb-2">Processamento de Orçamentos</p>
+                <h2 className="text-6xl font-black text-white tracking-tighter">
+                  {data.vk11.success}
+                </h2>
+                <p className="text-slate-400 font-bold text-sm mt-2">Integrados com Sucesso</p>
+              </div>
+
+              <div className="h-20 w-px bg-slate-800 hidden md:block"></div>
+
+              <div className="text-center">
+                <p className="text-rose-500 font-black text-xs uppercase tracking-[0.2em] mb-2">Volume Total de Registros</p>
+                <h2 className="text-6xl font-black text-white tracking-tighter">
+                  {data.vk11.success + data.vk11.pending + data.vk11.error}
+                </h2>
+                <p className="text-slate-400 font-bold text-sm mt-2">Total na Base de Dados</p>
+              </div>
+            </div>
+
+            {/* Tabela Detalhada (conforme print) */}
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+               <div className="bg-slate-900 px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                  <h3 className="font-bold text-white uppercase tracking-widest text-sm">Integração VK11</h3>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Detalhamento por Orçamento</div>
+               </div>
+               
+               <div className="overflow-x-auto">
+                 <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 border-b border-slate-200">
+                      <tr>
+                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter">id_orcamento</th>
+                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter">descricao</th>
+                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">tipo_integracao</th>
+                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">id_ajuste_verba</th>
+                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">integrado</th>
+                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">pendente_integracao</th>
+                        <th className="px-4 py-3 font-black text-slate-500 uppercase tracking-tighter text-center">erro</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {vk11Loading ? (
+                        <tr><td colSpan="7" className="p-8 text-center text-slate-400">Carregando dados...</td></tr>
+                      ) : vk11Details.length > 0 ? (
+                        vk11Details.map((row, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-4 py-3 font-bold text-slate-700">{row.id_orcamento}</td>
+                            <td className="px-4 py-3 text-slate-600 font-medium">{row.descricao}</td>
+                            <td className="px-4 py-3 text-center text-[10px] font-bold text-slate-400">{row.tipo_integracao}</td>
+                            <td className="px-4 py-3 text-center text-slate-600">{row.id_ajuste_verba || '-'}</td>
+                            <td className="px-4 py-3 text-center font-black text-blue-600">{row.integrado}</td>
+                            <td className="px-4 py-3 text-center font-black text-amber-500">{row.pendente_integracao}</td>
+                            <td className="px-4 py-3 text-center font-black text-rose-500">{row.erro}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr><td colSpan="7" className="p-8 text-center text-slate-400 italic">Nenhum detalhamento encontrado para o período.</td></tr>
+                      )}
+                    </tbody>
+                 </table>
+               </div>
+            </div>
           </div>
         )}
 

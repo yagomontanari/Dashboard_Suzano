@@ -93,6 +93,11 @@ export const getDashboardData = async () => {
     return response.data;
 }
 
+export const getVk11Details = async () => {
+    const response = await api.get('/data/dashboard/details/vk11');
+    return response.data;
+}
+
 export const getInconsistenciasData = async (category, page = 1, size = 20, sort_by = null, order = 'desc') => {
     const response = await api.get(`/data/dashboard/inconsistencies/${category}`, {
         params: { page, size, sort_by, order }

@@ -17,6 +17,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Tratativa das máscaras financeiras: Conversão das tipagens de Ponto Flutuantes (`.`) nos Dataframes do Backend para Strings de notação regionalizadas (`1.000,00`) para colunas monetárias e atrelamento contextual `%` em campos percentuais (ex: `15,30%`).
 - **Design de E-mail (UI/UX)**:
   - Largura do modal central dos avisos por e-mail unificada e expandida (de 550px para 700px), conferindo maior espaço e conforto na leitura.
+- **Aba Provisão (VK11)**:
+  - Implementação completa da nova aba do dashboard dedicada aos orçamentos.
+  - Cards de resumo estilizados (Integrados, Pendentes, Erros) e área de destaque com totais processados seguindo a identidade visual premium.
+  - Tabela de detalhamento técnico por orçamento, incluindo ID Orçamento, Descrição, Tipo de Integração, ID Ajuste e métricas de sincronização.
 - **Modernização do Dashboard (UI/UX)**:
   - Implementação de gráficos de rosca (`Donut Charts`) para monitoramento de saúde de integração, com aumento de escala (raio maior) para melhor visualização.
   - Visão detalhada por cartão: centralização do valor "TOTAL" e legenda lateral com contagem e percentual dinâmico.
