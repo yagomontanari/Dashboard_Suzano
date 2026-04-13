@@ -559,6 +559,9 @@ async def export_sellin_detailed(
                     'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
                     'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente',
                     'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
+                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência'
+                ]
+
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
                 df.to_excel(writer, index=False, sheet_name='Sellin_Detalhado')
