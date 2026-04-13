@@ -194,7 +194,7 @@ QUERY_PAGAMENTOS = text("""
 # ERROS E INCONSISTÊNCIAS
 # ================================
 
-QUERY_ERRO_SELLIN = text("""
+QUERY_ERRO_SELLIN = text(r"""
     WITH dados_extraidos AS (
         SELECT 
             ife.erros, 
@@ -248,7 +248,7 @@ QUERY_ERRO_SELLIN = text("""
     WHERE rn_nota = 1
 """)
 
-QUERY_ERRO_SELLIN_DETALHADO = text("""
+QUERY_ERRO_SELLIN_DETALHADO = text(r"""
     WITH dados_extraidos AS (
         SELECT 
             ife.erros, 
