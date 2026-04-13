@@ -463,13 +463,14 @@ export default function Dashboard() {
         setInconsistencyLoading(true);
         // Usar novo endpoint do backend para exportação estilizada e detalhada
         const blob = await exportRelatorioSellinDetalhado(dateRange.startDate, dateRange.endDate);
-        const url = window.URL.createObjectURL(new Blob([blob]));
+        const url = window.URL.createObjectURL(blob); // response.data já é um Blob
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', `Sellin_Detalhado_${new Date().toISOString().split('T')[0]}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.remove();
+        window.URL.revokeObjectURL(url);
       } catch (err) {
         console.error("Erro ao exportar sellin detalhado", err);
         alert("Não foi possível gerar a exportação detalhada.");
