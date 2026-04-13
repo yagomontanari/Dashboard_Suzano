@@ -199,7 +199,11 @@ QUERY_ERRO_SELLIN = text("""
         SELECT 
             ife.erros, 
             TO_CHAR(ife.dta_criacao, 'DD/MM/YY HH24:MI:SS') AS dta_criacao,
-            TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY') AS data_emissao,
+            CASE 
+                WHEN (ife.registro ->> 'dataEmissao') ~ '^\d{4}-\d{2}-\d{2}' THEN TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY')
+                WHEN (ife.registro ->> 'dataEmissao') ~ '^\d{2}-\d{2}-\d{4}' THEN TO_CHAR(TO_DATE(ife.registro ->> 'dataEmissao', 'DD-MM-YYYY'), 'DD/MM/YYYY')
+                ELSE ife.registro ->> 'dataEmissao'
+            END AS data_emissao,
             ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
             ife.registro ->> 'clienteId' AS id_cliente,
             ife.registro ->> 'nomCliente' AS nom_cliente,
@@ -249,7 +253,11 @@ QUERY_ERRO_SELLIN_DETALHADO = text("""
         SELECT 
             ife.erros, 
             TO_CHAR(ife.dta_criacao, 'DD/MM/YY HH24:MI:SS') AS dta_criacao,
-            TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY') AS data_emissao,
+            CASE 
+                WHEN (ife.registro ->> 'dataEmissao') ~ '^\d{4}-\d{2}-\d{2}' THEN TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY')
+                WHEN (ife.registro ->> 'dataEmissao') ~ '^\d{2}-\d{2}-\d{4}' THEN TO_CHAR(TO_DATE(ife.registro ->> 'dataEmissao', 'DD-MM-YYYY'), 'DD/MM/YYYY')
+                ELSE ife.registro ->> 'dataEmissao'
+            END AS data_emissao,
             ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
             ife.registro ->> 'clienteId' AS id_cliente,
             ife.registro ->> 'nomCliente' AS nom_cliente,

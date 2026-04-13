@@ -4,6 +4,22 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.3] - 2026-04-13
+### Adicionado
+- **Exportação Detalhada com Identidade Visual (Sell-In)**:
+  - Implementação de novo endpoint de exportação no backend (`/export/sellin-detalhado`) utilizando `openpyxl`.
+  - Aplicação de **Identidade Visual Suzano Premium**: Cabeçalhos em azul escuro (`#0F172A`), fonte branca em negrito e ajuste automático de largura de colunas.
+### Alterado
+- **Refatoração do Modal de Inconsistências (Sell-In)**:
+  - Mudança na lógica de exibição para agrupamento por **Nota Fiscal/Nº Documento**, garantindo paridade entre o contador do dashboard e a listagem do modal.
+  - Simplificação das colunas para visão executiva: Erros, Data Emissão, Cliente, Nota Fiscal, Documento e Tipo Faturamento.
+### Corrigido
+- **Robustez de Parsing de Data (PostgreSQL)**:
+  - Implementação de lógica defensiva com Regex e `CASE` nas queries de Sell-In para suportar tanto o formato ISO (`AAAA-MM-DD`) quanto o formato brasileiro (`DD-MM-AAAA`) presentes nos registros JSON, eliminando o erro de `DatetimeFieldOverflowError`.
+  - Formatação padronizada para `DD/MM/AAAA` sem componentes de hora.
+
+---
+
 ## [1.8.2] - 2026-04-13
 ### Adicionado
 - **Novo Relatório (CGs Elegíveis Verba Fixa)**:
@@ -184,4 +200,4 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Componentização visual com Lucide React.
 
 ---
-*Atualizado em: 09 de Abril de 2026 por Antigravity AI.*
+*Atualizado em: 13 de Abril de 2026 por Antigravity AI.*
