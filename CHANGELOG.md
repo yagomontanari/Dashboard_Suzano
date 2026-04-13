@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.2] - 2026-04-13
+### Alterado
+- **Identidade Visual**: Substituição do ícone da aba do navegador (favicon) pelo logo corporativo colorido (Tradelinks_Colorida.png).
+
+---
+
 ## [1.8.1] - 2026-04-10
 ### Adicionado
 - **Exportação ZAJU (E-mail)**:
