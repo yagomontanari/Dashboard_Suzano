@@ -439,7 +439,7 @@ async def bg_generate_cg_elegiveis_report(start_dt: datetime, end_dt: datetime, 
     try:
         from openpyxl.styles import PatternFill, Font
         async with AsyncSessionLocal() as db:
-            params = {"start_date": start_dt.strftime("%Y-%m-%d"), "end_date": end_dt.strftime("%Y-%m-%d")}
+            params = {"start_date": start_dt, "end_date": end_dt}
             result = await db.execute(QUERY_RELATORIO_CG_ELEGIVEIS, params)
             rows = result.mappings().all()
 
