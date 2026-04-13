@@ -433,5 +433,69 @@ async def export_zaju_report(
     except Exception as e:
         logger.error(f"Erro ao solicitar exportação ZAJU: {e}")
         raise HTTPException(status_code=500, detail="Erro ao processar solicitação de exportação.")
-        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
+async def bg_generate_cg_elegiveis_report(start_dt: datetime, end_dt: datetime, email: str, nome: str):
+    try:
+        from openpyxl.styles import PatternFill, Font
+        async with AsyncSessionLocal() as db:
+            params = {"start_date": start_dt.strftime("%Y-%m-%d"), "end_date": end_dt.strftime("%Y-%m-%d")}
+            result = await db.execute(QUERY_RELATORIO_CG_ELEGIVEIS, params)
+            rows = result.mappings().all()
+
+            if not rows:
+                return
+
+            df = pd.DataFrame([dict(r) for r in rows])
+            
+            output = io.BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                df.to_excel(writer, index=False, sheet_name='CGs Elegíveis')
+                
+                header_fill = PatternFill(start_color="0F2744", end_color="0F2744", fill_type="solid")
+                header_font = Font(color="FFFFFF", bold=True)
+                
+                worksheet = writer.sheets['CGs Elegíveis']
+                for cell in worksheet[1]:
+                    cell.fill = header_fill
+                    cell.font = header_font
+            
+            filename = f"relatorio_cg_elegiveis_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
+            await mail_service.send_report_email(
+                email_to=email,
+                nome=nome,
+                report_name="CGs Elegíveis Verba Fixa",
+                file_content=output.getvalue(),
+                filename=filename
+            )
+            logger.info(f"Relatório CGs Elegíveis enviado com sucesso para {email}")
+
+    except Exception as e:
+        logger.error(f"Erro no background task de exportação CGs Elegíveis: {e}")
+
+@router.get("/export/cg-elegiveis")
+async def export_cg_elegiveis_report(
+    background_tasks: BackgroundTasks,
+    start_date: str = None, 
+    end_date: str = None, 
+    user: dict = Depends(get_current_user)
+):
+    try:
+        start_dt, end_dt = parse_date_range(start_date, end_date)
+
+        background_tasks.add_task(
+            bg_generate_cg_elegiveis_report, 
+            start_dt, 
+            end_dt, 
+            user.email, 
+            user.nome
+        )
+        
+        return {
+            "status": "success",
+            "message": f"O relatório está sendo gerado e será enviado para {user.email} em instantes."
+        }
+        
+    except Exception as e:
+        logger.error(f"Erro ao solicitar exportação CGs Elegíveis: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao processar solicitação de exportação.")

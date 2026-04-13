@@ -111,3 +111,10 @@ export const exportRelatorioZaju = async (startDate, endDate) => {
     });
     return response.data;
 }
+
+export const exportRelatorioCgElegiveis = async (startDate, endDate) => {
+    const response = await api.get('/data/export/cg-elegiveis', {
+        params: { start_date: startDate, end_date: endDate }
+    });
+    return response.data;
+}

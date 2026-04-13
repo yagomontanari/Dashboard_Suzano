@@ -565,3 +565,25 @@ QUERY_RELATORIO_ZAJU = text("""
       AND sapmc.status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
     ORDER BY sapmc.dta_criacao DESC;
 """)
+
+QUERY_RELATORIO_CG_ELEGIVEIS = text("""
+    SELECT
+       concat(cg.id_externo,' - ',cg.nom_extensao) as "Customer Group",
+       cli.id_externo as "Código do Cliente",
+       marca.nom_extensao as "Hierarquia Elegível (Marca)",
+       STRING_AGG(DISTINCT SUBSTRING(s.dta_emissao, 1, 7), ', ') as "Meses Faturados"
+    FROM sellin s
+    INNER JOIN cliente cli ON s.id_cliente = cli.id
+    INNER JOIN cliente_extensao ce ON cli.id = ce.id_cliente
+    INNER JOIN extensao cg ON ce.id_extensao = cg.id AND cg.id_nivel_extensao = 2
+    INNER JOIN produto p ON s.id_produto = p.id
+    INNER JOIN v_produto_extensao_recursiva vper ON p.id = vper.id_produto 
+    INNER JOIN extensao marca ON vper.id_extensao = marca.id 
+        AND marca.id_nivel_extensao = 8 
+        AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
+    WHERE s.tipo_doc_fat IN ('ZF2B', 'ZFCO')
+      AND s.dta_emissao >= :start_date
+      AND s.dta_emissao <= :end_date
+    GROUP BY cg.id_externo, cg.nom_extensao, cli.id_externo, marca.nom_extensao
+    ORDER BY cg.id_externo ASC;
+""")

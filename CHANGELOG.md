@@ -5,6 +5,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 ---
 
 ## [1.8.2] - 2026-04-13
+### Adicionado
+- **Novo Relatório (CGs Elegíveis Verba Fixa)**:
+  - Criação dinâmica de consulta que avalia faturamento histórico (retroativo de 3 meses `D-3`) em relação ao mês selecionado no painel.
+  - Extração de listagem exibindo: Customer Group, Código do Cliente, Hierarquia (Marca) e Meses Faturados.
+  - Implementação de query de alta performance usando JSONB (`@>`) e tabela derivada `v_produto_extensao_recursiva`.
+  - Motor de exportação via `BackgroundTasks` (FastAPI) e `openpyxl` integrando a planilha `.xlsx` com envio limpo automatizado via `mail_service`.
+  - Atualização do painel em React (Relatórios) convertendo o antigo placeholder para um widget ativo verde esmeralda com seletor de data (`type="month"`).
 ### Alterado
 - **Identidade Visual**: Substituição do ícone da aba do navegador (favicon) pelo logo corporativo colorido (Tradelinks_Colorida.png).
 
