@@ -11,6 +11,7 @@ from datetime import datetime
 import calendar
 import traceback
 from typing import List, Dict, Any
+from openpyxl.styles import PatternFill, Font
 
 from core.database import get_db, AsyncSessionLocal
 from core.security import SECRET_KEY, ALGORITHM
@@ -18,6 +19,7 @@ from core.mail import mail_service
 from core.utils import parse_date_range
 from api.queries import *
 from fastapi.responses import StreamingResponse
+from core.config import settings
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -557,12 +559,6 @@ async def export_sellin_detailed(
                     'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
                     'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente',
                     'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
-                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência'
-                ]
-
-            import io
-            from openpyxl.styles import PatternFill, Font
-            
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
                 df.to_excel(writer, index=False, sheet_name='Sellin_Detalhado')
@@ -601,7 +597,15 @@ async def export_sellin_detailed(
             )
 
     except Exception as e:
-        logger.error(f"Erro ao exportar sellin detalhado: {e}")
-        import traceback
+        print(f"CRITICAL ERROR EXPORT SELLIN: {e}")
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Erro ao exportar sellin detalhado: {e}")
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": str(e),
+                "trace": traceback.format_exc() if settings.DEBUG else None
+            }
+        )

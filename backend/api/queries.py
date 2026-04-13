@@ -200,8 +200,8 @@ QUERY_ERRO_SELLIN = text(r"""
             ife.erros, 
             TO_CHAR(ife.dta_criacao, 'DD/MM/YY HH24:MI:SS') AS dta_criacao,
             CASE 
-                WHEN (ife.registro ->> 'dataEmissao') ~ '^[0-9]{4}[-/][0-9]{2}[-/][0-9]{2}' THEN TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY')
-                WHEN (ife.registro ->> 'dataEmissao') ~ '^[0-9]{2}[-/][0-9]{2}[-/][0-9]{4}' THEN TO_CHAR(TO_DATE(REPLACE(ife.registro ->> 'dataEmissao', '/', '-'), 'DD-MM-YYYY'), 'DD/MM/YYYY')
+                WHEN (ife.registro ->> 'dataEmissao') ~ '^[0-9]{2,4}[-/][0-9]{2}[-/][0-9]{2,4}' THEN 
+                    TO_CHAR(TO_DATE(REPLACE(REPLACE(ife.registro ->> 'dataEmissao', '/', '-'), ' 00:00:00', ''), 'DD-MM-YYYY'), 'DD/MM/YYYY')
                 ELSE ife.registro ->> 'dataEmissao'
             END AS data_emissao,
             ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
@@ -230,7 +230,7 @@ QUERY_ERRO_SELLIN = text(r"""
         WHERE de.rn = 1 AND NOT EXISTS (
             SELECT 1 FROM sellin se 
             WHERE de.nro_documento ~ '^[0-9]+$' 
-              AND se.nro_documento = CAST(de.nro_documento AS INTEGER)
+              AND se.nro_documento = CAST(de.nro_documento AS BIGINT)
               AND se.id_produto IN (SELECT p.id FROM produto p WHERE p.id_externo = de.id_produto)
               AND se.id_cliente IN (SELECT c.id FROM cliente c WHERE c.id_externo = de.id_cliente)
               AND se.tipo_doc_fat = de.tipo_doc_fat
@@ -255,8 +255,8 @@ QUERY_ERRO_SELLIN_DETALHADO = text(r"""
             ife.erros, 
             TO_CHAR(ife.dta_criacao, 'DD/MM/YY HH24:MI:SS') AS dta_criacao,
             CASE 
-                WHEN (ife.registro ->> 'dataEmissao') ~ '^[0-9]{4}[-/][0-9]{2}[-/][0-9]{2}' THEN TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY')
-                WHEN (ife.registro ->> 'dataEmissao') ~ '^[0-9]{2}[-/][0-9]{2}[-/][0-9]{4}' THEN TO_CHAR(TO_DATE(REPLACE(ife.registro ->> 'dataEmissao', '/', '-'), 'DD-MM-YYYY'), 'DD/MM/YYYY')
+                WHEN (ife.registro ->> 'dataEmissao') ~ '^[0-9]{2,4}[-/][0-9]{2}[-/][0-9]{2,4}' THEN 
+                    TO_CHAR(TO_DATE(REPLACE(REPLACE(ife.registro ->> 'dataEmissao', '/', '-'), ' 00:00:00', ''), 'DD-MM-YYYY'), 'DD/MM/YYYY')
                 ELSE ife.registro ->> 'dataEmissao'
             END AS data_emissao,
             ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
@@ -284,7 +284,7 @@ QUERY_ERRO_SELLIN_DETALHADO = text(r"""
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM sellin se 
         WHERE de.nro_documento ~ '^[0-9]+$' 
-          AND se.nro_documento = CAST(de.nro_documento AS INTEGER)
+          AND se.nro_documento = CAST(de.nro_documento AS BIGINT)
           AND se.id_produto IN (SELECT p.id FROM produto p WHERE p.id_externo = de.id_produto)
           AND se.id_cliente IN (SELECT c.id FROM cliente c WHERE c.id_externo = de.id_cliente)
           AND se.tipo_doc_fat = de.tipo_doc_fat

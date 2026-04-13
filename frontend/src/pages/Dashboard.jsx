@@ -473,7 +473,9 @@ export default function Dashboard() {
         window.URL.revokeObjectURL(url);
       } catch (err) {
         console.error("Erro ao exportar sellin detalhado", err);
-        alert("Não foi possível gerar a exportação detalhada.");
+        const status = err.response ? err.response.status : 'Network Error';
+        const message = err.response?.data?.detail || err.message;
+        alert(`Não foi possível gerar a exportação detalhada. Status: ${status}. Detalhe: ${message}`);
       } finally {
         setInconsistencyLoading(false);
       }
