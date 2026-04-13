@@ -571,7 +571,7 @@ QUERY_RELATORIO_CG_ELEGIVEIS = text("""
        concat(cg.id_externo,' - ',cg.nom_extensao) as "Customer Group",
        cli.id_externo as "Código do Cliente",
        marca.nom_extensao as "Hierarquia Elegível (Marca)",
-       STRING_AGG(DISTINCT SUBSTRING(s.dta_emissao, 1, 7), ', ') as "Meses Faturados"
+       STRING_AGG(DISTINCT TO_CHAR(s.dta_emissao, 'MM/YYYY'), ', ') as "Meses Faturados"
     FROM sellin s
     INNER JOIN cliente cli ON s.id_cliente = cli.id
     INNER JOIN cliente_extensao ce ON cli.id = ce.id_cliente
