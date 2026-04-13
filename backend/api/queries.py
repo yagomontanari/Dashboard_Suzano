@@ -199,7 +199,7 @@ QUERY_ERRO_SELLIN = text("""
         SELECT 
             ife.erros, 
             TO_CHAR(ife.dta_criacao, 'DD/MM/YY HH24:MI:SS') AS dta_criacao,
-            ife.registro ->> 'dataEmissao' AS data_emissao,
+            TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY') AS data_emissao,
             ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
             ife.registro ->> 'clienteId' AS id_cliente,
             ife.registro ->> 'nomCliente' AS nom_cliente,
@@ -249,7 +249,7 @@ QUERY_ERRO_SELLIN_DETALHADO = text("""
         SELECT 
             ife.erros, 
             TO_CHAR(ife.dta_criacao, 'DD/MM/YY HH24:MI:SS') AS dta_criacao,
-            ife.registro ->> 'dataEmissao' AS data_emissao,
+            TO_CHAR(CAST(ife.registro ->> 'dataEmissao' AS TIMESTAMP), 'DD/MM/YYYY') AS data_emissao,
             ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
             ife.registro ->> 'clienteId' AS id_cliente,
             ife.registro ->> 'nomCliente' AS nom_cliente,

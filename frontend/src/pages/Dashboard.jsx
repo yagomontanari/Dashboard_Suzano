@@ -1,6 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDashboardData, getInconsistenciasData, getVk11Details } from '../services/api';
+import { 
+  getDashboardData, 
+  getInconsistenciasData, 
+  getVk11Details,
+  exportRelatorioZaju,
+  exportRelatorioCgElegiveis,
+  exportRelatorioSellinDetalhado
+} from '../services/api';
+
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { 
   Download, 
@@ -449,10 +457,26 @@ export default function Dashboard() {
     }
   };
 
-  const exportInconsistencyCategory = () => {
+  const exportInconsistencyCategory = async () => {
     if (selectedInconsistency === 'sellin') {
-      // Para sellin, usamos o endpoint detalhado na exportação
-      return exportCategory('sellin_detalhado', totalCount);
+      try {
+        setInconsistencyLoading(true);
+        // Usar novo endpoint do backend para exportação estilizada e detalhada
+        const blob = await exportRelatorioSellinDetalhado(dateRange.startDate, dateRange.endDate);
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Sellin_Detalhado_${new Date().toISOString().split('T')[0]}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (err) {
+        console.error("Erro ao exportar sellin detalhado", err);
+        alert("Não foi possível gerar a exportação detalhada.");
+      } finally {
+        setInconsistencyLoading(false);
+      }
+      return;
     }
     return exportCategory(selectedInconsistency, totalCount);
   };

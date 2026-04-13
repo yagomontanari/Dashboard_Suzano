@@ -521,3 +521,87 @@ async def export_cg_elegiveis_report(
     except Exception as e:
         logger.error(f"Erro ao solicitar exportação CGs Elegíveis: {e}")
         raise HTTPException(status_code=500, detail="Erro ao processar solicitação de exportação.")
+@router.get("/export/sellin-detalhado")
+async def export_sellin_detailed(
+    start_date: str = None, 
+    end_date: str = None, 
+    user: dict = Depends(get_current_user)
+):
+    try:
+        start_dt, end_dt = parse_date_range(start_date, end_date)
+        
+        async with AsyncSessionLocal() as db:
+            params = {"start_date": start_dt, "end_date": end_dt}
+            result = await db.execute(QUERY_ERRO_SELLIN_DETALHADO, params)
+            rows = result.mappings().all()
+
+            if not rows:
+                # Retorna um arquivo vazio com cabeçalho se não houver registros
+                df = pd.DataFrame(columns=[
+                    'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
+                    'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente (Full)',
+                    'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
+                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Ref Fat'
+                ])
+            else:
+                raw_df = pd.DataFrame([dict(r) for r in rows])
+                # Mapeamento para nomes amigáveis e colunas solicitadas
+                df = raw_df[[
+                    'erros', 'dta_criacao', 'data_emissao', 'nro_nota_fiscal', 
+                    'nro_documento', 'item_documento', 'id_cliente', 'nom_cliente', 'cliente',
+                    'id_produto', 'nom_produto', 'unidade_medida', 'quantidade', 
+                    'valor_total', 'valor_liquido', 'dta_venc_liq', 'tipo_doc_fat', 'referencia_fat'
+                ]].copy()
+                
+                df.columns = [
+                    'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
+                    'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente',
+                    'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
+                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência'
+                ]
+
+            import io
+            from openpyxl.styles import PatternFill, Font
+            
+            output = io.BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                df.to_excel(writer, index=False, sheet_name='Sellin_Detalhado')
+                
+                workbook = writer.book
+                worksheet = writer.sheets['Sellin_Detalhado']
+                
+                # Identidade Visual Suzano (Blue Header)
+                header_fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid")
+                header_font = Font(color="FFFFFF", bold=True)
+                
+                for cell in worksheet[1]:
+                    cell.fill = header_fill
+                    cell.font = header_font
+                    
+                # Ajuste de largura de colunas (básico)
+                for column in worksheet.columns:
+                    max_length = 0
+                    column_letter = column[0].column_letter
+                    for cell in column:
+                        try:
+                            if len(str(cell.value)) > max_length:
+                                max_length = len(str(cell.value))
+                        except:
+                            pass
+                    adjusted_width = (max_length + 2)
+                    worksheet.column_dimensions[column_letter].width = min(adjusted_width, 50)
+
+            filename = f"sellin_detalhado_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
+            
+            output.seek(0)
+            return StreamingResponse(
+                output,
+                media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                headers={"Content-Disposition": f"attachment; filename={filename}"}
+            )
+
+    except Exception as e:
+        logger.error(f"Erro ao exportar sellin detalhado: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))

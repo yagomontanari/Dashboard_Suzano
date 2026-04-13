@@ -118,3 +118,11 @@ export const exportRelatorioCgElegiveis = async (startDate, endDate, filter_mont
     });
     return response.data;
 }
+
+export const exportRelatorioSellinDetalhado = async (startDate, endDate) => {
+    const response = await api.get('/data/export/sellin-detalhado', {
+        params: { start_date: startDate, end_date: endDate },
+        responseType: 'blob'
+    });
+    return response.data;
+}
