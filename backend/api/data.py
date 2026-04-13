@@ -432,10 +432,9 @@ async def export_zaju_report(
         
     except Exception as e:
         logger.error(f"Erro ao solicitar exportação ZAJU: {e}")
-        raise HTTPException(status_code=500, detail="Erro ao processar solicitação de exportação.")
         raise HTTPException(status_code=500, detail=str(e))
 
-async def bg_generate_cg_elegiveis_report(start_dt: datetime, end_dt: datetime, email: str, nome: str):
+async def bg_generate_cg_elegiveis_report(start_dt: datetime, end_dt: datetime, email: str, nome: str, filter_month: str = None):
     try:
         from openpyxl.styles import PatternFill, Font
         async with AsyncSessionLocal() as db:
@@ -448,25 +447,45 @@ async def bg_generate_cg_elegiveis_report(start_dt: datetime, end_dt: datetime, 
 
             df = pd.DataFrame([dict(r) for r in rows])
             
+            import io
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                df.to_excel(writer, index=False, sheet_name='CGs Elegíveis')
+                df.to_excel(writer, index=False, sheet_name='CGs_Elegiveis')
                 
-                header_fill = PatternFill(start_color="0F2744", end_color="0F2744", fill_type="solid")
+                workbook = writer.book
+                worksheet = writer.sheets['CGs_Elegiveis']
+                
+                header_fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid")
                 header_font = Font(color="FFFFFF", bold=True)
                 
-                worksheet = writer.sheets['CGs Elegíveis']
                 for cell in worksheet[1]:
                     cell.fill = header_fill
                     cell.font = header_font
-            
+
             filename = f"relatorio_cg_elegiveis_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
+            
+            # Construir a mensagem do período para o E-mail
+            custom_period = None
+            if filter_month:
+                meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+                ano, mes = filter_month.split('-')
+                mes_extenso = meses[int(mes)]
+                str_start = f"{meses[start_dt.month]}/{start_dt.year}"
+                str_end = f"{meses[end_dt.month]}/{end_dt.year}"
+                if str_start != str_end:
+                    elegibilidade = f"{str_start} a {str_end}"
+                else:
+                    elegibilidade = str_start
+                custom_period = f"<strong>{mes_extenso}/{ano}</strong> (período de elegibilidade: {elegibilidade})"
+            
+            # Send email
             await mail_service.send_report_email(
                 email_to=email,
                 nome=nome,
                 report_name="CGs Elegíveis Verba Fixa",
                 file_content=output.getvalue(),
-                filename=filename
+                filename=filename,
+                custom_period_text=custom_period
             )
             logger.info(f"Relatório CGs Elegíveis enviado com sucesso para {email}")
 
@@ -478,6 +497,7 @@ async def export_cg_elegiveis_report(
     background_tasks: BackgroundTasks,
     start_date: str = None, 
     end_date: str = None, 
+    filter_month: str = None,
     user: dict = Depends(get_current_user)
 ):
     try:
@@ -488,7 +508,8 @@ async def export_cg_elegiveis_report(
             start_dt, 
             end_dt, 
             user.email, 
-            user.nome
+            user.nome,
+            filter_month
         )
         
         return {

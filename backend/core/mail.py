@@ -39,14 +39,30 @@ class MailService:
         except Exception as e:
             logger.error(f"Email error for {email_to}: {e}")
 
-    async def send_report_email(self, email_to: str, nome: str, report_name: str, file_content: bytes, filename: str):
+    async def send_report_email(self, email_to: str, nome: str, report_name: str, file_content: bytes, filename: str, custom_period_text: str = None):
         import re
         mes_ref = ""
-        match = re.search(r'_(\d{4})(\d{2})\d{2}_', filename)
-        if match:
-            ano, mes = match.groups()
-            meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
-            mes_ref = f" referente a <strong>{meses[int(mes)]}/{ano}</strong>"
+        meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+        
+        if custom_period_text:
+            mes_ref = f" referente a {custom_period_text}"
+        else:
+            # Tenta extrair período inicial e final (ex: _20260101_20260331)
+            match_duplo = re.search(r'_(\d{4})(\d{2})\d{2}_(\d{4})(\d{2})\d{2}', filename)
+            if match_duplo:
+                ano1, mes1, ano2, mes2 = match_duplo.groups()
+                if ano1 == ano2:
+                    if mes1 == mes2:
+                        mes_ref = f" referente a <strong>{meses[int(mes1)]}/{ano1}</strong>"
+                    else:
+                        mes_ref = f" referente a <strong>{meses[int(mes1)]} a {meses[int(mes2)]}/{ano1}</strong>"
+                else:
+                    mes_ref = f" referente a <strong>{meses[int(mes1)]}/{ano1} a {meses[int(mes2)]}/{ano2}</strong>"
+            else:
+                match_simples = re.search(r'_(\d{4})(\d{2})\d{2}_?', filename)
+                if match_simples:
+                    ano, mes = match_simples.groups()
+                    mes_ref = f" referente a <strong>{meses[int(mes)]}/{ano}</strong>"
 
         content = f"""
         <div style="text-align: center; margin-bottom: 30px;">

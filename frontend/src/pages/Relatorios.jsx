@@ -54,7 +54,8 @@ export default function Relatorios() {
       const startDate = `${startObj.getFullYear()}-${String(startObj.getMonth()+1).padStart(2,'0')}-01`;
       const endDate = `${endObj.getFullYear()}-${String(endObj.getMonth()+1).padStart(2,'0')}-${String(endObj.getDate()).padStart(2,'0')}`;
 
-      const data = await exportRelatorioCgElegiveis(startDate, endDate);
+      const filterMonthStr = `${year}-${String(month+1).padStart(2,'0')}`;
+      const data = await exportRelatorioCgElegiveis(startDate, endDate, filterMonthStr);
       
       if (data.status === 'success') {
         setSuccessCg(data.message);

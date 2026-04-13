@@ -569,7 +569,6 @@ QUERY_RELATORIO_ZAJU = text("""
 QUERY_RELATORIO_CG_ELEGIVEIS = text("""
     SELECT
        concat(cg.id_externo,' - ',cg.nom_extensao) as "Customer Group",
-       cli.id_externo as "Código do Cliente",
        marca.nom_extensao as "Hierarquia Elegível (Marca)",
        STRING_AGG(DISTINCT TO_CHAR(s.dta_emissao, 'MM/YYYY'), ', ') as "Meses Faturados"
     FROM sellin s
@@ -584,6 +583,7 @@ QUERY_RELATORIO_CG_ELEGIVEIS = text("""
     WHERE s.tipo_doc_fat IN ('ZF2B', 'ZFCO')
       AND s.dta_emissao >= :start_date
       AND s.dta_emissao <= :end_date
-    GROUP BY cg.id_externo, cg.nom_extensao, cli.id_externo, marca.nom_extensao
+      AND s.valor_total > 0
+    GROUP BY cg.id_externo, cg.nom_extensao, marca.nom_extensao
     ORDER BY cg.id_externo ASC;
 """)
