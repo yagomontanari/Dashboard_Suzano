@@ -211,6 +211,7 @@ async def get_inconsistencies(
         
         query_map = {
             "sellin": (QUERY_ERRO_SELLIN_PAGINATED, QUERY_ERRO_SELLIN),
+            "sellin_detalhado": (QUERY_ERRO_SELLIN_DETALHADO, QUERY_ERRO_SELLIN_DETALHADO),
             "clientes": (QUERY_ERRO_CLIENTES_PAGINATED, QUERY_ERRO_CLIENTES),
             "produtos": (QUERY_ERRO_PRODUTOS_PAGINATED, QUERY_ERRO_PRODUTOS),
             "cutoff": (QUERY_ERRO_CUTOFF_PAGINATED, QUERY_ERRO_CUTOFF),

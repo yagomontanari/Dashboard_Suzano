@@ -339,16 +339,12 @@ export default function Dashboard() {
   const getColumnsForCategory = (category) => {
     switch (category) {
       case 'sellin': return [
+        {key: 'erros', label:'Erros'},
         {key: 'data_emissao', label:'Data Emissão'},
-        {key: 'dta_criacao', label: 'Data Registro'},
+        {key: 'cliente', label:'Cliente'},
         {key: 'nro_nota_fiscal', label:'Nota Fiscal'},
         {key: 'nro_documento', label: 'Nº Documento'},
-        {key: 'cliente', label:'Cliente'},
-        {key: 'produto', label: 'Produto'},
-        {key: 'nom_produto', label: 'Nome Prod'},
-        {key: 'tipo_doc_fat', label: 'Tipo Fat'},
-        {key: 'referencia_fat', label: 'Ref Fat'},
-        {key: 'erros', label:'Erros (JSON)'}
+        {key: 'tipo_doc_fat', label: 'Tipo Doc Faturamento'}
       ];
       case 'clientes': return [
         {key: 'dta_criacao', label: 'Data Registro'}, 
@@ -453,7 +449,13 @@ export default function Dashboard() {
     }
   };
 
-  const exportInconsistencyCategory = () => exportCategory(selectedInconsistency, totalCount);
+  const exportInconsistencyCategory = () => {
+    if (selectedInconsistency === 'sellin') {
+      // Para sellin, usamos o endpoint detalhado na exportação
+      return exportCategory('sellin_detalhado', totalCount);
+    }
+    return exportCategory(selectedInconsistency, totalCount);
+  };
 
   const totalErrors = useMemo(() => {
     if (!data) return 0;
@@ -971,7 +973,8 @@ export default function Dashboard() {
             disabled={inconsistencyLoading}
             className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-900 text-white rounded-lg shadow-sm text-sm font-semibold hover:bg-slate-800 hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
-            <Download size={14} strokeWidth={2.5} /> Exportar Excel
+            <Download size={14} strokeWidth={2.5} /> 
+            {selectedInconsistency === 'sellin' ? 'Exportação Detalhada' : 'Exportar Excel'}
           </button>
         }
       >

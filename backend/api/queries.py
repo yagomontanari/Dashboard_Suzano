@@ -203,6 +203,7 @@ QUERY_ERRO_SELLIN = text("""
             ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
             ife.registro ->> 'clienteId' AS id_cliente,
             ife.registro ->> 'nomCliente' AS nom_cliente,
+            (ife.registro ->> 'clienteId') || ' - ' || (ife.registro ->> 'nomCliente') AS cliente,
             ife.registro ->> 'numeroDocFiscal' AS nro_documento,
             ife.registro ->> 'itemDocumento' AS item_documento,
             ife.registro ->> 'produtoId' AS id_produto,
@@ -231,7 +232,7 @@ QUERY_ERRO_SELLIN = text("""
         )
     )
     SELECT 
-        erros, dta_criacao, data_emissao, nro_nota_fiscal, id_cliente, nom_cliente,
+        erros, dta_criacao, data_emissao, nro_nota_fiscal, id_cliente, nom_cliente, cliente,
         nro_documento, item_documento, id_produto, nom_produto, unidade_medida,
         quantidade, valor_total, valor_liquido, dta_venc_liq, tipo_doc_fat,
         referencia_fat, dta_alteracao
@@ -241,6 +242,44 @@ QUERY_ERRO_SELLIN = text("""
         FROM itens_inconsistentes
     ) AS final
     WHERE rn_nota = 1
+""")
+
+QUERY_ERRO_SELLIN_DETALHADO = text("""
+    WITH dados_extraidos AS (
+        SELECT 
+            ife.erros, 
+            TO_CHAR(ife.dta_criacao, 'DD/MM/YY HH24:MI:SS') AS dta_criacao,
+            ife.registro ->> 'dataEmissao' AS data_emissao,
+            ife.registro ->> 'numeroNF' AS nro_nota_fiscal,
+            ife.registro ->> 'clienteId' AS id_cliente,
+            ife.registro ->> 'nomCliente' AS nom_cliente,
+            (ife.registro ->> 'clienteId') || ' - ' || (ife.registro ->> 'nomCliente') AS cliente,
+            ife.registro ->> 'numeroDocFiscal' AS nro_documento,
+            ife.registro ->> 'itemDocumento' AS item_documento,
+            ife.registro ->> 'produtoId' AS id_produto,
+            ife.registro ->> 'nomProduto' AS nom_produto,
+            ife.registro ->> 'unidadeMedida' AS unidade_medida,
+            ife.registro ->> 'quantidade' AS quantidade,
+            ife.registro ->> 'valorBruto' AS valor_total,
+            ife.registro ->> 'valorLiquido' AS valor_liquido,
+            ife.registro ->> 'dataVencimentoLiq' AS dta_venc_liq,
+            ife.registro ->> 'tipoDocFat' AS tipo_doc_fat,
+            ife.registro ->> 'referenciaFat' AS referencia_fat,
+            ife.dta_alteracao,
+            ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'numeroDocFiscal', ife.registro ->> 'produtoId' ORDER BY ife.dta_criacao DESC) as rn
+        FROM integracao_fila_erros ife
+        WHERE tipo = 'SELLIN' 
+          AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
+    )
+    SELECT * FROM dados_extraidos de
+    WHERE de.rn = 1 AND NOT EXISTS (
+        SELECT 1 FROM sellin se 
+        WHERE se.nro_documento = CAST(de.nro_documento AS INTEGER)
+          AND se.id_produto IN (SELECT p.id FROM produto p WHERE p.id_externo = de.id_produto)
+          AND se.id_cliente IN (SELECT c.id FROM cliente c WHERE c.id_externo = de.id_cliente)
+          AND se.tipo_doc_fat = de.tipo_doc_fat
+    )
+    ORDER BY nro_documento, item_documento;
 """)
 
 QUERY_ERRO_SELLIN_PAGINATED = text(QUERY_ERRO_SELLIN.text + PAGINATION_SORT_SUFFIX)
