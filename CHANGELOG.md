@@ -4,6 +4,22 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.8] - 2026-04-13
+### Corrigido
+- **Exportação de Inconsistências**: 
+  - Correção crítica onde exportações e visualizações detalhadas retornavam arquivos vazios quando o período selecionado era diferente do mês atual (sincronização de parâmetros `start_date` e `end_date`).
+- **Layout Técnico (Clientes)**:
+  - Expansão do layout de exportação de Clientes baseado no `QUERY_ERRO_CLIENTES`, incluindo agora dados de contato, classificação de canais, regional e auditoria técnica completa.
+
+---
+
+## [1.8.7] - 2026-04-13
+### Alterado
+- **UX/UI (PaginatedTable)**:
+  - Melhoria na legibilidade das tabelas de detalhamento através do aumento do contraste das linhas divisórias (`divide-slate-200`), facilitando a distinção visual entre registros em diferentes condições de iluminação.
+
+---
+
 ## [1.8.6] - 2026-04-13
 ### Alterado
 - **Identidade Visual (Sidebar)**:

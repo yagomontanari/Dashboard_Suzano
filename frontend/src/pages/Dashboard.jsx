@@ -306,7 +306,15 @@ export default function Dashboard() {
     setInconsistencyLoading(true);
     setInconsistencyError(null);
     try {
-      const result = await getInconsistenciasData(category, page, 20, sort?.key, sort?.direction);
+      const result = await getInconsistenciasData(
+        category, 
+        page, 
+        20, 
+        sort?.key, 
+        sort?.direction,
+        dateRange.startDate,
+        dateRange.endDate
+      );
       setInconsistencyData(result.data || []);
       setCurrentPage(result.page);
       setTotalPages(result.total_pages);
@@ -345,7 +353,7 @@ export default function Dashboard() {
   };
 
   const getColumnsForCategory = (category) => {
-    switch (category) {
+    switch(category) {
       case 'sellin': return [
         {key: 'erros', label:'Erros'},
         {key: 'data_emissao', label:'Data Emissão'},
@@ -396,6 +404,85 @@ export default function Dashboard() {
     }
   };
 
+  /**
+   * Layout expandido para exportação Excel (conforme QUERY_ERRO_CLIENTES e outras)
+   */
+  const getExportColumnsForCategory = (category) => {
+    switch(category) {
+      case 'clientes': return [
+        {key: 'dta_criacao', label: 'Data Registro'},
+        {key: 'erros', label: 'Erros de Integração'},
+        {key: 'cod_cliente', label: 'Cód. Cliente (Externo)'},
+        {key: 'nom_cliente', label: 'Nome Cliente'},
+        {key: 'cnpj', label: 'CNPJ'},
+        {key: 'ativo_inativo', label: 'Ativo/Inativo'},
+        {key: 'contato_cliente', label: 'Nome Contato'},
+        {key: 'email_contato_cliente', label: 'E-mail Contato'},
+        {key: 'telefone_contato_cliente', label: 'Telefone Contato'},
+        {key: 'sap_pagador', label: 'É Pagador (SAP)'},
+        {key: 'cod_customer_group', label: 'Cód. Customer Group'},
+        {key: 'customer_group', label: 'Customer Group'},
+        {key: 'cod_canal', label: 'Cód. Canal'},
+        {key: 'canal', label: 'Canal'},
+        {key: 'sub_canal', label: 'Sub Canal'},
+        {key: 'cod_regional', label: 'Cód. Regional'},
+        {key: 'regional', label: 'Regional'},
+        {key: 'dta_alteracao', label: 'Data Última Alteração'}
+      ];
+      case 'produtos': return [
+        {key: 'lote', label: 'Lote'},
+        {key: 'erros', label: 'Erros'},
+        {key: 'id_produto', label: 'Cód. Produto'},
+        {key: 'nom_produto', label: 'Nome Produto'},
+        {key: 'ativo_inativo', label: 'Ativo'},
+        {key: 'volume', label: 'Volume'},
+        {key: 'peso', label: 'Peso'},
+        {key: 'unidade_medida', label: 'UM'},
+        {key: 'cod_classe', label: 'Cód. Classe'},
+        {key: 'classe', label: 'Classe'},
+        {key: 'grupo_mercadoria', label: 'Grupo Mercadoria'},
+        {key: 'familia', label: 'Família'},
+        {key: 'setor_atividade', label: 'Setor Atividade'},
+        {key: 'hierarquia1', label: 'Hierarquia 1'},
+        {key: 'hierarquia2', label: 'Hierarquia 2'},
+        {key: 'hierarquia3', label: 'Hierarquia 3'},
+        {key: 'unidade_negocio', label: 'Unidade Negócio'},
+        {key: 'dta_alteracao', label: 'Data Alteração'}
+      ];
+      case 'sellin': return [
+        {key: 'erros', label: 'Erros'},
+        {key: 'dta_criacao', label: 'Data Registro'},
+        {key: 'data_emissao', label: 'Data Emissão'},
+        {key: 'nro_nota_fiscal', label: 'Nº Nota Fiscal'},
+        {key: 'id_cliente', label: 'ID Cliente'},
+        {key: 'nom_cliente', label: 'Nome Cliente'},
+        {key: 'nro_documento', label: 'Nº Documento Fiscal'},
+        {key: 'item_documento', label: 'Item'},
+        {key: 'id_produto', label: 'ID Produto'},
+        {key: 'nom_produto', label: 'Nome Produto'},
+        {key: 'quantidade', label: 'Qtd'},
+        {key: 'valor_total', label: 'Vlr Total'},
+        {key: 'valor_liquido', label: 'Vlr Líquido'},
+        {key: 'tipo_doc_fat', label: 'Tipo Doc'},
+        {key: 'referencia_fat', label: 'Ref. Faturamento'}
+      ];
+      case 'pagamentos':
+      case 'pagamentos_sucesso': return [
+        {key: 'cod_pagamento', label: 'ID Pagamento'},
+        {key: 'cliente', label: 'Cliente'},
+        {key: 'sequencial', label: 'Sequencial'},
+        {key: 'purch_no_c', label: 'ID Integração'},
+        {key: 'dta_criacao', label: 'Data Registro'},
+        {key: 'dta_envio_integracao', label: 'Data Envio'},
+        {key: 'status', label: 'Status'},
+        {key: 'msg', label: category === 'pagamentos_sucesso' ? 'Mensagem' : 'Erros'},
+        {key: 'dta_alteracao', label: 'Audit. Alteração'}
+      ];
+      // Para as demais, usa o layout padrão da UI
+      default: return getColumnsForCategory(category);
+    }
+  };
+
   const handleDownload = (blob, filename) => {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -442,16 +529,19 @@ export default function Dashboard() {
     if (!category || total === 0) return;
     try {
       setInconsistencyLoading(true);
-      // Fetch ALL possible records for this category
-      const result = await getInconsistenciasData(category, 1, total > 0 ? total : 5000);
+      // Fetch ALL possible records for this category with current filters
+      const result = await getInconsistenciasData(
+        category, 
+        1, 
+        total > 0 ? total : 5000, 
+        null, 
+        'desc',
+        dateRange.startDate,
+        dateRange.endDate
+      );
       const dataToExport = result.data || [];
       
-      let columnsDef = getColumnsForCategory(category === 'pagamentos_sucesso' ? 'pagamentos' : category);
-      
-      // Especificação do usuário: para exportação de sucessos, mudar "Erros" para "Mensagem"
-      if (category === 'pagamentos_sucesso') {
-        columnsDef = columnsDef.map(col => col.key === 'msg' ? { ...col, label: 'Mensagem' } : col);
-      }
+      const columnsDef = getExportColumnsForCategory(category);
       
       const formattedData = dataToExport.map(row => {
         const formattedRow = {};
@@ -467,7 +557,7 @@ export default function Dashboard() {
       
       const blob = await exportStyledData({
         title: `Registros_${category}`,
-        sheets: [{ name: category.toUpperCase(), data: formattedData }]
+        sheets: [{ name: category.toUpperCase().slice(0, 30), data: formattedData }]
       }, `Registros_${category}`);
 
       handleDownload(blob, `Registros_${category}_${new Date().toISOString().split('T')[0]}.xlsx`);

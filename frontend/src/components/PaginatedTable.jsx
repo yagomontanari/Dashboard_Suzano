@@ -1,27 +1,33 @@
 import PropTypes from 'prop-types';
 import { ChevronLeft, ChevronRight, Loader2, AlertCircle, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
 
-const formatDateTime = (value) => {
+const formatDate = (value, includeTime = true) => {
   if (!value) return '-';
   try {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
+    
     const dd = String(date.getDate()).padStart(2, '0');
     const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yy = String(date.getFullYear()).slice(-2);
+    const yyyy = date.getFullYear();
+    
+    if (!includeTime) return `${dd}/${mm}/${yyyy}`;
+    
     const hh = String(date.getHours()).padStart(2, '0');
     const min = String(date.getMinutes()).padStart(2, '0');
     const ss = String(date.getSeconds()).padStart(2, '0');
-    return `${dd}/${mm}/${yy} ${hh}:${min}:${ss}`;
+    return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
   } catch {
     return value;
   }
 };
 
-const DATE_KEYS = new Set(['dta_criacao', 'dta_envio_integracao', 'data_emissao', 'valid_from']);
+const DATE_ONLY_KEYS = new Set(['data_emissao', 'valid_from']);
+const DATE_TIME_KEYS = new Set(['dta_criacao', 'dta_envio_integracao', 'dta_alteracao']);
 
 const formatCellValue = (key, value) => {
-  if (DATE_KEYS.has(key)) return formatDateTime(value);
+  if (DATE_ONLY_KEYS.has(key)) return formatDate(value, false);
+  if (DATE_TIME_KEYS.has(key)) return formatDate(value, true);
   return value || '-';
 };
 

@@ -98,9 +98,16 @@ export const getVk11Details = async () => {
     return response.data;
 }
 
-export const getInconsistenciasData = async (category, page = 1, size = 20, sort_by = null, order = 'desc') => {
+export const getInconsistenciasData = async (category, page = 1, size = 20, sort_by = null, order = 'desc', startDate = null, endDate = null) => {
     const response = await api.get(`/data/dashboard/inconsistencies/${category}`, {
-        params: { page, size, sort_by, order }
+        params: { 
+            page, 
+            size, 
+            sort_by, 
+            order,
+            start_date: startDate,
+            end_date: endDate
+        }
     });
     return response.data;
 }
