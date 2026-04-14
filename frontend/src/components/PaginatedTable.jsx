@@ -74,11 +74,11 @@ export default function PaginatedTable({
   }
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <div className="overflow-x-auto border-b border-slate-200">
+    <div className="flex flex-col h-full bg-white relative overflow-hidden">
+      <div className="flex-1 overflow-auto border-b border-slate-200 custom-scrollbar">
         <table className="w-full text-left border-collapse text-sm">
-          <thead>
-            <tr className="bg-slate-100 border-b-2 border-slate-300">
+          <thead className="sticky top-0 z-10 shadow-sm">
+            <tr className="bg-slate-100/95 backdrop-blur-sm border-b-2 border-slate-300">
               {columns.map((col) => (
                 <th 
                     key={col.key} 
@@ -110,8 +110,8 @@ export default function PaginatedTable({
         </table>
       </div>
 
-      {/* Pagination Footer */}
-      <div className="flex items-center justify-between px-6 py-4 bg-slate-50 min-h-[64px]">
+      {/* Pagination Footer - Sticky with Destaque */}
+      <div className="sticky bottom-0 z-10 flex items-center justify-between px-8 py-5 bg-slate-50/95 backdrop-blur-sm border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <div className="text-sm font-medium text-slate-500">
           <span>Total de <strong className="text-slate-800">{totalCount}</strong> registros</span>
         </div>

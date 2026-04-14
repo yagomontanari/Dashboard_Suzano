@@ -4,6 +4,23 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.4] - 2026-04-13
+### Adicionado
+- **Governança de Erros**: Criação do arquivo `BUG_LOG.md` na raiz do projeto para rastreabilidade técnica e histórico de incidentes.
+### Alterado
+- **UI/UX Pro Max (Modais e Tabelas)**:
+  - Expansão da escala dos modais de detalhamento de `max-w-5xl` para **`max-w-7xl`**, otimizando a visualização em monitores widescreen.
+  - Implementação de **Sticky Headers** e **Sticky Footers** no componente `PaginatedTable`, mantendo cabeçalhos e controles de página sempre visíveis durante a rolagem.
+  - Estilização premium do rodapé de paginação: uso de `backdrop-blur`, sombras internas para profundidade e realce visual em `slate-50`.
+  - Aumento da área útil das tabelas dentro do modal para `75vh`.
+### Corrigido
+- **Resiliência de Dados (SQL)**:
+  - Substituição de `INTEGER` por **`BIGINT`** no casting de números de documentos, suportando IDs de larga escala e evitando erros de overflow.
+  - Robustez no parsing de datas: suporte a separadores mistos (`/` e `-`) e limpeza automatizada de sufixos de hora em campos de data.
+- **Estabilidade de Frontend**: Correção de `ReferenceError` em chamadas de exportação vazias.
+
+---
+
 ## [1.8.3] - 2026-04-13
 ### Adicionado
 - **Exportação Detalhada com Identidade Visual (Sell-In)**:

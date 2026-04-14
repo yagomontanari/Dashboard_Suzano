@@ -1005,7 +1005,7 @@ export default function Dashboard() {
           </button>
         }
       >
-        <div className="h-[65vh] flex flex-col">
+        <div className="h-[75vh] flex flex-col">
           {selectedInconsistency && (
               <PaginatedTable 
                   data={inconsistencyData}

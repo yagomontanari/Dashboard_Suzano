@@ -13,7 +13,7 @@ export default function Modal({ isOpen, onClose, title, children, actions }) {
       />
       
       {/* Modal Dialog */}
-      <div className="relative bg-white w-full max-w-5xl max-h-[90vh] flex flex-col shadow-lg border border-slate-200 rounded-2xl overflow-hidden transform transition-all">
+      <div className="relative bg-white w-full max-w-7xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 rounded-3xl overflow-hidden transform transition-all">
         
         {/* Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-slate-200 bg-white">
