@@ -88,13 +88,17 @@ export const unlockUser = async (userId) => {
 
 // --- DATA ---
 
-export const getDashboardData = async () => {
-    const response = await api.get('/data/dashboard');
+export const getDashboardData = async (startDate = null, endDate = null) => {
+    const response = await api.get('/data/dashboard', {
+        params: { start_date: startDate, end_date: endDate }
+    });
     return response.data;
 }
 
-export const getVk11Details = async () => {
-    const response = await api.get('/data/dashboard/details/vk11');
+export const getVk11Details = async (startDate = null, endDate = null) => {
+    const response = await api.get('/data/dashboard/details/vk11', {
+        params: { start_date: startDate, end_date: endDate }
+    });
     return response.data;
 }
 

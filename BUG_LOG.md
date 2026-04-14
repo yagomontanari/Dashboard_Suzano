@@ -3,7 +3,7 @@
 Este arquivo registra todos os bugs identificados e tratados, servindo como histórico técnico e base de conhecimento.
 
 ## Resumo de Status
-- **Bugs Resolvidos:** 4
+- **Bugs Resolvidos:** 5
 - **Bugs Críticos Atuais:** 0
 - **Monitoramento:** Ativo
 
@@ -11,10 +11,9 @@ Este arquivo registra todos os bugs identificados e tratados, servindo como hist
 
 ## 2026-04-13
 
-### [BUG-004] ReferenceError no Frontend: `dateRange is not defined`
-- **Sintoma:** O dashboard parava de responder e exibia um alerta de erro de rede ao tentar exportar.
+- **Sintoma:** O dashboard parava de responder e exibia um alerta de erro de rede em todas as exportações.
 - **Causa:** Referência a uma variável de estado `dateRange` que não existia no componente `Dashboard.jsx`.
-- **Solução:** Removida a referência e configurada a chamada para passar `null`, permitindo que o backend use o período padrão.
+- **Solução:** Implementado o estado `dateRange` no componente, configurado com o período do mês atual por padrão, e sincronizada a passagem desse parâmetro para todos os serviços de API (Dashboard, VK11 e Inconsistências).
 - **Status:** ✅ Resolvido
 
 ### [BUG-003] SyntaxError no Deploy: `process exited with exit status: 1`

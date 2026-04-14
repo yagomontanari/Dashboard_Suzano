@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.9] - 2026-04-13
+### Adicionado
+- **Infraestrutura de Filtragem (Dashboard)**: Implementação do estado `dateRange` no componente principal, permitindo sincronização global de períodos entre métricas, detalhes e exportações.
+### Corrigido
+- **Bug Fix (BUG-004)**: Resolvido erro de referência `dateRange is not defined` que causava falhas críticas em todas as funcionalidades de exportação do sistema.
+
+---
+
 ## [1.8.8] - 2026-04-13
 ### Corrigido
 - **Exportação de Inconsistências**: 

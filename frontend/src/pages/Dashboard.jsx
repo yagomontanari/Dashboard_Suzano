@@ -243,6 +243,12 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('geral');
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
+  // Date Range State (Início do mês atual até hoje como padrão)
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
+    endDate: new Date().toISOString().split('T')[0]
+  });
+
   const formatDateTime = (date) => {
     const d = new Date(date);
     const day = String(d.getDate()).padStart(2, '0');
@@ -262,7 +268,7 @@ export default function Dashboard() {
         navigate('/');
         return;
       }
-      const result = await getDashboardData();
+      const result = await getDashboardData(dateRange.startDate, dateRange.endDate);
       setData(result);
       setLastUpdated(new Date());
     } catch (err) {
@@ -270,7 +276,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, dateRange.startDate, dateRange.endDate]);
 
   useEffect(() => {
     loadData();
@@ -282,7 +288,7 @@ export default function Dashboard() {
     setVk11Loading(true);
     setVk11Error(null);
     try {
-      const res = await getVk11Details();
+      const res = await getVk11Details(dateRange.startDate, dateRange.endDate);
       setVk11Details(res.data || []);
     } catch (err) {
       console.error("Erro ao buscar detalhes VK11:", err);
@@ -290,7 +296,7 @@ export default function Dashboard() {
     } finally {
       setVk11Loading(false);
     }
-  }, []);
+  }, [dateRange.startDate, dateRange.endDate]);
 
   useEffect(() => {
     if (activeTab === 'vk11') {
