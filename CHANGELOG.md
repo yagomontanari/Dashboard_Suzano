@@ -4,6 +4,17 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.0] - 2026-04-13
+### Adicionado
+- **Relatório de Saldos Disponíveis**: Lançamento de novo relatório analítico que consolida os saldos de conta corrente por Customer Group, Linha de Investimento e Tipo de Verba.
+- **Flexibilidade de Extração**: Implementação de modos de extração **Mensal** e **Anual**, permitindo visões por competência ou por exercício completo através de um novo seletor de ano dinâmico.
+- **Exportação Premium**: Integração do novo relatório ao motor de exportação estilizado da Suzano, garantindo formatação financeira brasileira e identidade visual corporativa.
+
+### Alterado
+- **UX/UI (Relatórios)**: Reformulação da interface da aba de relatórios com um novo card expansivo para Saldos Disponíveis, utilizando ícones de alta fidelidade e sistema de cores laranja para destaque financeiro.
+
+---
+
 ## [1.8.9] - 2026-04-13
 ### Adicionado
 - **Infraestrutura de Filtragem (Dashboard)**: Implementação do estado `dateRange` no componente principal, permitindo sincronização global de períodos entre métricas, detalhes e exportações.

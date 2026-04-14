@@ -403,6 +403,50 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
     except Exception as e:
         logger.error(f"Erro no background task de exportação ZAJU: {e}")
 
+@router.get("/export/saldos")
+async def export_saldos_report(
+    start_date: str = None, 
+    end_date: str = None, 
+    db: AsyncSession = Depends(get_db),
+    user: dict = Depends(get_current_user)
+):
+    try:
+        start_dt, end_dt = parse_date_range(start_date, end_date)
+        
+        params = {
+            "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        result = await db.execute(QUERY_RELATORIO_SALDOS, params)
+        rows = result.mappings().all()
+        
+        if not rows:
+            # Fallback para o usuário não baixar arquivo vazio sem aviso
+            df = pd.DataFrame([{"Aviso": "Nenhum saldo encontrado para o período selecionado"}])
+        else:
+            df = pd.DataFrame(rows)
+            
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            sheet_name = "Saldos Disponíveis"
+            df.to_excel(writer, index=False, sheet_name=sheet_name)
+            apply_excel_premium_style(writer, sheet_name)
+            
+        output.seek(0)
+        filename = f"Saldos_Disponiveis_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        
+        return StreamingResponse(
+            output,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+        
+    except Exception as e:
+        logger.error(f"Erro ao exportar Saldos Disponíveis: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/export/zaju")
 async def export_zaju_report(
     background_tasks: BackgroundTasks,

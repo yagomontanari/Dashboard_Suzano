@@ -636,3 +636,111 @@ QUERY_RELATORIO_CG_ELEGIVEIS = text("""
     GROUP BY cg.id_externo, cg.nom_extensao, marca.nom_extensao
     ORDER BY cg.id_externo ASC;
 """)
+
+QUERY_RELATORIO_SALDOS = text("""
+    SELECT
+        -- Campos de identificação
+        concat(e.id_externo, ' - ', e.nom_extensao) AS "Customer Group",
+        oli.descricao AS "Linha de Investimento",
+        o.descricao AS "Orçamento",
+        otv.nome AS "Tipo Verba",
+        afp.descricao AS "Período",
+        -- Valor Planejado Inicial
+        CASE
+            WHEN otv.id = 6 THEN REPLACE(CAST(cc.vlr_planejado AS NUMERIC(15,2))::VARCHAR, '.', ',')
+            WHEN otv.id = 5 THEN CONCAT(REPLACE(CAST(cc.vlr_planejado AS NUMERIC(15,2))::VARCHAR, '.', ','), ' %')
+            ELSE CAST(cc.vlr_planejado AS VARCHAR)
+        END AS "Planejado Inicial",
+        -- Valor Adicionado
+        CASE
+            WHEN otv.id = 6 THEN REPLACE(CAST(cc.vlr_adendo AS NUMERIC(15,2))::VARCHAR, '.', ',')
+            WHEN otv.id = 5 THEN CONCAT(REPLACE(CAST(cc.vlr_adendo AS NUMERIC(15,2))::VARCHAR, '.', ','), ' %')
+            ELSE CAST(cc.vlr_adendo AS VARCHAR)
+        END AS "Vlr Adendo",
+        -- Valor Reduzido
+        CASE
+            WHEN otv.id = 6 THEN REPLACE(CAST(cc.vlr_reducao AS NUMERIC(15,2))::VARCHAR, '.', ',')
+            WHEN otv.id = 5 THEN CONCAT(REPLACE(CAST(cc.vlr_reducao AS NUMERIC(15,2))::VARCHAR, '.', ','), ' %')
+            ELSE CAST(cc.vlr_reducao AS VARCHAR)
+        END AS "Vlr Redução",
+        -- Cálculo do Valor Planejado Líquido
+        CASE
+            WHEN otv.id = 6 THEN REPLACE(CAST(
+                (cc.vlr_planejado + cc.vlr_adendo - cc.vlr_reducao)
+                AS NUMERIC(15,2)
+            )::VARCHAR, '.', ',')
+            WHEN otv.id = 5 THEN CONCAT(REPLACE(CAST(
+                (cc.vlr_planejado + cc.vlr_adendo - cc.vlr_reducao)
+                AS NUMERIC(15,2)
+            )::VARCHAR, '.', ','), ' %')
+            ELSE CAST((cc.vlr_planejado + cc.vlr_adendo - cc.vlr_reducao) AS VARCHAR)
+        END AS "Vlr Planejado Líquido",
+        -- Cálculo do Valor Reservado Total
+        CASE
+            WHEN otv.id = 6 THEN REPLACE(CAST(
+                (cc.vlr_reservado + cc.vlr_conf_acao + cc.vlr_conf_apuracao)
+                AS NUMERIC(15,2)
+            )::VARCHAR, '.', ',')
+            WHEN otv.id = 5 THEN CONCAT(REPLACE(CAST(
+                (cc.vlr_reservado + cc.vlr_conf_acao + cc.vlr_conf_apuracao)
+                AS NUMERIC(15,2)
+            )::VARCHAR, '.', ','), ' %')
+            ELSE CAST((cc.vlr_reservado + cc.vlr_conf_acao + cc.vlr_conf_apuracao) AS VARCHAR)
+        END AS "Vlr Reservado Total",
+        -- Valor Consumido
+        CASE
+            WHEN otv.id = 6 THEN REPLACE(CAST(cc.vlr_consumido AS NUMERIC(15,2))::VARCHAR, '.', ',')
+            WHEN otv.id = 5 THEN CONCAT(REPLACE(CAST(cc.vlr_consumido AS NUMERIC(15,2))::VARCHAR, '.', ','), ' %')
+            ELSE CAST(cc.vlr_consumido AS VARCHAR)
+        END AS "Vlr Consumido",
+        -- Cálculo do Valor Disponível
+        CASE
+            WHEN otv.id = 6 THEN REPLACE(CAST(
+                (
+                    (cc.vlr_planejado + cc.vlr_adendo - cc.vlr_reducao)
+                    - (cc.vlr_reservado + cc.vlr_conf_acao + cc.vlr_conf_apuracao)
+                    - cc.vlr_consumido
+                )
+                AS NUMERIC(15,2)
+            )::VARCHAR, '.', ',')
+            WHEN otv.id = 5 THEN CONCAT(REPLACE(CAST(
+                (
+                    (cc.vlr_planejado + cc.vlr_adendo - cc.vlr_reducao)
+                    - (cc.vlr_reservado + cc.vlr_conf_acao + cc.vlr_conf_apuracao)
+                    - cc.vlr_consumido
+                )
+                AS NUMERIC(15,2)
+            )::VARCHAR, '.', ','), ' %')
+            ELSE CAST(((cc.vlr_planejado + cc.vlr_adendo - cc.vlr_reducao) - (cc.vlr_reservado + cc.vlr_conf_acao + cc.vlr_conf_apuracao) - cc.vlr_consumido) AS VARCHAR)
+        END AS "Vlr Disponível"
+    FROM
+        conta_corrente cc
+    INNER JOIN
+        conta_corrente_posse ccp ON ccp.id = cc.id_posse
+    INNER JOIN
+        conta_corrente_agrupamento_cliente ccac ON ccac.id = ccp.id_agrupamento_cliente 
+    INNER JOIN
+        extensao e ON e.id = ccac.id_extensao
+    INNER JOIN
+        orcamento_desdobramento od ON od.id = cc.id_desdobramento
+    INNER JOIN
+        orcamento_linha_investimento oli ON oli.id = od.id_linha_investimento
+    INNER JOIN
+        orcamento_tipo_verba otv ON otv.id = cc.id_tipo_verba
+    INNER JOIN
+        ano_fiscal_periodo afp ON afp.id = od.id_periodo_orcamentario
+    INNER JOIN
+        orcamento o ON o.id = oli.id_orcamento
+    WHERE
+        afp.data_inicio >= :start_date
+        AND afp.data_fim <= :end_date
+        AND otv.id IN (5,6)
+        AND CAST(
+            (
+                (cc.vlr_planejado + cc.vlr_adendo - cc.vlr_reducao)
+                - (cc.vlr_reservado + cc.vlr_conf_acao + cc.vlr_conf_apuracao)
+                - cc.vlr_consumido
+            )
+            AS NUMERIC(15,2)
+        ) > 0;
+""")
