@@ -16,7 +16,7 @@ from openpyxl.styles import PatternFill, Font
 from core.database import get_db, AsyncSessionLocal
 from core.security import SECRET_KEY, ALGORITHM
 from core.mail import mail_service
-from core.utils import parse_date_range
+from core.utils import parse_date_range, apply_excel_premium_style
 from api.queries import *
 from fastapi.responses import StreamingResponse
 from core.config import settings
@@ -386,15 +386,9 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
                 else:
                     pd.DataFrame(columns=df.columns.drop('id_tipo_verba') if 'id_tipo_verba' in df.columns else df.columns).to_excel(writer, index=False, sheet_name='Promo & Ações')
                 
-                # Identidade Visual no Cabeçalho (Azul Marinho)
-                header_fill = PatternFill(start_color="0F2744", end_color="0F2744", fill_type="solid")
-                header_font = Font(color="FFFFFF", bold=True)
-                
+                # Aplicar Identidade Visual Suzano em todas as abas
                 for sheet_name in writer.sheets:
-                    worksheet = writer.sheets[sheet_name]
-                    for cell in worksheet[1]:
-                        cell.fill = header_fill
-                        cell.font = header_font
+                    apply_excel_premium_style(writer, sheet_name)
             
             filename = f"relatorio_zaju_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
             await mail_service.send_report_email(
@@ -455,15 +449,7 @@ async def bg_generate_cg_elegiveis_report(start_dt: datetime, end_dt: datetime, 
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
                 df.to_excel(writer, index=False, sheet_name='CGs_Elegiveis')
                 
-                workbook = writer.book
-                worksheet = writer.sheets['CGs_Elegiveis']
-                
-                header_fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid")
-                header_font = Font(color="FFFFFF", bold=True)
-                
-                for cell in worksheet[1]:
-                    cell.fill = header_fill
-                    cell.font = header_font
+                apply_excel_premium_style(writer, 'CGs_Elegiveis')
 
             filename = f"relatorio_cg_elegiveis_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
             
@@ -566,29 +552,7 @@ async def export_sellin_detailed(
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
                 df.to_excel(writer, index=False, sheet_name='Sellin_Detalhado')
                 
-                workbook = writer.book
-                worksheet = writer.sheets['Sellin_Detalhado']
-                
-                # Identidade Visual Suzano (Blue Header)
-                header_fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid")
-                header_font = Font(color="FFFFFF", bold=True)
-                
-                for cell in worksheet[1]:
-                    cell.fill = header_fill
-                    cell.font = header_font
-                    
-                # Ajuste de largura de colunas (básico)
-                for column in worksheet.columns:
-                    max_length = 0
-                    column_letter = column[0].column_letter
-                    for cell in column:
-                        try:
-                            if len(str(cell.value)) > max_length:
-                                max_length = len(str(cell.value))
-                        except:
-                            pass
-                    adjusted_width = (max_length + 2)
-                    worksheet.column_dimensions[column_letter].width = min(adjusted_width, 50)
+                apply_excel_premium_style(writer, 'Sellin_Detalhado')
 
             filename = f"sellin_detalhado_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
             
@@ -612,3 +576,46 @@ async def export_sellin_detailed(
                 "trace": traceback.format_exc() if settings.DEBUG else None
             }
         )
+
+@router.post("/export/styled")
+async def export_styled_json(
+    payload: Dict[str, Any],
+    user: dict = Depends(get_current_user)
+):
+    """
+    Recebe um JSON com:
+    - 'title': String (nome do arquivo)
+    - 'sheets': Lista de objetos { 'name': str, 'data': list }
+    Retorna um arquivo Excel estilizado.
+    """
+    try:
+        title = payload.get('title', 'Export')
+        sheets = payload.get('sheets', [])
+        
+        if not sheets:
+            # Fallback para formato anterior de aba única
+            data = payload.get('data')
+            if data:
+                sheets = [{'name': title, 'data': data}]
+            else:
+                raise HTTPException(status_code=400, detail="Nenhum dado fornecido para exportação.")
+            
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            for s in sheets:
+                name = s.get('name', 'Sheet')[:30]
+                df = pd.DataFrame(s.get('data', []))
+                df.to_excel(writer, index=False, sheet_name=name)
+                apply_excel_premium_style(writer, name)
+            
+        output.seek(0)
+        filename = f"{title.lower().replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        
+        return StreamingResponse(
+            output,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except Exception as e:
+        logger.error(f"Erro na exportação genérica: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

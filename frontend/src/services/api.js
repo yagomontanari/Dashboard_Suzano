@@ -126,3 +126,10 @@ export const exportRelatorioSellinDetalhado = async (startDate, endDate) => {
     });
     return response.data;
 }
+
+export const exportStyledData = async (data, title) => {
+    const response = await api.post('/data/export/styled', { data, title }, {
+        responseType: 'blob'
+    });
+    return response.data;
+}

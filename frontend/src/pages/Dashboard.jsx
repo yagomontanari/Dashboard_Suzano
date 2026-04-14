@@ -6,7 +6,8 @@ import {
   getVk11Details,
   exportRelatorioZaju,
   exportRelatorioCgElegiveis,
-  exportRelatorioSellinDetalhado
+  exportRelatorioSellinDetalhado,
+  exportStyledData
 } from '../services/api';
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -47,7 +48,6 @@ import {
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
 import DashboardSkeleton from '../components/DashboardSkeleton';
-import * as XLSX from 'xlsx';
 import { useMemo } from 'react';
 
 const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn = null }) => {
@@ -396,27 +396,46 @@ export default function Dashboard() {
     }
   };
 
-  const exportToExcel = () => {
-    if (!data) return;
-    
-    // Create multiple sheets
-    const wb = XLSX.utils.book_new();
-    
-    const integracoes = [
-      { Tipo: 'VK11 (Orçamento)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error, PendenteRetorno: 0, Total: data.vk11.success + data.vk11.pending + data.vk11.error },
-      { Tipo: 'ZAJUS (Ajustes)', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error, PendenteRetorno: data.zaju.pending_return, Total: data.zaju.total },
-      { Tipo: 'ZVER (Pagamentos)', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error, PendenteRetorno: data.zver.pending_return, Total: data.zver.success + data.zver.pending + data.zver.error + data.zver.pending_return }
-    ];
-    
-    const inconsistencias = Object.entries(data.errors).map(([key, value]) => ({
-      Cadastro: key.toUpperCase(),
-      RegistrosComErro: value
-    }));
+  const handleDownload = (blob, filename) => {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  };
 
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(integracoes), "Integrações");
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(inconsistencias), "Inconsistências");
-    
-    XLSX.writeFile(wb, `Fechamento_Suzano_${new Date().toISOString().split('T')[0]}.xlsx`);
+  const exportToExcel = async () => {
+    if (!data) return;
+    setInconsistencyLoading(true);
+    try {
+      const integracoes = [
+        { Tipo: 'VK11 (Orçamento)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error, PendenteRetorno: 0, Total: data.vk11.success + data.vk11.pending + data.vk11.error },
+        { Tipo: 'ZAJUS (Ajustes)', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error, PendenteRetorno: data.zaju.pending_return, Total: data.zaju.total },
+        { Tipo: 'ZVER (Pagamentos)', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error, PendenteRetorno: data.zver.pending_return, Total: data.zver.success + data.zver.pending + data.zver.error + data.zver.pending_return }
+      ];
+      
+      const inconsistencias = Object.entries(data.errors).map(([key, value]) => ({
+        Cadastro: key.toUpperCase(),
+        RegistrosComErro: value
+      }));
+
+      const blob = await exportStyledData({
+        title: 'Fechamento_Suzano',
+        sheets: [
+          { name: 'Integrações', data: integracoes },
+          { name: 'Inconsistências', data: inconsistencias }
+        ]
+      }, 'Fechamento_Suzano');
+
+      handleDownload(blob, `Fechamento_Suzano_${new Date().toISOString().split('T')[0]}.xlsx`);
+    } catch (err) {
+      console.error("Erro ao exportar fechamento", err);
+      alert("Erro ao gerar exportação estilizada.");
+    } finally {
+    }
   };
 
   const exportCategory = async (category, total) => {
@@ -446,9 +465,12 @@ export default function Dashboard() {
         return formattedRow;
       });
       
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(formattedData), category.toUpperCase());
-      XLSX.writeFile(wb, `Registros_${category}_${new Date().toISOString().split('T')[0]}.xlsx`);
+      const blob = await exportStyledData({
+        title: `Registros_${category}`,
+        sheets: [{ name: category.toUpperCase(), data: formattedData }]
+      }, `Registros_${category}`);
+
+      handleDownload(blob, `Registros_${category}_${new Date().toISOString().split('T')[0]}.xlsx`);
     } catch (err) {
       console.error("Erro ao exportar categoria", err);
       alert("Não foi possível exportar os dados completos.");

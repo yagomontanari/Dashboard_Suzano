@@ -4,6 +4,30 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.8.6] - 2026-04-13
+### Alterado
+- **Identidade Visual (Sidebar)**:
+  - Implementação de logo dinâmico no menu lateral.
+  - Adicionado suporte ao logo reduzido (`suzano-logo-5.png`) para exibição quando o menu estiver recolhido, melhorando a estética e o reconhecimento da marca em espaços reduzidos.
+
+---
+
+## [1.8.5] - 2026-04-13
+### Adicionado
+- **Unificação de Identidade Visual Excel**:
+  - Centralização da estilização premium em `backend/core/utils.py` através da função `apply_excel_premium_style` (Cabeçalho #0F172A, Fonte Branca Bold e Colunas Dinâmicas).
+  - Novo endpoint genérico de exportação estilizada (`POST /data/export/styled`), habilitando suporte a múltiplas abas com o mesmo visual profissional.
+### Alterado
+- **Migração de Exportações para o Backend**:
+  - Todas as exportações do frontend (Dashboard Geral e Categorias) foram migradas para o servidor para garantir paridade estética absoluta.
+  - Atualizadas as rotas legadas de **ZAJU** e **CG Elegíveis** para o novo padrão visual de alta qualidade.
+- **Otimização de Frontend**:
+  - Remoção da biblioteca `xlsx` do projeto frontend, reduzindo o peso do bundle e concentrando a lógica de processamento de dados no backend.
+### Corrigido
+- **Navegação de Exportação**: Correção de bugs de sintaxe no `Dashboard.jsx` surgidos durante a refatoração das rotas de download.
+
+---
+
 ## [1.8.4] - 2026-04-13
 ### Adicionado
 - **Governança de Erros**: Criação do arquivo `BUG_LOG.md` na raiz do projeto para rastreabilidade técnica e histórico de incidentes.
