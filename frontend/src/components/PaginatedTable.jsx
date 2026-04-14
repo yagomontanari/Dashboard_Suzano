@@ -93,7 +93,7 @@ export default function PaginatedTable({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-200">
             {data.map((row, i) => (
               <tr key={i} className={`hover:bg-slate-50 transition-colors ${loading ? 'opacity-50' : ''}`}>
                 {columns.map((col) => {
