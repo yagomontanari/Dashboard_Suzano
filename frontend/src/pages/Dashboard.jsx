@@ -462,7 +462,7 @@ export default function Dashboard() {
       try {
         setInconsistencyLoading(true);
         // Usar novo endpoint do backend para exportação estilizada e detalhada
-        const blob = await exportRelatorioSellinDetalhado(dateRange.startDate, dateRange.endDate);
+        const blob = await exportRelatorioSellinDetalhado(null, null);
         const url = window.URL.createObjectURL(blob); // response.data já é um Blob
         const link = document.createElement('a');
         link.href = url;
