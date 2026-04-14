@@ -414,8 +414,8 @@ async def export_saldos_report(
         start_dt, end_dt = parse_date_range(start_date, end_date)
         
         params = {
-            "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S")
+            "start_date": start_dt,
+            "end_date": end_dt
         }
         
         result = await db.execute(QUERY_RELATORIO_SALDOS, params)

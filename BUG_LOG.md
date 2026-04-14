@@ -3,9 +3,17 @@
 Este arquivo registra todos os bugs identificados e tratados, servindo como histórico técnico e base de conhecimento.
 
 ## Resumo de Status
-- **Bugs Resolvidos:** 5
+- **Bugs Resolvidos:** 6
 - **Bugs Críticos Atuais:** 0
 - **Monitoramento:** Ativo
+
+---
+
+### [BUG-005] Erro de Tipagem asyncpg no Relatório de Saldos
+- **Sintoma:** Falha na exportação de Saldos com erro `DataError: invalid input for query argument $1 (expected datetime, got str)`.
+- **Causa:** O driver `asyncpg` exige objetos `datetime.datetime` nativos do Python para parâmetros de data, mas o código estava passando strings formatadas via `.strftime()`.
+- **Solução:** Removida a conversão para string, passando os objetos `datetime` diretamente na execução da query.
+- **Status:** ✅ Resolvido
 
 ---
 
