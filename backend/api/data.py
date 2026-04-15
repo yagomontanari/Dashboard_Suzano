@@ -673,6 +673,10 @@ async def export_clientes_detailed(
                     'cod_regional', 'regional'
                 ]].copy()
                 
+                # Formatação de campos booleanos para labels amigáveis
+                df['ativo_inativo'] = df['ativo_inativo'].map({True: 'Ativo', False: 'Inativo'}).fillna('Inativo')
+                df['sap_pagador'] = df['sap_pagador'].map({True: 'Sim', False: 'Não'}).fillna('Não')
+                
                 df.columns = [
                     'Erros', 'Data Registro', 'Cod. Cliente', 'Cliente', 'CNPJ', 
                     'ativo_inativo', 'contato_cliente', 'email_contato_cliente', 

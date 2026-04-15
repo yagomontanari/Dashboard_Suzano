@@ -10,6 +10,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Novo modal de inconsistências de clientes com colunas agregadas: "Cliente" (ID + Nome), "Customer Group" (ID + Nome) e "Regional" (ID + Regional).
   - Implementada a **Exportação Detalhada** para Clientes, gerando um relatório Excel de aba única ("Detalhamento Inconsistencias") com 17 colunas técnicas, incluindo "Data Registro" logo após os erros.
   - Padronização visual premium aplicada ao novo relatório.
+  - Formatação de campos booleanos (`Ativo/Inativo` e `Sim/Não`) para maior clareza tanto no modal quanto na exportação Excel.
 
 ---
 

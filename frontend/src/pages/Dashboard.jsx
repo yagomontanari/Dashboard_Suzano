@@ -328,7 +328,8 @@ export default function Dashboard() {
           ...item,
           cliente_display: `${item.cod_cliente} - ${item.nom_cliente}`,
           customer_group_display: `${item.cod_customer_group} - ${item.customer_group}`,
-          regional_display: `${item.cod_regional} - ${item.regional}`
+          regional_display: `${item.cod_regional} - ${item.regional}`,
+          ativo_inativo: item.ativo_inativo ? 'Ativo' : 'Inativo'
         }));
       }
       setInconsistencyData(processedData);
