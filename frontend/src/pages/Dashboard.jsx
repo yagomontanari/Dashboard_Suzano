@@ -362,11 +362,11 @@ export default function Dashboard() {
     switch(category) {
       case 'sellin': return [
         {key: 'erros', label:'Erros'},
-        {key: 'data_emissao', label:'Data Emissão'},
+        {key: 'data_emissao', label:'Data Emissão', align: 'center'},
         {key: 'cliente', label:'Cliente'},
-        {key: 'nro_nota_fiscal', label:'Nota Fiscal'},
-        {key: 'nro_documento', label: 'Nº Documento'},
-        {key: 'tipo_doc_fat', label: 'Tipo Doc Faturamento'}
+        {key: 'nro_nota_fiscal', label:'Nota Fiscal', align: 'center'},
+        {key: 'nro_documento', label: 'Nº Documento', align: 'center'},
+        {key: 'tipo_doc_fat', label: 'Tipo Doc Faturamento', align: 'center'}
       ];
       case 'clientes': return [
         {key: 'dta_criacao', label: 'Data Registro'}, 

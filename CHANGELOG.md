@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.6] - 2026-04-15
+### Alterado
+- **UX do Detalhamento de Sell-in**:
+    - Centralização das colunas "Data Emissão", "Nota Fiscal", "Nº Documento" e "Tipo Doc Faturamento" no modal de inconsistências para melhor escaneabilidade visual.
+    - Atualização do componente `PaginatedTable` para suporte nativo a alinhamento de colunas (`align: center`).
+
+---
+
 ## [1.9.5] - 2026-04-15
 ### Alterado
 - **Nome Oficial**: Ajuste final do nome da ferramenta para **Tradelinks Dashboard**.

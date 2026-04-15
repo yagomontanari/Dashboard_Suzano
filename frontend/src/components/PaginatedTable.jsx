@@ -88,10 +88,10 @@ export default function PaginatedTable({
               {columns.map((col) => (
                 <th 
                     key={col.key} 
-                    className={`py-3 px-4 font-bold text-slate-700 whitespace-nowrap group ${onSort ? 'cursor-pointer select-none' : ''}`}
+                    className={`py-3 px-4 font-bold text-slate-700 whitespace-nowrap group ${onSort ? 'cursor-pointer select-none' : ''} ${col.align === 'center' ? 'text-center' : 'text-left'}`}
                     onClick={() => onSort && onSort(col.key)}
                 >
-                  <div className="flex items-center">
+                  <div className={`flex items-center ${col.align === 'center' ? 'justify-center' : ''}`}>
                     {col.label}
                     {renderSortIcon(col.key)}
                   </div>
@@ -105,7 +105,7 @@ export default function PaginatedTable({
                 {columns.map((col) => {
                   const display = formatCellValue(col.key, row[col.key]);
                   return (
-                    <td key={col.key} className="py-3 px-4 text-slate-600 truncate max-w-xs" title={display?.toString()}>
+                    <td key={col.key} className={`py-3 px-4 text-slate-600 truncate max-w-xs ${col.align === 'center' ? 'text-center' : 'text-left'}`} title={display?.toString()}>
                       {display}
                     </td>
                   );
@@ -153,6 +153,7 @@ PaginatedTable.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape({
     key: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
+    align: PropTypes.oneOf(['left', 'center', 'right'])
   })).isRequired,
   loading: PropTypes.bool,
   error: PropTypes.string,
