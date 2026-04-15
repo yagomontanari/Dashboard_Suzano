@@ -13,9 +13,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Refinamento de nomenclaturas no Excel: "Status", "Contato", "Email", "Telefone", "SAP Recebedor", etc.
   - Renomeação da coluna "Ativo/Inativo" para **"Status"** no Modal de Clientes.
   - Correção da exibição do campo Status no modal, garantindo o mapeamento correto dos dados binários.
-  - **Aprimoramento de UX no Modal**:
+  - **Aprimoramento de UX no Modal (Opção 2)**:
     - Centralização de todos os cabeçalhos e dados das colunas.
-    - **Nova Funcionalidade: Linhas Expansíveis**: Mensagens de erro longas agora são exibidas de forma compacta (2 linhas) com a opção "Ver mais", preservando a escaneabilidade da tabela sem perder detalhes.
+    - Implementação de **Tooltip Refinado**: Mensagens de erro são exibidas em até 2 linhas com `cursor-help`, permitindo visualização completa ao passar o mouse sem comprometer a altura das linhas.
     - Alinhamento vertical centralizado para todos os registros da tabela.
 
 ---

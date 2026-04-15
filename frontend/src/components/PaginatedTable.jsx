@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { ChevronLeft, ChevronRight, Loader2, AlertCircle, ArrowUp, ArrowDown, ArrowUpDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, AlertCircle, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
 
 const formatDate = (value, includeTime = true) => {
   if (!value) return '-';
@@ -44,17 +43,6 @@ export default function PaginatedTable({
   sortConfig, // { key: 'str', direction: 'asc'|'desc' }
   onSort // Function (key) => void
 }) {
-  const [expandedRows, setExpandedRows] = useState(new Set());
-
-  const toggleRow = (index) => {
-    const newExpandedRows = new Set(expandedRows);
-    if (newExpandedRows.has(index)) {
-      newExpandedRows.delete(index);
-    } else {
-      newExpandedRows.add(index);
-    }
-    setExpandedRows(newExpandedRows);
-  };
 
   const renderSortIcon = (key) => {
     if (!onSort) return null;
@@ -116,31 +104,16 @@ export default function PaginatedTable({
               <tr key={i} className={`hover:bg-slate-50 transition-colors ${loading ? 'opacity-50' : ''}`}>
                 {columns.map((col) => {
                   const display = formatCellValue(col.key, row[col.key]);
-                  const isExpanded = expandedRows.has(i);
                   const isErrorCol = col.key === 'erros';
-                  
                   return (
                     <td 
                       key={col.key} 
-                      className={`py-4 px-4 text-slate-600 align-middle ${col.align === 'center' ? 'text-center' : 'text-left'} ${isErrorCol ? 'min-w-[300px]' : 'truncate max-w-xs'}`} 
+                      className={`py-4 px-4 text-slate-600 align-middle ${col.align === 'center' ? 'text-center' : 'text-left'} ${isErrorCol ? 'min-w-[300px] cursor-help' : 'truncate max-w-xs'}`} 
+                      title={isErrorCol ? display?.toString() : undefined}
                     >
                       {isErrorCol ? (
-                        <div className="flex flex-col items-center">
-                          <div className={`text-sm ${isExpanded ? 'whitespace-pre-wrap text-left' : 'line-clamp-2 text-left'} leading-relaxed transition-all duration-300 w-full`}>
-                            {display}
-                          </div>
-                          {display && display.toString().length > 60 && (
-                            <button 
-                              onClick={() => toggleRow(i)}
-                              className="mt-2 flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold text-slate-400 hover:text-blue-500 transition-colors bg-slate-100 px-3 py-1 rounded-full whitespace-nowrap self-center"
-                            >
-                              {isExpanded ? (
-                                <><ChevronUp size={10} strokeWidth={3} /> Ver menos</>
-                              ) : (
-                                <><ChevronDown size={10} strokeWidth={3} /> Ver mais</>
-                              )}
-                            </button>
-                          )}
+                        <div className="text-sm line-clamp-2 leading-relaxed text-left w-full group relative">
+                          {display}
                         </div>
                       ) : (
                         <span title={display?.toString()}>{display}</span>
