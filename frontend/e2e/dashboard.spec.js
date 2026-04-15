@@ -22,7 +22,7 @@ test.describe('Dashboard E2E Automation', () => {
     
     // Verifica redirecionamento e carregamento
     await expect(page).toHaveURL('/dashboard');
-    await expect(page.locator('text=PAINEL DE FECHAMENTO')).toBeVisible();
+    await expect(page.locator('text=PAINEL DE PERFORMANCE E DADOS')).toBeVisible();
   });
 
   test('Deve exibir erro de login com credenciais incorretas', async ({ page }) => {

@@ -516,14 +516,14 @@ export default function Dashboard() {
       }));
 
       const blob = await exportStyledData({
-        title: 'Fechamento_Suzano',
+        title: 'Performance_Suzano',
         sheets: [
           { name: 'Integrações', data: integracoes },
           { name: 'Inconsistências', data: inconsistencias }
         ]
-      }, 'Fechamento_Suzano');
+      }, 'Performance_Suzano');
 
-      handleDownload(blob, `Fechamento_Suzano_${new Date().toISOString().split('T')[0]}.xlsx`);
+      handleDownload(blob, `Performance_Suzano_${new Date().toISOString().split('T')[0]}.xlsx`);
     } catch (err) {
       console.error("Erro ao exportar fechamento", err);
       alert("Erro ao gerar exportação estilizada.");
@@ -623,7 +623,7 @@ export default function Dashboard() {
       <div className="bg-white border-b border-slate-200 px-8 py-6 sticky top-0 z-10 w-full">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Painel de Fechamento</h1>
+            <h1 className="text-2xl font-bold text-slate-800">Painel de Performance e Dados</h1>
             <p className="text-slate-500 mt-1 font-medium text-sm">Visão geral da integração de dados</p>
           </div>
           <div className="flex items-center gap-6">

@@ -67,7 +67,7 @@ export default function Login() {
             </div>
             <div>
               <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Dashboard Suzano</h2>
-              <p className="text-slate-500 font-bold text-xs uppercase tracking-[0.3em] mt-2">Dashboard de Fechamento</p>
+              <p className="text-slate-500 font-bold text-xs uppercase tracking-[0.3em] mt-2">Dashboard de Performance e Dados</p>
             </div>
         </div>
         <div className="p-8">

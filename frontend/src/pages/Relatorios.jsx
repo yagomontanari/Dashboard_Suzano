@@ -114,7 +114,7 @@ export default function Relatorios() {
     <div className="min-h-[calc(100vh-2rem)] flex flex-col bg-slate-50">
       <div className="bg-white border-b border-slate-200 px-8 py-6 sticky top-0 z-10 w-full">
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Relatórios</h1>
-        <p className="text-slate-500 mt-1 font-medium text-sm">Geração de relatórios avançados para fechamento</p>
+        <p className="text-slate-500 mt-1 font-medium text-sm">Geração de relatórios avançados de performance</p>
       </div>
       
       <div className="flex-1 p-8 max-w-5xl mx-auto w-full">

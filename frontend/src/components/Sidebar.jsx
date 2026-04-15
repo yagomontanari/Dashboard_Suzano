@@ -60,7 +60,7 @@ export default function Sidebar() {
         </div>
         <div className={`flex flex-col items-center transition-all duration-300 ${expanded ? 'opacity-100 mt-2' : 'opacity-0 h-0 overflow-hidden'}`}>
           <span className="font-black tracking-tighter whitespace-nowrap text-slate-100 text-lg">Dashboard Suzano</span>
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-0.5">Fechamento</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-0.5">Controle e Monitoramento</span>
         </div>
       </div>
 

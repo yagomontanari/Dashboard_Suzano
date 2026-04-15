@@ -4,6 +4,16 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.2] - 2026-04-15
+### Alterado
+- **Rebranding do Dashboard**:
+  - Atualização do título central de "Painel de Fechamento" para **"Painel de Performance e Dados"**, refletindo a expansão do escopo da ferramenta.
+  - Atualização do rótulo da Sidebar de "Fechamento" para **"Controle e Monitoramento"**.
+  - Padronização da nova nomenclatura nas telas de **Login** e **Relatórios**.
+  - Atualização dos metadados de exportação e testes automatizados para conformidade com a nova identidade.
+
+---
+
 ## [1.9.1] - 2026-04-15
 ### Alterado
 - **Exportação Detalhada (Sell-in)**:
