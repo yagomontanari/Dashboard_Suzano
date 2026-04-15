@@ -105,7 +105,11 @@ export default function PaginatedTable({
                 {columns.map((col) => {
                   const display = formatCellValue(col.key, row[col.key]);
                   return (
-                    <td key={col.key} className={`py-3 px-4 text-slate-600 truncate max-w-xs ${col.align === 'center' ? 'text-center' : 'text-left'}`} title={display?.toString()}>
+                    <td 
+                      key={col.key} 
+                      className={`py-4 px-4 text-slate-600 align-middle ${col.key === 'erros' ? 'whitespace-pre-wrap min-w-[300px] leading-relaxed' : 'truncate max-w-xs'} ${col.align === 'center' ? 'text-center' : 'text-left'}`} 
+                      title={display?.toString()}
+                    >
                       {display}
                     </td>
                   );

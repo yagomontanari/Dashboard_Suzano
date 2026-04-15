@@ -380,12 +380,12 @@ export default function Dashboard() {
         {key: 'tipo_doc_fat', label: 'Tipo Doc Faturamento', align: 'center'}
       ];
       case 'clientes': return [
-        {key: 'erros', label:'Erros'},
-        {key: 'cliente_display', label:'Cliente'},
+        {key: 'erros', label:'Erros', align: 'center'},
+        {key: 'cliente_display', label:'Cliente', align: 'center'},
         {key: 'cnpj', label:'CNPJ', align: 'center'},
-        {key: 'customer_group_display', label:'Customer Group'},
+        {key: 'customer_group_display', label:'Customer Group', align: 'center'},
         {key: 'status_label', label:'Status', align: 'center'},
-        {key: 'regional_display', label:'Regional'}
+        {key: 'regional_display', label:'Regional', align: 'center'}
       ];
       case 'produtos': return [
         {key: 'lote', label: 'Lote'}, 
@@ -1045,8 +1045,8 @@ export default function Dashboard() {
                       ) : vk11Details.length > 0 ? (
                         vk11Details.map((row, idx) => (
                           <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                            <td className="px-5 py-3 font-bold text-slate-700">{row.id_orcamento}</td>
-                            <td className="px-5 py-3 text-slate-600 font-medium">{row.descricao}</td>
+                            <td className="px-5 py-3 font-bold text-slate-700 text-center">{row.id_orcamento}</td>
+                            <td className="px-5 py-3 text-slate-600 font-medium text-center">{row.descricao}</td>
                             <td className="px-5 py-3 text-center font-black text-emerald-600">{row.integrado}</td>
                             <td className={`px-5 py-3 text-center font-black ${row.pendente_integracao > 0 ? 'text-amber-500' : 'text-slate-300'}`}>{row.pendente_integracao}</td>
                             <td className={`px-5 py-3 text-center font-black ${row.erro > 0 ? 'text-rose-500' : 'text-slate-300'}`}>{row.erro}</td>
