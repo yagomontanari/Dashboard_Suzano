@@ -150,7 +150,7 @@ const IntegrationLog = ({ updates }) => {
       case 'ZVER': return <CreditCard size={18} />;
       case 'VK11': return <BarChart3 size={18} />;
       case 'Dados Provisões': return <ShieldCheck size={18} />;
-      case 'Retorno Pagto': return <ReceiptText size={18} />;
+      case 'Retorno Pagamento': return <ReceiptText size={18} />;
       case 'Cutoff': return <CalendarClock size={18} />;
       default: return <History size={18} />;
     }
@@ -166,7 +166,7 @@ const IntegrationLog = ({ updates }) => {
       'ZVER': 'bg-sky-50 text-sky-600',
       'VK11': 'bg-violet-50 text-violet-600',
       'Dados Provisões': 'bg-teal-50 text-teal-600',
-      'Retorno Pagto': 'bg-orange-50 text-orange-600',
+      'Retorno Pagamento': 'bg-orange-50 text-orange-600',
       'Cutoff': 'bg-slate-50 text-slate-600'
     };
     return colors[category] || 'bg-slate-50 text-slate-400';

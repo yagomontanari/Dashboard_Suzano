@@ -146,7 +146,7 @@ async def get_dashboard_metrics(
                     "categoria": {
                         "PRE_CADASTRO_USUARIO": "Usuários",
                         "CLIENTE": "Clientes",
-                        "PAGAMENTO_LIQUIDADO": "Retorno Pagto",
+                        "PAGAMENTO_LIQUIDADO": "Retorno Pagamento",
                         "CUTOFF": "Cutoff",
                         "SELLIN": "Sell-In",
                         "PRODUTO": "Produtos",
