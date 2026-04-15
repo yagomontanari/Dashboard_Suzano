@@ -15,7 +15,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Correção da exibição do campo Status no modal, garantindo o mapeamento correto dos dados binários.
   - **Aprimoramento de UX no Modal**:
     - Centralização de todos os cabeçalhos e dados das colunas.
-    - Implementação de quebra de linha inteligente para a coluna de erros, permitindo a leitura completa das mensagens.
+    - **Nova Funcionalidade: Linhas Expansíveis**: Mensagens de erro longas agora são exibidas de forma compacta (2 linhas) com a opção "Ver mais", preservando a escaneabilidade da tabela sem perder detalhes.
     - Alinhamento vertical centralizado para todos os registros da tabela.
 
 ---
