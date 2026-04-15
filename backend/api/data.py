@@ -595,7 +595,7 @@ async def export_sellin_detailed(
                     'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
                     'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente',
                     'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
-                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência'
+                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência Faturamento'
                 ])
             else:
                 raw_detalhado_df = pd.DataFrame([dict(r) for r in rows_detalhado])
@@ -611,7 +611,7 @@ async def export_sellin_detailed(
                     'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
                     'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente',
                     'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
-                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência'
+                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência Faturamento'
                 ]
 
             output = io.BytesIO()

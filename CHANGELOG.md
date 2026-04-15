@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.8] - 2026-04-15
+### Alterado
+- **Exportação Detalhada (Sell-in)**:
+    - Renomeada a coluna "Referência" para **"Referência Faturamento"** na aba "Detalhamento Inconsistencias" para maior clareza técnica conforme solicitação.
+
+---
+
 ## [1.9.7] - 2026-04-15
 ### Alterado
 - **UX do Detalhamento de Sell-in**:
