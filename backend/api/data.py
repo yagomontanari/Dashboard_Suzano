@@ -630,8 +630,8 @@ async def export_sellin_detailed(
             return StreamingResponse(
                 output,
                 media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-    )
+                headers={"Content-Disposition": f"attachment; filename={filename}"}
+            )
 
 @router.get("/export/clientes-detalhado")
 async def export_clientes_detailed(

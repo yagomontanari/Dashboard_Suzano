@@ -3,9 +3,17 @@
 Este arquivo registra todos os bugs identificados e tratados, servindo como histórico técnico e base de conhecimento.
 
 ## Resumo de Status
-- **Bugs Resolvidos:** 6
+- **Bugs Resolvidos:** 7
 - **Bugs Críticos Atuais:** 0
 - **Monitoramento:** Ativo
+
+---
+
+### [BUG-006] SyntaxError em data.py (unmatched ')')
+- **Sintoma:** Backend falhava ao iniciar na Vercel com erro 500: `SyntaxError: unmatched ')'`.
+- **Causa:** Erro durante a implementação do endpoint de exportação detalhada de clientes, onde um bloco `StreamingResponse` foi fechado incorretamente e parâmetros essenciais (`headers`) foram removidos acidentalmente.
+- **Solução:** Corrigida a estrutura do `StreamingResponse` e restaurado o parâmetro `headers` com a configuração de `Content-Disposition`.
+- **Status:** ✅ Resolvido
 
 ---
 
