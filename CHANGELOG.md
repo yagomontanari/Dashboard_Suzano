@@ -4,6 +4,16 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.1] - 2026-04-15
+### Alterado
+- **Exportação Detalhada (Sell-in)**:
+  - Expansão do relatório para suporte a múltiplas abas no Excel (`openpyxl`).
+  - Adicionada a aba **"Resumo Inconsistencias"** como primeira aba do arquivo, refletindo fielmente a visão executiva e as colunas exibidas no modal do Dashboard.
+  - Renomeada a aba técnica de detalhamento para **"Detalhamento Inconsistencias"**, mantendo a rastreabilidade completa de todos os itens e produtos.
+  - Garantia de paridade estética Premium (Identidade Suzano) em ambas as abas geradas.
+
+---
+
 ## [1.9.0] - 2026-04-13
 ### Adicionado
 - **Relatório de Saldos Disponíveis**: Lançamento de novo relatório analítico que consolida os saldos de conta corrente por Customer Group, Linha de Investimento e Tipo de Verba.
@@ -276,4 +286,4 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Componentização visual com Lucide React.
 
 ---
-*Atualizado em: 13 de Abril de 2026 por Antigravity AI.*
+*Atualizado em: 15 de Abril de 2026 por Antigravity AI.*

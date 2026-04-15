@@ -564,28 +564,50 @@ async def export_sellin_detailed(
         
         async with AsyncSessionLocal() as db:
             params = {"start_date": start_dt, "end_date": end_dt}
-            result = await db.execute(QUERY_ERRO_SELLIN_DETALHADO, params)
-            rows = result.mappings().all()
-
-            if not rows:
-                # Retorna um arquivo vazio com cabeçalho se não houver registros
-                df = pd.DataFrame(columns=[
-                    'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
-                    'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente (Full)',
-                    'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
-                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Ref Fat'
+            
+            # --- Aba 1: Resumo (Dados do Modal) ---
+            result_resumo = await db.execute(QUERY_ERRO_SELLIN, params)
+            rows_resumo = result_resumo.mappings().all()
+            
+            if not rows_resumo:
+                df_resumo = pd.DataFrame(columns=[
+                    'Erros', 'Data Emissão', 'Cliente', 'Nota Fiscal', 
+                    'Nº Documento', 'Tipo Doc Faturamento'
                 ])
             else:
-                raw_df = pd.DataFrame([dict(r) for r in rows])
+                raw_resumo_df = pd.DataFrame([dict(r) for r in rows_resumo])
+                df_resumo = raw_resumo_df[[
+                    'erros', 'data_emissao', 'cliente', 'nro_nota_fiscal', 
+                    'nro_documento', 'tipo_doc_fat'
+                ]].copy()
+                
+                df_resumo.columns = [
+                    'Erros', 'Data Emissão', 'Cliente', 'Nota Fiscal', 
+                    'Nº Documento', 'Tipo Doc Faturamento'
+                ]
+
+            # --- Aba 2: Detalhamento (Dados Atuais) ---
+            result_detalhado = await db.execute(QUERY_ERRO_SELLIN_DETALHADO, params)
+            rows_detalhado = result_detalhado.mappings().all()
+
+            if not rows_detalhado:
+                df_detalhado = pd.DataFrame(columns=[
+                    'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
+                    'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente',
+                    'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
+                    'Valor Total', 'Valor Líquido', 'Vencimento', 'Tipo Doc', 'Referência'
+                ])
+            else:
+                raw_detalhado_df = pd.DataFrame([dict(r) for r in rows_detalhado])
                 # Mapeamento para nomes amigáveis e colunas solicitadas
-                df = raw_df[[
+                df_detalhado = raw_detalhado_df[[
                     'erros', 'dta_criacao', 'data_emissao', 'nro_nota_fiscal', 
                     'nro_documento', 'item_documento', 'id_cliente', 'nom_cliente', 'cliente',
                     'id_produto', 'nom_produto', 'unidade_medida', 'quantidade', 
                     'valor_total', 'valor_liquido', 'dta_venc_liq', 'tipo_doc_fat', 'referencia_fat'
                 ]].copy()
                 
-                df.columns = [
+                df_detalhado.columns = [
                     'Erros', 'Data Registro', 'Data Emissão', 'Nota Fiscal', 
                     'Nº Documento', 'Item', 'Cód. Cliente', 'Nome Cliente', 'Cliente',
                     'ID Produto', 'Nome Produto', 'Unidade', 'Quantidade', 
@@ -594,9 +616,13 @@ async def export_sellin_detailed(
 
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                df.to_excel(writer, index=False, sheet_name='Sellin_Detalhado')
+                # Primeira aba: Resumo Inconsistencias
+                df_resumo.to_excel(writer, index=False, sheet_name='Resumo Inconsistencias')
+                apply_excel_premium_style(writer, 'Resumo Inconsistencias')
                 
-                apply_excel_premium_style(writer, 'Sellin_Detalhado')
+                # Segunda aba: Detalhamento Inconsistencias
+                df_detalhado.to_excel(writer, index=False, sheet_name='Detalhamento Inconsistencias')
+                apply_excel_premium_style(writer, 'Detalhamento Inconsistencias')
 
             filename = f"sellin_detalhado_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
             
