@@ -361,9 +361,9 @@ export default function Dashboard() {
   const getColumnsForCategory = (category) => {
     switch(category) {
       case 'sellin': return [
-        {key: 'erros', label:'Erros'},
+        {key: 'erros', label:'Erros', align: 'center'},
         {key: 'data_emissao', label:'Data Emissão', align: 'center'},
-        {key: 'cliente', label:'Cliente'},
+        {key: 'cliente', label:'Cliente', align: 'center'},
         {key: 'nro_nota_fiscal', label:'Nota Fiscal', align: 'center'},
         {key: 'nro_documento', label: 'Nº Documento', align: 'center'},
         {key: 'tipo_doc_fat', label: 'Tipo Doc Faturamento', align: 'center'}

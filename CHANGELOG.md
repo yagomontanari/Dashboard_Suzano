@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.7] - 2026-04-15
+### Alterado
+- **UX do Detalhamento de Sell-in**:
+    - Centralização de todos os cabeçalhos e colunas ("Erros", "Data Emissão", "Cliente", "Nota Fiscal", "Nº Documento" e "Tipo Doc Faturamento") para uma paridade visual completa no modal de inconsistências.
+
+---
+
 ## [1.9.6] - 2026-04-15
 ### Alterado
 - **UX do Detalhamento de Sell-in**:
