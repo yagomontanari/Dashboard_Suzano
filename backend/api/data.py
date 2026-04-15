@@ -633,6 +633,11 @@ async def export_sellin_detailed(
                 headers={"Content-Disposition": f"attachment; filename={filename}"}
             )
 
+    except Exception as e:
+        logger.error(f"Erro ao exportar sellin detalhado: {e}")
+        from fastapi.responses import JSONResponse
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
 @router.get("/export/clientes-detalhado")
 async def export_clientes_detailed(
     start_date: str = None, 
