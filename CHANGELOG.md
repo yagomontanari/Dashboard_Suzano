@@ -10,7 +10,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Novo modal de inconsistências de clientes com colunas agregadas: "Cliente" (ID + Nome), "Customer Group" (ID + Nome) e "Regional" (ID + Regional).
   - Implementada a **Exportação Detalhada** para Clientes, gerando um relatório Excel de aba única ("Detalhamento Inconsistencias") com 17 colunas técnicas, incluindo "Data Registro" logo após os erros.
   - Padronização visual premium aplicada ao novo relatório.
-  - Formatação de campos booleanos (`Ativo/Inativo` e `Sim/Não`) para maior clareza tanto no modal quanto na exportação Excel.
+  - Refinamento de nomenclaturas no Excel: "Status", "Contato", "Email", "Telefone", "SAP Recebedor", etc.
+  - Renomeação da coluna "Ativo/Inativo" para **"Status"** no Modal de Clientes.
+  - Correção da exibição do campo Status no modal, garantindo o mapeamento correto dos dados binários.
 
 ---
 

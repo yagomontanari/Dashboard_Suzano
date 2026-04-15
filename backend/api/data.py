@@ -679,10 +679,9 @@ async def export_clientes_detailed(
                 
                 df.columns = [
                     'Erros', 'Data Registro', 'Cod. Cliente', 'Cliente', 'CNPJ', 
-                    'ativo_inativo', 'contato_cliente', 'email_contato_cliente', 
-                    'telefone_contato_cliente', 'sap_pagador', 'cod_customer_group', 
-                    'customer_group', 'cod_canal', 'canal', 'sub_canal', 
-                    'cod_regional', 'regional'
+                    'Status', 'Contato', 'Email', 'Telefone', 'SAP Recebedor', 
+                    'Cod. Customer Group', 'Customer Group', 'Cod. Canal', 'Canal', 
+                    'Sub Canal', 'Cod. Regional', 'Regional'
                 ]
 
             output = io.BytesIO()
