@@ -138,6 +138,14 @@ export const exportRelatorioSellinDetalhado = async (startDate, endDate) => {
     return response.data;
 }
 
+export const exportRelatorioClientesDetalhado = async (startDate, endDate) => {
+    const response = await api.get('/data/export/clientes-detalhado', {
+        params: { start_date: startDate, end_date: endDate },
+        responseType: 'blob'
+    });
+    return response.data;
+}
+
 export const exportRelatorioSaldos = async (startDate, endDate) => {
     const response = await api.get('/data/export/saldos', {
         params: { start_date: startDate, end_date: endDate },

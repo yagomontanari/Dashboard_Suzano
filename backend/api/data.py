@@ -630,20 +630,77 @@ async def export_sellin_detailed(
             return StreamingResponse(
                 output,
                 media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+    )
+
+@router.get("/export/clientes-detalhado")
+async def export_clientes_detailed(
+    start_date: str = None, 
+    end_date: str = None, 
+    user: dict = Depends(get_current_user)
+):
+    try:
+        start_dt, end_dt = parse_date_range(start_date, end_date)
+        
+        async with AsyncSessionLocal() as db:
+            params = {"start_date": start_dt, "end_date": end_dt}
+            
+            # --- Dados do Relatório ---
+            result = await db.execute(QUERY_ERRO_CLIENTES, params)
+            rows = result.mappings().all()
+            
+            if not rows:
+                df = pd.DataFrame(columns=[
+                    'Erros', 'Data Registro', 'Cod. Cliente', 'Cliente', 'CNPJ', 
+                    'ativo_inativo', 'contato_cliente', 'email_contato_cliente', 
+                    'telefone_contato_cliente', 'sap_pagador', 'cod_customer_group', 
+                    'customer_group', 'cod_canal', 'canal', 'sub_canal', 
+                    'cod_regional', 'regional'
+                ])
+            else:
+                raw_df = pd.DataFrame([dict(r) for r in rows])
+                # Mapeamento e Ordem de Colunas
+                df = raw_df[[
+                    'erros', 'dta_criacao', 'cod_cliente', 'nom_cliente', 'cnpj',
+                    'ativo_inativo', 'contato_cliente', 'email_contato_cliente', 
+                    'telefone_contato_cliente', 'sap_pagador', 'cod_customer_group', 
+                    'customer_group', 'cod_canal', 'canal', 'sub_canal', 
+                    'cod_regional', 'regional'
+                ]].copy()
+                
+                df.columns = [
+                    'Erros', 'Data Registro', 'Cod. Cliente', 'Cliente', 'CNPJ', 
+                    'ativo_inativo', 'contato_cliente', 'email_contato_cliente', 
+                    'telefone_contato_cliente', 'sap_pagador', 'cod_customer_group', 
+                    'customer_group', 'cod_canal', 'canal', 'sub_canal', 
+                    'cod_regional', 'regional'
+                ]
+
+            output = io.BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                # Aba Única: Detalhamento Inconsistencias
+                df.to_excel(writer, index=False, sheet_name='Detalhamento Inconsistencias')
+                apply_excel_premium_style(writer, 'Detalhamento Inconsistencias')
+
+            filename = f"clientes_detalhado_{start_dt.strftime('%Y%m%d')}_{end_dt.strftime('%Y%m%d')}.xlsx"
+            
+            output.seek(0)
+            return StreamingResponse(
+                output,
+                media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 headers={"Content-Disposition": f"attachment; filename={filename}"}
             )
 
     except Exception as e:
-        print(f"CRITICAL ERROR EXPORT SELLIN: {e}")
+        print(f"CRITICAL ERROR EXPORT CLIENTES: {e}")
         traceback.print_exc()
-        logger.error(f"Erro ao exportar sellin detalhado: {e}")
+        logger.error(f"Erro ao exportar clientes detalhado: {e}")
         from fastapi.responses import JSONResponse
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(e),
-                "trace": traceback.format_exc() if settings.DEBUG else None
+                "message": str(e)
             }
         )
 

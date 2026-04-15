@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.9] - 2026-04-15
+### Adicionado
+- **Detalhamento de Clientes (UX & Relatório)**:
+  - Novo modal de inconsistências de clientes com colunas agregadas: "Cliente" (ID + Nome), "Customer Group" (ID + Nome) e "Regional" (ID + Regional).
+  - Implementada a **Exportação Detalhada** para Clientes, gerando um relatório Excel de aba única ("Detalhamento Inconsistencias") com 17 colunas técnicas, incluindo "Data Registro" logo após os erros.
+  - Padronização visual premium aplicada ao novo relatório.
+
+---
+
 ## [1.9.8] - 2026-04-15
 ### Alterado
 - **Exportação Detalhada (Sell-in)**:

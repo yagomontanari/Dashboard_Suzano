@@ -7,6 +7,7 @@ import {
   exportRelatorioZaju,
   exportRelatorioCgElegiveis,
   exportRelatorioSellinDetalhado,
+  exportRelatorioClientesDetalhado,
   exportStyledData
 } from '../services/api';
 
@@ -321,7 +322,16 @@ export default function Dashboard() {
         dateRange.startDate,
         dateRange.endDate
       );
-      setInconsistencyData(result.data || []);
+      let processedData = result.data || [];
+      if (category === 'clientes') {
+        processedData = processedData.map(item => ({
+          ...item,
+          cliente_display: `${item.cod_cliente} - ${item.nom_cliente}`,
+          customer_group_display: `${item.cod_customer_group} - ${item.customer_group}`,
+          regional_display: `${item.cod_regional} - ${item.regional}`
+        }));
+      }
+      setInconsistencyData(processedData);
       setCurrentPage(result.page);
       setTotalPages(result.total_pages);
       setTotalCount(result.total_count);
@@ -369,13 +379,12 @@ export default function Dashboard() {
         {key: 'tipo_doc_fat', label: 'Tipo Doc Faturamento', align: 'center'}
       ];
       case 'clientes': return [
-        {key: 'dta_criacao', label: 'Data Registro'}, 
-        {key: 'cod_cliente', label: 'Cod Cliente'}, 
-        {key: 'nom_cliente', label: 'Nome'}, 
-        {key: 'cnpj', label: 'CNPJ'}, 
-        {key: 'ativo_inativo', label: 'Ativo/Inativo'}, 
-        {key: 'regional', label: 'Regional'}, 
-        {key: 'erros', label: 'Erros'}
+        {key: 'erros', label:'Erros'},
+        {key: 'cliente_display', label:'Cliente'},
+        {key: 'cnpj', label:'CNPJ', align: 'center'},
+        {key: 'customer_group_display', label:'Customer Group'},
+        {key: 'ativo_inativo', label:'Ativo/Inativo', align: 'center'},
+        {key: 'regional_display', label:'Regional'}
       ];
       case 'produtos': return [
         {key: 'lote', label: 'Lote'}, 
@@ -576,25 +585,29 @@ export default function Dashboard() {
   };
 
   const exportInconsistencyCategory = async () => {
-    if (selectedInconsistency === 'sellin') {
+    if (selectedInconsistency === 'sellin' || selectedInconsistency === 'clientes') {
       try {
         setInconsistencyLoading(true);
-        // Usar novo endpoint do backend para exportação estilizada e detalhada
-        const blob = await exportRelatorioSellinDetalhado(null, null);
-        const url = window.URL.createObjectURL(blob); // response.data já é um Blob
+        const isSellin = selectedInconsistency === 'sellin';
+        const exportFn = isSellin ? exportRelatorioSellinDetalhado : exportRelatorioClientesDetalhado;
+        const filename = isSellin ? 'Sellin_Detalhado' : 'Clientes_Detalhado';
+        
+        const blob = await exportFn(null, null);
+        const url = window.URL.createObjectURL(blob); 
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `Sellin_Detalhado_${new Date().toISOString().split('T')[0]}.xlsx`);
+        link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.remove();
         window.URL.revokeObjectURL(url);
       } catch (err) {
-        console.error("Erro ao exportar sellin detalhado", err);
+        console.error(`Erro ao exportar ${selectedInconsistency} detalhado`, err);
         const status = err.response ? err.response.status : 'Network Error';
         const message = err.response?.data?.detail || err.message;
         alert(`Não foi possível gerar a exportação detalhada. Status: ${status}. Detalhe: ${message}`);
       } finally {
+        setInconsistencyLoading(true); // Manter coerente com o finally original que desativa loading
         setInconsistencyLoading(false);
       }
       return;
@@ -1119,7 +1132,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-900 text-white rounded-lg shadow-sm text-sm font-semibold hover:bg-slate-800 hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             <Download size={14} strokeWidth={2.5} /> 
-            {selectedInconsistency === 'sellin' ? 'Exportação Detalhada' : 'Exportar Excel'}
+            {['sellin', 'clientes'].includes(selectedInconsistency) ? 'Exportação Detalhada' : 'Exportar Excel'}
           </button>
         }
       >
