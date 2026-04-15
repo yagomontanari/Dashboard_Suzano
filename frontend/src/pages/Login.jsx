@@ -66,7 +66,7 @@ export default function Login() {
                 <img src="/logo/Tradelinks_Colorida.png" alt="Tradelinks" className="h-16 object-contain" />
             </div>
             <div>
-              <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Dashboard Suzano</h2>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Suzano TL Hub</h2>
               <p className="text-slate-500 font-bold text-xs uppercase tracking-[0.3em] mt-2">Dashboard de Performance e Dados</p>
             </div>
         </div>

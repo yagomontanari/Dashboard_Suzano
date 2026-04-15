@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.3] - 2026-04-15
+### Alterado
+- **Branding Final**: Transição do nome do sistema de "Dashboard Suzano" para **"Suzano TL Hub"**.
+  - Atualização do `<title>` da aplicação para melhor SEO e identificação na aba do navegador.
+  - Rebranding completo no Header da Sidebar e na tela de Login.
+  - Atualização dos metadados de exportação de arquivos para o novo padrão.
+
+---
+
 ## [1.9.2] - 2026-04-15
 ### Alterado
 - **Rebranding do Dashboard**:
