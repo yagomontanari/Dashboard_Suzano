@@ -4,6 +4,23 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.9.5] - 2026-04-15
+### Alterado
+- **Nome Oficial**: Ajuste final do nome da ferramenta para **Tradelinks Dashboard**.
+  - Rebranding completo em todas as interfaces (Login, Sidebar, Título do Browser).
+  - Atualização dos metadados de exportação de arquivos.
+
+---
+
+## [1.9.4] - 2026-04-15
+### Alterado
+- **Ajuste de Branding e UI**: Transição definitiva do nome do sistema para **Tradelinks Hub**.
+  - Correção de alinhamento visual no Header da Sidebar, com centralização de sombras e ajuste de tipografia.
+  - Atualização do subtítulo na tela de Login para "Plataforma de Performance e Dados".
+  - Padronização total de títulos de exportação e metadados para o novo nome.
+
+---
+
 ## [1.9.3] - 2026-04-15
 ### Alterado
 - **Branding Final**: Transição do nome do sistema de "Dashboard Suzano" para **"Suzano TL Hub"**.

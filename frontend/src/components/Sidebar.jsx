@@ -49,7 +49,7 @@ export default function Sidebar() {
       <div className={`flex flex-col items-center justify-center border-b border-slate-800 transition-all duration-300 ${
         expanded ? 'p-10 h-48 gap-2' : 'p-6 h-28 gap-0'
       }`}>
-        <div className={`bg-white rounded-xl shrink-0 flex items-center justify-center p-2 shadow-[4px_4px_0px_#1e1e1e] border border-slate-700 transition-all duration-300 ${
+        <div className={`bg-white rounded-xl shrink-0 flex items-center justify-center p-2 shadow-xl shadow-black/40 border border-slate-700 transition-all duration-300 ${
           expanded ? 'w-16 h-16' : 'w-10 h-10'
         }`}>
           <img 
@@ -58,9 +58,11 @@ export default function Sidebar() {
             className="w-full h-full object-contain" 
           />
         </div>
-        <div className={`flex flex-col items-center transition-all duration-300 ${expanded ? 'opacity-100 mt-2' : 'opacity-0 h-0 overflow-hidden'}`}>
-          <span className="font-black tracking-tighter whitespace-nowrap text-slate-100 text-lg">Suzano TL Hub</span>
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-0.5">Controle e Monitoramento</span>
+        <div className={`flex flex-col items-center justify-center text-center transition-all duration-300 ${expanded ? 'opacity-100 mt-4 px-4' : 'opacity-0 h-0 overflow-hidden'}`}>
+          <span className="font-black tracking-tighter whitespace-nowrap text-slate-100 text-xl">Tradelinks Dashboard</span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2 leading-relaxed opacity-80">
+            Controle e Monitoramento
+          </span>
         </div>
       </div>
 

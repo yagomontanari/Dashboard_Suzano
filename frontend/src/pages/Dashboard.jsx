@@ -516,14 +516,14 @@ export default function Dashboard() {
       }));
 
       const blob = await exportStyledData({
-        title: 'Suzano_TL_Hub',
+        title: 'Tradelinks_Dashboard',
         sheets: [
           { name: 'Integrações', data: integracoes },
           { name: 'Inconsistências', data: inconsistencias }
         ]
-      }, 'Suzano_TL_Hub');
+      }, 'Tradelinks_Dashboard');
 
-      handleDownload(blob, `Suzano_TL_Hub_${new Date().toISOString().split('T')[0]}.xlsx`);
+      handleDownload(blob, `Tradelinks_Dashboard_${new Date().toISOString().split('T')[0]}.xlsx`);
     } catch (err) {
       console.error("Erro ao exportar fechamento", err);
       alert("Erro ao gerar exportação estilizada.");
