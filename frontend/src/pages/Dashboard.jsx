@@ -318,35 +318,34 @@ export default function Dashboard() {
         page, 
         20, 
         sort?.key, 
-        sort?.direction,
-        dateRange.startDate,
-        dateRange.endDate
       );
-      let processedData = result.data || [];
-      if (category === 'clientes') {
-        processedData = processedData.map(item => ({
-          ...item,
-          cliente_display: `${item.cod_cliente} - ${item.nom_cliente}`,
-          customer_group_display: `${item.cod_customer_group} - ${item.customer_group}`,
-          regional_display: `${item.cod_regional} - ${item.regional}`,
-          status_label: item.ativo_inativo ? 'Ativo' : 'Inativo'
-        }));
-      }
-      if (category === 'produtos') {
-        processedData = processedData.map(item => ({
-          ...item,
-          produto_display: `${item.id_produto} - ${item.nom_produto}`,
-          status_label: item.ativo_inativo ? 'Ativo' : 'Inativo'
-        }));
-      }
-      if (category === 'usuarios') {
-        processedData = processedData.map(item => ({
-          ...item,
-          status_label: (item.ativo_inativo === 'true' || item.ativo_inativo === true || item.ativo_inativo === '1') ? 'Ativo' : 'Inativo',
-          recebe_email_label: (item.ind_recebe_email === 'true' || item.ind_recebe_email === true || item.ind_recebe_email === '1') ? 'Sim' : 'Não',
-          aprova_workflow_label: (item.ind_aprova_workflow === 'true' || item.ind_aprova_workflow === true || item.ind_aprova_workflow === '1') ? 'Sim' : 'Não'
-        }));
-      }
+      
+      const transformItem = (cat, item) => {
+        const transformed = { ...item };
+        
+        if (cat === 'clientes') {
+          transformed.cliente_display = `${item.cod_cliente} - ${item.nom_cliente}`;
+          transformed.customer_group_display = `${item.cod_customer_group} - ${item.customer_group}`;
+          transformed.regional_display = `${item.cod_regional} - ${item.regional}`;
+          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+        }
+        
+        if (cat === 'produtos') {
+          transformed.produto_display = `${item.id_produto} - ${item.nom_produto}`;
+          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+        }
+        
+        if (cat === 'usuarios') {
+          const isTrue = (val) => val === 'true' || val === true || val === '1' || val === 1;
+          transformed.status_label = isTrue(item.ativo_inativo) ? 'Ativo' : 'Inativo';
+          transformed.recebe_email_label = isTrue(item.ind_recebe_email) ? 'Sim' : 'Não';
+          transformed.aprova_workflow_label = isTrue(item.ind_aprova_workflow) ? 'Sim' : 'Não';
+        }
+        
+        return transformed;
+      };
+
+      let processedData = (result.data || []).map(item => transformItem(category, item));
       setInconsistencyData(processedData);
       setCurrentPage(result.page);
       setTotalPages(result.total_pages);
@@ -470,7 +469,7 @@ export default function Dashboard() {
         {key: 'erros', label: 'Erros'},
         {key: 'id_produto', label: 'Cod. Produto'},
         {key: 'nom_produto', label: 'Produto'},
-        {key: 'ativo_inativo', label: 'Status'},
+        {key: 'status_label', label: 'Status'},
         {key: 'volume', label: 'Volume'},
         {key: 'peso', label: 'Peso'},
         {key: 'unidade_medida', label: 'Unidade de Medida'},
@@ -597,12 +596,34 @@ export default function Dashboard() {
       );
       const dataToExport = result.data || [];
       
+      const transformItem = (cat, item) => {
+        const transformed = { ...item };
+        if (cat === 'clientes') {
+          transformed.cliente_display = `${item.cod_cliente} - ${item.nom_cliente}`;
+          transformed.customer_group_display = `${item.cod_customer_group} - ${item.customer_group}`;
+          transformed.regional_display = `${item.cod_regional} - ${item.regional}`;
+          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+        }
+        if (cat === 'produtos') {
+          transformed.produto_display = `${item.id_produto} - ${item.nom_produto}`;
+          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+        }
+        if (cat === 'usuarios') {
+          const isTrue = (val) => val === 'true' || val === true || val === '1' || val === 1;
+          transformed.status_label = isTrue(item.ativo_inativo) ? 'Ativo' : 'Inativo';
+          transformed.recebe_email_label = isTrue(item.ind_recebe_email) ? 'Sim' : 'Não';
+          transformed.aprova_workflow_label = isTrue(item.ind_aprova_workflow) ? 'Sim' : 'Não';
+        }
+        return transformed;
+      };
+
       const columnsDef = getExportColumnsForCategory(category);
-      
+
       const formattedData = dataToExport.map(row => {
+        const item = transformItem(category, row);
         const formattedRow = {};
         columnsDef.forEach(col => {
-          let value = row[col.key];
+          let value = item[col.key];
           if (typeof value === 'object' && value !== null) {
             value = JSON.stringify(value);
           }
