@@ -10,9 +10,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - **Produtos**: Modernização do modal com layout otimizado (ID, Nome, Status e Hierarquia 1). Implementada Exportação Detalhada com 20 colunas e consolidação de hierarquias.
     - **Cutoff**: Novo layout de modal incluindo campos de **Lote** e **Nº Doc. Faturamento** para maior rastreabilidade.
     - **Usuários**: Reestruturação completa do pré-cadastro com humanização de dados (Sim/Não para booleanos) e rastreio por Lote.
-    - **Pagamentos**: Refatoração do modal com 7 colunas estratégicas e exportação detalhada de alta fidelidade com 14 colunas técnicas (incluindo Tipo Doc e Tipo de Ação).
-- **Padronização de UX Pro Max**: Centralização global de cabeçalhos e dados em todos os modais de inconsistência para paridade visual premium.
-- **Exportação Detalhada**: Implementado o motor de exportação customizada para os módulos de Produtos (20 colunas), Usuários (10 colunas), Cutoff e Pagamentos.
+    - **Integrações (VK11, ZAJU, ZVER)**: Refatoração completa dos modais com centralização de dados, priorização da coluna de Erros e exportação técnica de alta fidelidade.
+- **Padronização de UX Pro Max**: Centralização global de cabeçalhos e dados em todos os modais de inconsistência e integração para paridade visual premium. Rótulo unificado **"Exportação Detalhada"** em toda a plataforma.
+- **Exportação Detalhada**: Implementado o motor de exportação customizada para os módulos de Produtos, Usuários, Cutoff, Pagamentos, VK11 e ZAJU.
 
 ### Corrigido
 - **Query de Pagamentos (Erro de SQL)**: Corrigida a referência de campos técnicos (`doc_type`, `cond_type`, `tipo_acao`) que causava erro no PostgreSQL. As colunas foram movidas da tabela `pagamento_acao` para a tabela de integração correspondente.

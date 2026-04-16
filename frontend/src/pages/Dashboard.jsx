@@ -457,16 +457,23 @@ export default function Dashboard() {
         {key: 'dta_envio_integracao', label: 'Data Envio Integração', align: 'center'},
         {key: 'status', label: 'Status', align: 'center'}
       ];
-      case 'vk11': return [{key: 'id_orcamento', label: 'ID Orçamento'}, {key: 'descricao', label: 'Descrição'}, {key: 'tipo_integracao', label: 'Tipo'}, {key: 'valid_from', label: 'Válido De'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
+      case 'vk11': return [
+        {key: 'msg', label: 'Erros', align: 'center'},
+        {key: 'id_orcamento', label: 'ID Orçamento', align: 'center'},
+        {key: 'descricao', label: 'Descrição', align: 'center'},
+        {key: 'tipo_integracao', label: 'Tipo', align: 'center'},
+        {key: 'valid_from', label: 'Válido De', align: 'center'},
+        {key: 'status', label: 'Status', align: 'center'}
+      ];
       case 'zaju': return [
-        {key: 'purch_no_c', label: 'ID Ajuste'}, 
-        {key: 'orcamento', label: 'Orçamento'}, 
-        {key: 'linha_investimento', label: 'Linha Invest.'}, 
-        {key: 'cod_cliente', label: 'Cód. Cliente'}, 
-        {key: 'nome_cliente', label: 'Cliente'}, 
-        {key: 'nro_nota_fiscal', label: 'Nota Fiscal'}, 
-        {key: 'valor_provisao', label: 'Vlr. Provisão'}, 
-        {key: 'mensagem_retorno_integracao', label: 'Erros'}
+        {key: 'mensagem_retorno_integracao', label: 'Erros', align: 'center'},
+        {key: 'purch_no_c', label: 'ID Ajuste', align: 'center'}, 
+        {key: 'orcamento', label: 'Orçamento', align: 'center'}, 
+        {key: 'linha_investimento', label: 'Linha Invest.', align: 'center'}, 
+        {key: 'cod_cliente', label: 'Cód. Cliente', align: 'center'}, 
+        {key: 'nome_cliente', label: 'Cliente', align: 'center'}, 
+        {key: 'nro_nota_fiscal', label: 'Nota Fiscal', align: 'center'}, 
+        {key: 'valor_provisao', label: 'Vlr. Provisão', align: 'center'}
       ];
       default: return [{key: 'id', label: 'ID'}];
     }
@@ -570,6 +577,43 @@ export default function Dashboard() {
         {key: 'lote', label: 'Lote'},
         {key: 'cutoff', label: 'Cutoff'},
         {key: 'nro_documento', label: 'Nº Doc. Faturamento'}
+      ];
+      case 'vk11': return [
+        {key: 'msg', label: 'Erros'},
+        {key: 'id_orcamento', label: 'ID Orçamento'},
+        {key: 'descricao', label: 'Descrição'},
+        {key: 'tipo_integracao', label: 'Tipo Integração'},
+        {key: 'id_ajuste_verba', label: 'Ajuste Verba'},
+        {key: 'status', label: 'Status'},
+        {key: 'valid_from', label: 'Válido De'},
+        {key: 'dta_alteracao', label: 'Alteração Orçamento'}
+      ];
+      case 'zaju': return [
+        {key: 'mensagem_retorno_integracao', label: 'Erros de Integração'},
+        {key: 'purch_no_c', label: 'ID Ajuste'},
+        {key: 'orcamento', label: 'Orçamento'},
+        {key: 'linha_investimento', label: 'Linha Investimento'},
+        {key: 'tipo_linha_investimento', label: 'Tipo Linha Investimento'},
+        {key: 'cod_cliente', label: 'Cód. Cliente'},
+        {key: 'nome_cliente', label: 'Nome Cliente'},
+        {key: 'nro_nota_fiscal', label: 'NRO Nota Fiscal'},
+        {key: 'vkorg', label: 'VKORG'},
+        {key: 'nro_documento', label: 'NRO Documento'},
+        {key: 'valor_bruto', label: 'Valor Bruto'},
+        {key: 'valor_liquido', label: 'Valor Líquido'},
+        {key: 'valor_provisao', label: 'Valor Provisão'},
+        {key: 'dta_criacao', label: 'Criação Integração'},
+        {key: 'tipo_doc', label: 'Tipo Documento'},
+        {key: 'sequencial', label: 'Sequencial'},
+        {key: 'material', label: 'Código Material'},
+        {key: 'nome_produto', label: 'Nome Material'},
+        {key: 'unidade_medida', label: 'Unidade Medida'},
+        {key: 'cond_type', label: 'Tipo Condição'},
+        {key: 'status', label: 'Status'},
+        {key: 'numov_integracao', label: 'Numero OV'},
+        {key: 'numfat_integracao', label: 'Numero Faturamento'},
+        {key: 'data_integracao', label: 'Data Integração SAP'},
+        {key: 'dta_alteracao', label: 'Última Alteração'}
       ];
       default: return getColumnsForCategory(category);
     }
@@ -1133,7 +1177,7 @@ export default function Dashboard() {
                       disabled={inconsistencyLoading}
                       className="text-[10px] bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-1.5 rounded font-bold uppercase tracking-wider flex items-center gap-1 transition-colors disabled:opacity-50"
                     >
-                      <Download size={14} /> EXPORTAR
+                      <Download size={14} /> Exportação Detalhada
                     </button>
                   )}
                 </div>
