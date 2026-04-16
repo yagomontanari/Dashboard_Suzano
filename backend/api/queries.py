@@ -393,7 +393,7 @@ QUERY_ERRO_PRODUTOS_PAGINATED = text(QUERY_ERRO_PRODUTOS.text + PAGINATION_SORT_
 QUERY_ERRO_CUTOFF = text("""
     WITH dados_extraidos AS (
         SELECT 
-            ife.tipo, ife.erros, ife.dta_criacao,
+            ife.tipo, ife.erros, ife.dta_criacao, ife.lote,
             ife.registro ->> 'cutoff' AS cutoff,
             ife.registro ->> 'numeroDocFat' AS nro_documento,
             ife.dta_alteracao,
@@ -401,7 +401,7 @@ QUERY_ERRO_CUTOFF = text("""
         FROM integracao_fila_erros ife 
         WHERE ife.tipo = 'CUTOFF' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
     )
-    SELECT de.tipo, de.erros, de.cutoff, de.nro_documento, de.dta_alteracao
+    SELECT de.tipo, de.erros, de.cutoff, de.nro_documento, de.dta_alteracao, de.lote
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM sellin s 
@@ -416,7 +416,7 @@ QUERY_ERRO_CUTOFF_PAGINATED = text(QUERY_ERRO_CUTOFF.text + PAGINATION_SORT_SUFF
 QUERY_ERRO_USUARIOS = text("""
     WITH dados_extraidos AS (
         SELECT 
-            ife.erros, ife.dta_criacao,
+            ife.erros, ife.dta_criacao, ife.lote,
             ife.registro ->> 'email' AS email,
             ife.registro ->> 'matricula' AS matricula,
             ife.registro ->> 'nomePerfil' AS nome_perfil,
@@ -434,7 +434,7 @@ QUERY_ERRO_USUARIOS = text("""
     SELECT 
         de.erros, de.dta_criacao, de.email, de.matricula, de.nome_perfil,
         de.ativo_inativo, de.nome_estrutura, de.codigo_divisao, de.ind_recebe_email,
-        de.chave_integracao, de.ind_aprova_workflow, de.dta_alteracao
+        de.chave_integracao, de.ind_aprova_workflow, de.dta_alteracao, de.lote
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM usuario u 

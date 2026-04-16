@@ -339,6 +339,14 @@ export default function Dashboard() {
           status_label: item.ativo_inativo ? 'Ativo' : 'Inativo'
         }));
       }
+      if (category === 'usuarios') {
+        processedData = processedData.map(item => ({
+          ...item,
+          status_label: (item.ativo_inativo === 'true' || item.ativo_inativo === true || item.ativo_inativo === '1') ? 'Ativo' : 'Inativo',
+          recebe_email_label: (item.ind_recebe_email === 'true' || item.ind_recebe_email === true || item.ind_recebe_email === '1') ? 'Sim' : 'Não',
+          aprova_workflow_label: (item.ind_aprova_workflow === 'true' || item.ind_aprova_workflow === true || item.ind_aprova_workflow === '1') ? 'Sim' : 'Não'
+        }));
+      }
       setInconsistencyData(processedData);
       setCurrentPage(result.page);
       setTotalPages(result.total_pages);
@@ -395,20 +403,27 @@ export default function Dashboard() {
         {key: 'regional_display', label:'Regional', align: 'center'}
       ];
       case 'produtos': return [
-        {key: 'erros', label: 'Erros'}, 
-        {key: 'lote', label: 'Lote'}, 
-        {key: 'produto_display', label: 'Produto'}, 
-        {key: 'cod_hierarquia1', label: 'Hierarquia 1'}, 
-        {key: 'status_label', label: 'Status'}
+        {key: 'erros', label: 'Erros', align: 'center'}, 
+        {key: 'lote', label: 'Lote', align: 'center'}, 
+        {key: 'produto_display', label: 'Produto', align: 'center'}, 
+        {key: 'cod_hierarquia1', label: 'Hierarquia 1', align: 'center'}, 
+        {key: 'status_label', label: 'Status', align: 'center'}
       ];
-      case 'cutoff': return [{key: 'nro_documento', label:'Num Fatura'}, {key: 'cutoff', label:'Cutoff'}, {key: 'tipo', label:'Tipo'}, {key: 'erros', label:'Erros (JSON)'}];
+      case 'cutoff': return [
+        {key: 'erros', label: 'Erros', align: 'center'}, 
+        {key: 'lote', label: 'Lote', align: 'center'}, 
+        {key: 'cutoff', label: 'Cutoff', align: 'center'}, 
+        {key: 'nro_documento', label: 'Nº Doc. Faturamento', align: 'center'}
+      ];
       case 'usuarios': return [
-        {key: 'dta_criacao', label:'Data Registro'}, 
-        {key: 'matricula', label:'Matrícula'}, 
-        {key: 'email', label:'E-mail'}, 
-        {key: 'nome_perfil', label:'Perfil'}, 
-        {key: 'nome_estrutura', label:'Estrutura'}, 
-        {key: 'erros', label:'Erros (JSON)'}
+        {key: 'erros', label: 'Erros', align: 'center'}, 
+        {key: 'lote', label: 'Lote', align: 'center'}, 
+        {key: 'email', label: 'Email', align: 'center'}, 
+        {key: 'matricula', label: 'Matricula', align: 'center'}, 
+        {key: 'nome_perfil', label: 'Perfil', align: 'center'}, 
+        {key: 'nome_estrutura', label: 'Estrutura de Usuario', align: 'center'}, 
+        {key: 'codigo_divisao', label: 'Divisão', align: 'center'}, 
+        {key: 'status_label', label: 'Status', align: 'center'}
       ];
       case 'pagamentos': return [{key: 'cod_pagamento', label: 'Cod. Pagamento'}, {key: 'cliente', label: 'Cliente'}, {key: 'sequencial', label: 'Sequencial'}, {key: 'purch_no_c', label: 'Identificador'}, {key: 'dta_criacao', label: 'Data Registro'}, {key: 'dta_envio_integracao', label: 'Data Integração'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
       case 'vk11': return [{key: 'id_orcamento', label: 'ID Orçamento'}, {key: 'descricao', label: 'Descrição'}, {key: 'tipo_integracao', label: 'Tipo'}, {key: 'valid_from', label: 'Válido De'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
@@ -502,7 +517,24 @@ export default function Dashboard() {
         {key: 'msg', label: category === 'pagamentos_sucesso' ? 'Mensagem' : 'Erros'},
         {key: 'dta_alteracao', label: 'Audit. Alteração'}
       ];
-      // Para as demais, usa o layout padrão da UI
+      case 'usuarios': return [
+        {key: 'erros', label: 'Erros'},
+        {key: 'email', label: 'E-mail'},
+        {key: 'matricula', label: 'Matricula'},
+        {key: 'nome_perfil', label: 'Perfil'},
+        {key: 'nome_estrutura', label: 'Estrutura de Usuário'},
+        {key: 'codigo_divisao', label: 'Divisão'},
+        {key: 'recebe_email_label', label: 'Recebe e-mail?'},
+        {key: 'aprova_workflow_label', label: 'Aprova Workflow?'},
+        {key: 'status_label', label: 'Status'},
+        {key: 'chave_integracao', label: 'Chave Integração'}
+      ];
+      case 'cutoff': return [
+        {key: 'erros', label: 'Erros'},
+        {key: 'lote', label: 'Lote'},
+        {key: 'cutoff', label: 'Cutoff'},
+        {key: 'nro_documento', label: 'Nº Doc. Faturamento'}
+      ];
       default: return getColumnsForCategory(category);
     }
   };
@@ -1141,7 +1173,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-900 text-white rounded-lg shadow-sm text-sm font-semibold hover:bg-slate-800 hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             <Download size={14} strokeWidth={2.5} /> 
-            {['sellin', 'clientes'].includes(selectedInconsistency) ? 'Exportação Detalhada' : 'Exportar Excel'}
+            {['sellin', 'clientes', 'produtos', 'cutoff', 'usuarios'].includes(selectedInconsistency) ? 'Exportação Detalhada' : 'Exportar Excel'}
           </button>
         }
       >
