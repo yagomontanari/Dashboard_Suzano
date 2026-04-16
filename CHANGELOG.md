@@ -7,8 +7,8 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 ## [2.0.0] - 2026-04-16
 ### Adicionado
 - **Detalhamento de Produtos (Reestruturação)**:
-    - Novo layout do modal de inconsistências de produtos com colunas otimizadas: "Erros", "Lote", "Produto" (ID + Nome), "Hierarquia 1" (ID + Nome) e "Status".
-    - Implementação da **Exportação Detalhada Completa**, gerando um relatório Excel com 23 colunas técnicas e de negócio, incluindo hierarquias completas, classes, famílias e unidades de negócio.
+    - Novo layout do modal de inconsistências de produtos com colunas otimizadas: "Erros", "Lote", "Produto" (ID + Nome), "Hierarquia 1" (Apenas Código) e "Status".
+    - Implementação da **Exportação Detalhada Completa**, gerando um relatório Excel com 20 colunas técnicas e de negócio, consolidando hierarquias (1, 2 e 3) para exibir apenas códigos sob o rótulo "Hierarquia X".
     - Padronização visual dos campos display para facilitar o rastreamento técnico entre o Dashboard e o SAP.
     - Transformação do campo Status para exibição humanizada ("Ativo"/"Inativo") no modal.
 

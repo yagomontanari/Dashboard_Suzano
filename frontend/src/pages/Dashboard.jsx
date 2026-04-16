@@ -336,7 +336,6 @@ export default function Dashboard() {
         processedData = processedData.map(item => ({
           ...item,
           produto_display: `${item.id_produto} - ${item.nom_produto}`,
-          hierarquia1_display: `${item.cod_hierarquia1} - ${item.hierarquia1}`,
           status_label: item.ativo_inativo ? 'Ativo' : 'Inativo'
         }));
       }
@@ -399,7 +398,7 @@ export default function Dashboard() {
         {key: 'erros', label: 'Erros'}, 
         {key: 'lote', label: 'Lote'}, 
         {key: 'produto_display', label: 'Produto'}, 
-        {key: 'hierarquia1_display', label: 'Hierarquia 1'}, 
+        {key: 'cod_hierarquia1', label: 'Hierarquia 1'}, 
         {key: 'status_label', label: 'Status'}
       ];
       case 'cutoff': return [{key: 'nro_documento', label:'Num Fatura'}, {key: 'cutoff', label:'Cutoff'}, {key: 'tipo', label:'Tipo'}, {key: 'erros', label:'Erros (JSON)'}];
@@ -468,12 +467,9 @@ export default function Dashboard() {
         {key: 'familia', label: 'Familia'},
         {key: 'cod_setor_atividade', label: 'Cod. Setor'},
         {key: 'setor_atividade', label: 'Setor'},
-        {key: 'cod_hierarquia1', label: 'Cod. Hierarquia 1'},
-        {key: 'hierarquia1', label: 'Hierarquia 1'},
-        {key: 'cod_hierarquia2', label: 'Cod. Hierarquia 2'},
-        {key: 'hierarquia2', label: 'Hierarquia 2'},
-        {key: 'cod_hierarquia3', label: 'Cod. Hierarquia 3'},
-        {key: 'hierarquia3', label: 'Hierarquia 3'},
+        {key: 'cod_hierarquia1', label: 'Hierarquia 1'},
+        {key: 'cod_hierarquia2', label: 'Hierarquia 2'},
+        {key: 'cod_hierarquia3', label: 'Hierarquia 3'},
         {key: 'cod_unidade_negocio', label: 'Cod. Unidade Negócio'},
         {key: 'unidade_negocio', label: 'Unidade de Negocio'}
       ];
