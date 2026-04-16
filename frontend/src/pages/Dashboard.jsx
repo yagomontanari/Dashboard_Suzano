@@ -995,159 +995,211 @@ export default function Dashboard() {
         )}
 
         {activeTab === 'pagamentos' && (
-          <div className="space-y-8 animate-in fade-in duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Counts */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider">Integrados</p>
-                <div className="flex items-end justify-between">
-                  <h3 className="text-3xl font-bold text-blue-600">{data.zver.success}</h3>
-                  <div className="text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">Valor Total</p>
-                    <p className="text-sm font-bold text-slate-700">{formatCurrency(data.zver.value_success)}</p>
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Health & Efficiency Header */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                <div className="relative z-10 flex items-start justify-between">
+                  <div>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
+                    <h3 className="text-4xl font-black text-emerald-600 tracking-tighter">
+                      {(data.zver.total > 0 ? (data.zver.success / data.zver.total * 100) : 0).toFixed(1)}%
+                    </h3>
+                    <div className="flex items-center gap-1 mt-2 text-emerald-500 font-bold text-[10px] uppercase">
+                      <TrendingUp size={12} /> Desempenho Operacional
+                    </div>
+                  </div>
+                  <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner">
+                    <Activity size={24} />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider">Integração Pendente</p>
-                <div className="flex items-end justify-between">
-                  <h3 className="text-3xl font-bold text-amber-600">{data.zver.pending}</h3>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">Valor Total</p>
-                    <p className="text-sm font-bold text-slate-700">{formatCurrency(data.zver.value_pending)}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Integrados</p>
+                    <p className="text-lg font-black text-slate-800 tracking-tight">{formatCurrency(data.zver.value_success)}</p>
                   </div>
                 </div>
+                <h4 className="text-3xl font-black text-emerald-600 tracking-tighter">{data.zver.success}</h4>
+                <p className="text-xs font-bold text-slate-400 mt-1 uppercase">Registros Financeiros</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider">Aguardando Retorno</p>
-                <div className="flex items-end justify-between">
-                  <h3 className="text-3xl font-bold text-indigo-600">{data.zver.pending_return}</h3>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group uppercase tracking-widest">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={20} /></div>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">Valor Total</p>
-                    <p className="text-sm font-bold text-slate-700">{formatCurrency(data.zver.value_pending_return)}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase">Processando</p>
+                    <p className="text-lg font-black text-slate-800 tracking-tight">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</p>
                   </div>
                 </div>
+                <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data.zver.pending + data.zver.pending_return}</h4>
+                <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Aguardando Integração</p>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider">Com Erro</p>
-                <div className="flex items-end justify-between">
-                  <h3 className="text-3xl font-bold text-rose-600">{data.zver.error}</h3>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={20} /></div>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">Valor Total</p>
-                    <p className="text-sm font-bold text-slate-700">{formatCurrency(data.zver.value_error)}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase">Bloqueados</p>
+                    <p className="text-lg font-black text-slate-800 tracking-tight">{formatCurrency(data.zver.value_error)}</p>
+                  </div>
+                </div>
+                <h4 className="text-3xl font-black text-rose-600 tracking-tighter">{data.zver.error}</h4>
+                <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Falhas Detectadas</p>
+              </div>
+            </div>
+
+            {/* Premium Hero Section: Integrated Value */}
+            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 shadow-2xl shadow-emerald-200/50">
+              <div className="absolute top-0 right-0 p-12 opacity-10">
+                <CreditCard size={200} className="text-white" />
+              </div>
+              <div className="relative z-10 p-10 flex flex-col md:flex-row items-center justify-between gap-12">
+                <div className="flex-1 space-y-6">
+                  <div>
+                    <h2 className="text-emerald-100 font-bold text-sm uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                       <span className="w-8 h-1 bg-emerald-300 rounded-full"></span> 
+                       Fluxo Financeiro Integrado
+                    </h2>
+                    <div className="flex items-baseline gap-4">
+                      <span className="text-emerald-200 text-3xl font-medium">R$</span>
+                      <h3 className="text-7xl font-black text-white tracking-tighter drop-shadow-lg">
+                        {formatCurrency(data.zver.value_success).replace('R$', '').trim()}
+                      </h3>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="px-6 py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
+                      <p className="text-emerald-200 text-[10px] font-bold uppercase tracking-wider">Volume Mensal</p>
+                      <p className="text-white font-black text-xl">{data.zver.total} <span className="text-xs font-medium text-emerald-300 tracking-normal">operações</span></p>
+                    </div>
+                    <button 
+                      onClick={() => exportCategory('pagamentos_sucesso', data.zver.success)}
+                      className="px-6 py-3 bg-emerald-400 hover:bg-emerald-300 text-emerald-900 font-black text-sm uppercase rounded-2xl transition-all hover:-translate-y-1 shadow-lg shadow-emerald-500/20 active:translate-y-0"
+                    >
+                      Exportar Sucessos
+                    </button>
+                  </div>
+                </div>
+
+                <div className="w-full md:w-auto grid grid-cols-2 gap-4">
+                  <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2">
+                    <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Impacto em Erro</p>
+                    <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_error)}</p>
+                    <div className="w-full h-1 bg-white/10 rounded-full">
+                       <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(data.zver.value_error / data.zver.value_success) * 100}%` }}></div>
+                    </div>
+                  </div>
+                  <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2">
+                    <p className="text-amber-400 font-black text-[10px] uppercase tracking-widest">Previsão Pendente</p>
+                    <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</p>
+                    <div className="w-full h-1 bg-white/10 rounded-full">
+                       <div className="h-full bg-amber-400 rounded-full" style={{ width: '40%' }}></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Highlighted Summary Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 rounded-xl overflow-hidden shadow-[8px_8px_0px_#94a3b8] border border-slate-800">
-              {/* Left Column: Total Integrado (High Prominence) */}
-              <div className="lg:col-span-2 bg-white p-8 flex flex-col justify-center border-r border-slate-100">
-                <p className="text-blue-600 font-black text-xs uppercase tracking-[0.2em] mb-2">Total Integrado com Sucesso</p>
-                <div className="flex items-baseline gap-2">
-                  <h2 className="text-5xl font-black text-slate-900 tracking-tighter">
-                    {formatCurrency(data.zver.value_success)}
-                  </h2>
-                </div>
-                <button 
-                  onClick={() => exportCategory('pagamentos_sucesso', data.zver.success)}
-                  title="Exportar registro"
-                  className="mt-4 flex items-center gap-2 text-emerald-600 font-bold text-sm bg-emerald-50 px-3 py-1 rounded-full w-fit hover:bg-emerald-100 transition-colors"
-                >
-                  <CheckCircle2 size={16} />
-                  <span>{data.zver.success} registros validados</span>
-                </button>
-              </div>
-
-              {/* Right Column: Pendentes & Erros (Dark Background) */}
-              <div className="lg:col-span-3 bg-slate-900 p-8 flex flex-col md:flex-row justify-around items-center gap-8">
-                <div className="space-y-1 text-center md:text-left">
-                  <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Resumo Financeiro Pendente</p>
-                  <h3 className="text-3xl font-black text-white">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</h3>
-                  <p className="text-slate-500 text-xs font-medium">({data.zver.pending + data.zver.pending_return} registros aguardando)</p>
-                </div>
-                
-                <div className="h-12 w-px bg-slate-800 hidden md:block"></div>
-                
-                <div className="space-y-1 text-center md:text-left">
-                  <p className="text-rose-500/80 font-bold text-[10px] uppercase tracking-widest">Total com Erro</p>
-                  <h3 className="text-3xl font-black text-rose-500">{formatCurrency(data.zver.value_error)}</h3>
-                  <p className="text-slate-500 text-xs font-medium">({data.zver.error} registros com falha)</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Top 5 Clients Section */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-amber-100 text-amber-600 rounded-lg">
-                    <Trophy size={18} />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* Modern Top 5 Ranking */}
+              <div className="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-emerald-600 text-white rounded-2xl shadow-lg shadow-emerald-200">
+                      <Trophy size={20} />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-slate-800 uppercase tracking-tight">Performance por Cliente</h3>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Maiores volumes financeiros integrados</p>
+                    </div>
                   </div>
-                  <h3 className="font-bold text-slate-800">Top 5 Clientes (Maior Valor)</h3>
+                  <TrendingUp size={20} className="text-emerald-500" />
                 </div>
-                <Users size={18} className="text-slate-400" />
-              </div>
-              
-              <div className="divide-y divide-slate-100">
-                {data.zver.top_clients && data.zver.top_clients.length > 0 ? (
-                  data.zver.top_clients.map((client, index) => (
-                    <div key={client.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <span className={`flex items-center justify-center w-8 h-8 rounded-full font-black text-xs ${
-                          index === 0 ? 'bg-amber-100 text-amber-600' : 
-                          index === 1 ? 'bg-slate-200 text-slate-600' :
-                          index === 2 ? 'bg-orange-100 text-orange-600' :
-                          'bg-slate-100 text-slate-400'
-                        }`}>
-                          {index + 1}º
-                        </span>
-                        <div>
-                          <p className="font-bold text-slate-800 text-sm leading-tight">{client.nome}</p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">{client.id} • {client.qtd} pagamentos</p>
+                
+                <div className="p-4 space-y-2">
+                  {data.zver.top_clients && data.zver.top_clients.length > 0 ? (
+                    data.zver.top_clients.map((client, index) => (
+                      <div key={client.id} className="group p-4 flex items-center justify-between rounded-2xl hover:bg-emerald-50/50 transition-all border border-transparent hover:border-emerald-100">
+                        <div className="flex items-center gap-5">
+                          <div className="relative">
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm transition-transform group-hover:rotate-6 ${
+                              index === 0 ? 'bg-amber-100 text-amber-600 border border-amber-200' : 
+                              index === 1 ? 'bg-slate-100 text-slate-500 border border-slate-200' :
+                              index === 2 ? 'bg-orange-50 text-orange-600 border border-orange-100' :
+                              'bg-white text-slate-400 border border-slate-100'
+                            }`}>
+                              {index + 1}º
+                            </div>
+                            {index === 0 && <span className="absolute -top-1 -right-1 flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span></span>}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors uppercase text-xs">{client.nome}</p>
+                            <p className="text-[10px] text-slate-400 font-bold mt-1">ID: {client.id} • {client.qtd} REGISTROS</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-black text-slate-900">{formatCurrency(client.valor)}</p>
-                        <div className="flex items-center justify-end gap-1 mt-1">
-                          <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-blue-500 rounded-full" 
-                              style={{ width: `${(client.valor / data.zver.top_clients[0].valor) * 100}%` }}
-                            ></div>
+                        <div className="text-right space-y-1.5">
+                          <p className="font-black text-slate-900 group-hover:scale-105 transition-transform origin-right">{formatCurrency(client.valor)}</p>
+                          <div className="flex items-center justify-end gap-2 text-[10px] font-bold text-emerald-600">
+                            <span className="opacity-50 tracking-tighter uppercase whitespace-nowrap">Volume de Participação</span>
+                            <div className="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-emerald-500 rounded-full transition-all duration-1000 group-hover:bg-emerald-400" 
+                                style={{ width: `${(client.valor / data.zver.top_clients[0].valor) * 100}%` }}
+                              ></div>
+                            </div>
                           </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="p-12 text-center">
+                      <Search size={32} className="mx-auto text-slate-200 mb-2" />
+                      <p className="text-slate-400 font-medium">Nenhum registro encontrado</p>
                     </div>
-                  ))
-                ) : (
-                  <div className="p-8 text-center text-slate-400 italic text-sm">
-                    Nenhum registro encontrado no período.
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Action Section */}
-            <div className="flex justify-between items-center bg-white p-6 rounded-xl border border-slate-200">
-               <div className="flex items-center gap-4">
-                  <div className="p-3 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={24} /></div>
-                  <div>
-                    <h4 className="font-bold text-slate-800">Inconsistências de Pagamentos</h4>
-                    <p className="text-sm text-slate-500">Existem {data.errors.pagamentos} registros com erro de cadastro/validação</p>
+              {/* Resolution Hub Banner */}
+              <div className="lg:col-span-4 space-y-6">
+                <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
+                  <div className="absolute -top-10 -left-10 w-40 h-40 bg-rose-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  <div className="relative z-10 text-center space-y-6">
+                    <div className="w-20 h-20 bg-rose-100 text-rose-600 rounded-3xl mx-auto flex items-center justify-center shadow-lg shadow-rose-100 transition-transform group-hover:-rotate-12">
+                      <AlertCircle size={40} strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-black text-slate-800">Resolução de <span className="text-rose-600">Conflitos</span></h4>
+                      <p className="text-slate-500 text-sm mt-3 font-medium leading-relaxed">
+                        Existem <strong className="text-slate-800">{data.errors.pagamentos} inconsistências</strong> detectadas na integração de pagamentos que aguardam sua auditoria.
+                      </p>
+                    </div>
+                    <button 
+                      onClick={() => handleOpenModal('pagamentos')}
+                      disabled={data.errors.pagamentos === 0}
+                      className="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-rose-200 transition-all hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:shadow-none"
+                    >
+                      Acessar Log de Inconsistências
+                    </button>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ação Corretiva Obrigatória</p>
                   </div>
-               </div>
-               <button 
-                  onClick={() => handleOpenModal('pagamentos')}
-                  disabled={data.errors.pagamentos === 0}
-                  className="px-6 py-2 bg-rose-600 text-white font-bold rounded shadow-[4px_4px_0px_#fb7185] hover:bg-rose-700 transition-all flex items-center gap-2 disabled:opacity-50"
-               >
-                  Ver Detalhes de Erros
-               </button>
+                </div>
+
+                <div className="bg-emerald-900 p-8 rounded-[2.5rem] text-white relative overflow-hidden">
+                   <div className="absolute bottom-0 right-0 p-8 opacity-20 rotate-12">
+                      <Target size={80} />
+                   </div>
+                   <h5 className="font-bold text-emerald-400 text-xs uppercase tracking-[0.2em] mb-4">Meta do Período</h5>
+                   <p className="text-2xl font-black">99.5% Integração</p>
+                   <p className="text-emerald-500 text-xs mt-2 font-bold uppercase">Objetivo corporativo de redução de erros</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
