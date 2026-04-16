@@ -14,6 +14,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **Exportação Detalhada**: Implementado o motor de exportação customizada para os módulos de Produtos (20 colunas), Usuários (10 colunas) e Cutoff.
 
 ### Corrigido
+- **Sanitização de Dados (Produtos)**: Resolvida a extração incorreta de campos técnicos de Java (`java.util.ArrayList`). Agora, campos como **Unidade de Negócio** exibem apenas os valores reais em vez de metadados de sistema.
 - **Exportação Excel (Bug de Layout)**: Resolvido bug de aninhagem no payload (`api.js`) que causava a exportação de colunas genéricas (`title`/`sheets`) em vez dos dados reais.
 - **Humanização de Dados**: Garantida a aplicação de labels de negócio (Ativo/Inativo, Sim/Não) tanto na visualização em tela quanto nos arquivos exportados.
 

@@ -323,23 +323,43 @@ export default function Dashboard() {
       const transformItem = (cat, item) => {
         const transformed = { ...item };
         
+        // Sanitizador para padrões técnicos Java em campos JSON (ex: ["java.util.ArrayList", ["valor"]])
+        const cleanJavaData = (val) => {
+          if (!val) return val;
+          try {
+            // Se for string que parece JSON, tenta fazer o parse primeiro
+            const parsed = typeof val === 'string' && (val.startsWith('[') || val.startsWith('{')) ? JSON.parse(val) : val;
+            if (Array.isArray(parsed) && parsed[0] === 'java.util.ArrayList' && Array.isArray(parsed[1])) {
+              return parsed[1][0] || "";
+            }
+            return parsed;
+          } catch (e) {
+            return val;
+          }
+        };
+
+        // Aplicar sanitização básica em todos os campos para remover ruído técnico
+        Object.keys(transformed).forEach(key => {
+          transformed[key] = cleanJavaData(transformed[key]);
+        });
+        
         if (cat === 'clientes') {
-          transformed.cliente_display = `${item.cod_cliente} - ${item.nom_cliente}`;
-          transformed.customer_group_display = `${item.cod_customer_group} - ${item.customer_group}`;
-          transformed.regional_display = `${item.cod_regional} - ${item.regional}`;
-          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+          transformed.cliente_display = `${transformed.cod_cliente} - ${transformed.nom_cliente}`;
+          transformed.customer_group_display = `${transformed.cod_customer_group} - ${transformed.customer_group}`;
+          transformed.regional_display = `${transformed.cod_regional} - ${transformed.regional}`;
+          transformed.status_label = transformed.ativo_inativo ? 'Ativo' : 'Inativo';
         }
         
         if (cat === 'produtos') {
-          transformed.produto_display = `${item.id_produto} - ${item.nom_produto}`;
-          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+          transformed.produto_display = `${transformed.id_produto} - ${transformed.nom_produto}`;
+          transformed.status_label = transformed.ativo_inativo ? 'Ativo' : 'Inativo';
         }
         
         if (cat === 'usuarios') {
           const isTrue = (val) => val === 'true' || val === true || val === '1' || val === 1;
-          transformed.status_label = isTrue(item.ativo_inativo) ? 'Ativo' : 'Inativo';
-          transformed.recebe_email_label = isTrue(item.ind_recebe_email) ? 'Sim' : 'Não';
-          transformed.aprova_workflow_label = isTrue(item.ind_aprova_workflow) ? 'Sim' : 'Não';
+          transformed.status_label = isTrue(transformed.ativo_inativo) ? 'Ativo' : 'Inativo';
+          transformed.recebe_email_label = isTrue(transformed.ind_recebe_email) ? 'Sim' : 'Não';
+          transformed.aprova_workflow_label = isTrue(transformed.ind_aprova_workflow) ? 'Sim' : 'Não';
         }
         
         return transformed;
@@ -598,21 +618,39 @@ export default function Dashboard() {
       
       const transformItem = (cat, item) => {
         const transformed = { ...item };
+
+        const cleanJavaData = (val) => {
+          if (!val) return val;
+          try {
+            const parsed = typeof val === 'string' && (val.startsWith('[') || val.startsWith('{')) ? JSON.parse(val) : val;
+            if (Array.isArray(parsed) && parsed[0] === 'java.util.ArrayList' && Array.isArray(parsed[1])) {
+              return parsed[1][0] || "";
+            }
+            return parsed;
+          } catch (e) {
+            return val;
+          }
+        };
+
+        Object.keys(transformed).forEach(key => {
+          transformed[key] = cleanJavaData(transformed[key]);
+        });
+
         if (cat === 'clientes') {
-          transformed.cliente_display = `${item.cod_cliente} - ${item.nom_cliente}`;
-          transformed.customer_group_display = `${item.cod_customer_group} - ${item.customer_group}`;
-          transformed.regional_display = `${item.cod_regional} - ${item.regional}`;
-          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+          transformed.cliente_display = `${transformed.cod_cliente} - ${transformed.nom_cliente}`;
+          transformed.customer_group_display = `${transformed.cod_customer_group} - ${transformed.customer_group}`;
+          transformed.regional_display = `${transformed.cod_regional} - ${transformed.regional}`;
+          transformed.status_label = transformed.ativo_inativo ? 'Ativo' : 'Inativo';
         }
         if (cat === 'produtos') {
-          transformed.produto_display = `${item.id_produto} - ${item.nom_produto}`;
-          transformed.status_label = item.ativo_inativo ? 'Ativo' : 'Inativo';
+          transformed.produto_display = `${transformed.id_produto} - ${transformed.nom_produto}`;
+          transformed.status_label = transformed.ativo_inativo ? 'Ativo' : 'Inativo';
         }
         if (cat === 'usuarios') {
           const isTrue = (val) => val === 'true' || val === true || val === '1' || val === 1;
-          transformed.status_label = isTrue(item.ativo_inativo) ? 'Ativo' : 'Inativo';
-          transformed.recebe_email_label = isTrue(item.ind_recebe_email) ? 'Sim' : 'Não';
-          transformed.aprova_workflow_label = isTrue(item.ind_aprova_workflow) ? 'Sim' : 'Não';
+          transformed.status_label = isTrue(transformed.ativo_inativo) ? 'Ativo' : 'Inativo';
+          transformed.recebe_email_label = isTrue(transformed.ind_recebe_email) ? 'Sim' : 'Não';
+          transformed.aprova_workflow_label = isTrue(transformed.ind_aprova_workflow) ? 'Sim' : 'Não';
         }
         return transformed;
       };
