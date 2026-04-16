@@ -104,7 +104,7 @@ export default function PaginatedTable({
               <tr key={i} className={`hover:bg-slate-50 transition-colors ${loading ? 'opacity-50' : ''}`}>
                 {columns.map((col) => {
                   const display = formatCellValue(col.key, row[col.key]);
-                  const isErrorCol = col.key === 'erros';
+                  const isErrorCol = ['erros', 'msg', 'mensagem_retorno_integracao'].includes(col.key);
                   return (
                     <td 
                       key={col.key} 
