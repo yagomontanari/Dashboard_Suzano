@@ -450,9 +450,15 @@ QUERY_ERRO_PAGAMENTOS_LIST = text("""
     WITH dados AS (
         SELECT 
             spi.id_pagamento as cod_pagamento,
+            c.id_externo as cod_cliente,
+            c.nom_cliente,
             concat(c.id_externo,' - ',c.nom_cliente) as cliente,
+            spi.nro_documento,
             spi.sequencial,
+            pa.doc_type,
             spi.purch_no_c,
+            pa.cond_type,
+            pa.tipo_acao,
             spi.dta_criacao,
             spi.dta_alteracao,
             spi.dta_integracao as dta_envio_integracao,
@@ -461,10 +467,11 @@ QUERY_ERRO_PAGAMENTOS_LIST = text("""
             ROW_NUMBER() OVER(PARTITION BY spi.id_pagamento ORDER BY spi.dta_alteracao DESC) as rn
         FROM suzano_pagamento_integracao spi
         INNER JOIN cliente c ON spi.id_cliente = c.id
+        LEFT JOIN pagamento_acao pa ON spi.id_pagamento = pa.id
         WHERE spi.status = 'ERRO'
           AND spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
     )
-    SELECT cod_pagamento, cliente, sequencial, purch_no_c, dta_criacao, dta_envio_integracao, status, msg, dta_alteracao
+    SELECT *
     FROM dados
     WHERE rn = 1
 """)

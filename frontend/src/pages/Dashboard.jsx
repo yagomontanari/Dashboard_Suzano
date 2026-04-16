@@ -361,6 +361,10 @@ export default function Dashboard() {
           transformed.recebe_email_label = isTrue(transformed.ind_recebe_email) ? 'Sim' : 'Não';
           transformed.aprova_workflow_label = isTrue(transformed.ind_aprova_workflow) ? 'Sim' : 'Não';
         }
+
+        if (cat === 'pagamentos') {
+          transformed.cliente_display = `${transformed.cod_cliente || ""} - ${transformed.nom_cliente || ""}`;
+        }
         
         return transformed;
       };
@@ -444,7 +448,15 @@ export default function Dashboard() {
         {key: 'codigo_divisao', label: 'Divisão', align: 'center'}, 
         {key: 'status_label', label: 'Status', align: 'center'}
       ];
-      case 'pagamentos': return [{key: 'cod_pagamento', label: 'Cod. Pagamento'}, {key: 'cliente', label: 'Cliente'}, {key: 'sequencial', label: 'Sequencial'}, {key: 'purch_no_c', label: 'Identificador'}, {key: 'dta_criacao', label: 'Data Registro'}, {key: 'dta_envio_integracao', label: 'Data Integração'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
+      case 'pagamentos': return [
+        {key: 'msg', label: 'Erros', align: 'center'},
+        {key: 'cod_pagamento', label: 'Cod. Pagamento', align: 'center'},
+        {key: 'cliente_display', label: 'Cliente', align: 'center'},
+        {key: 'nro_documento', label: 'Nº Documento', align: 'center'},
+        {key: 'sequencial', label: 'Sequencial', align: 'center'},
+        {key: 'dta_envio_integracao', label: 'Data Envio Integração', align: 'center'},
+        {key: 'status', label: 'Status', align: 'center'}
+      ];
       case 'vk11': return [{key: 'id_orcamento', label: 'ID Orçamento'}, {key: 'descricao', label: 'Descrição'}, {key: 'tipo_integracao', label: 'Tipo'}, {key: 'valid_from', label: 'Válido De'}, {key: 'status', label: 'Status'}, {key: 'msg', label: 'Erros'}];
       case 'zaju': return [
         {key: 'purch_no_c', label: 'ID Ajuste'}, 
@@ -524,17 +536,22 @@ export default function Dashboard() {
         {key: 'tipo_doc_fat', label: 'Tipo Doc'},
         {key: 'referencia_fat', label: 'Ref. Faturamento'}
       ];
-      case 'pagamentos':
+      case 'pagamentos': 
       case 'pagamentos_sucesso': return [
-        {key: 'cod_pagamento', label: 'ID Pagamento'},
-        {key: 'cliente', label: 'Cliente'},
+        {key: 'cod_pagamento', label: 'Cod. Pagamento'},
+        {key: 'cod_cliente', label: 'Cod. Cliente'},
+        {key: 'nom_cliente', label: 'Cliente'},
+        {key: 'nro_documento', label: 'Nº Documento'},
         {key: 'sequencial', label: 'Sequencial'},
-        {key: 'purch_no_c', label: 'ID Integração'},
-        {key: 'dta_criacao', label: 'Data Registro'},
-        {key: 'dta_envio_integracao', label: 'Data Envio'},
+        {key: 'doc_type', label: 'Tipo Documento'},
+        {key: 'purch_no_c', label: 'Tipo Integração'},
+        {key: 'cond_type', label: 'Tipo'},
+        {key: 'tipo_acao', label: 'Tipo de Ação'},
+        {key: 'dta_criacao', label: 'Criação Pagamento'},
+        {key: 'dta_alteracao', label: 'Alteração Pagamento'},
         {key: 'status', label: 'Status'},
-        {key: 'msg', label: category === 'pagamentos_sucesso' ? 'Mensagem' : 'Erros'},
-        {key: 'dta_alteracao', label: 'Audit. Alteração'}
+        {key: 'msg', label: 'Erros'},
+        {key: 'dta_envio_integracao', label: 'Envio Integração'}
       ];
       case 'usuarios': return [
         {key: 'erros', label: 'Erros'},
@@ -651,6 +668,9 @@ export default function Dashboard() {
           transformed.status_label = isTrue(transformed.ativo_inativo) ? 'Ativo' : 'Inativo';
           transformed.recebe_email_label = isTrue(transformed.ind_recebe_email) ? 'Sim' : 'Não';
           transformed.aprova_workflow_label = isTrue(transformed.ind_aprova_workflow) ? 'Sim' : 'Não';
+        }
+        if (cat === 'pagamentos') {
+          transformed.cliente_display = `${transformed.cod_cliente || ""} - ${transformed.nom_cliente || ""}`;
         }
         return transformed;
       };

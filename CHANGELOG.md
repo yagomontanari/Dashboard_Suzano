@@ -10,8 +10,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - **Produtos**: Modernização do modal com layout otimizado (ID, Nome, Status e Hierarquia 1). Implementada Exportação Detalhada com 20 colunas e consolidação de hierarquias.
     - **Cutoff**: Novo layout de modal incluindo campos de **Lote** e **Nº Doc. Faturamento** para maior rastreabilidade.
     - **Usuários**: Reestruturação completa do pré-cadastro com humanização de dados (Sim/Não para booleanos) e rastreio por Lote.
+    - **Pagamentos**: Refatoração do modal com 7 colunas estratégicas e exportação detalhada de alta fidelidade com 14 colunas técnicas (incluindo Tipo Doc e Tipo de Ação).
 - **Padronização de UX Pro Max**: Centralização global de cabeçalhos e dados em todos os modais de inconsistência para paridade visual premium.
-- **Exportação Detalhada**: Implementado o motor de exportação customizada para os módulos de Produtos (20 colunas), Usuários (10 colunas) e Cutoff.
+- **Exportação Detalhada**: Implementado o motor de exportação customizada para os módulos de Produtos (20 colunas), Usuários (10 colunas), Cutoff e Pagamentos.
 
 ### Corrigido
 - **Sanitização de Dados (Produtos)**: Resolvida a extração incorreta de campos técnicos de Java (`java.util.ArrayList`). Agora, campos como **Unidade de Negócio** exibem apenas os valores reais em vez de metadados de sistema.
