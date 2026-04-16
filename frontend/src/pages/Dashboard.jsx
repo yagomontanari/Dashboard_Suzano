@@ -410,10 +410,10 @@ export default function Dashboard() {
   const getCategoryLabel = (category) => {
     const labels = {
       'sellin': 'Faturamento (Sell-In)',
-      'clientes': 'Cadastro de Clientes',
-      'produtos': 'Cadastro de Produtos',
+      'clientes': 'Clientes',
+      'produtos': 'Produtos',
       'cutoff': 'Controle de Cutoff',
-      'usuarios': 'Gestão de Usuários',
+      'usuarios': 'Usuários',
       'pagamentos': 'Integração de Pagamentos (ZVER)',
       'vk11': 'Integração de Preços (VK11)',
       'zaju': 'Ajustes de Provisão (ZAJU)'
