@@ -4,37 +4,18 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-- **Detalhamento de Produtos (Reestruturação & UI)**:
-    - Novo layout do modal de inconsistências de produtos com colunas otimizadas: "Erros", "Lote", "Produto" (ID + Nome), "Hierarquia 1" (Apenas Código) e "Status".
-    - **UX Refinada**: Implementada a centralização de todos os cabeçalhos e dados no modal para paridade visual com os demais detalhamentos.
-    - Renomeação do botão de exportação para **"Exportação Detalhada"** no modal de produtos.
-    - Implementação da **Exportação Detalhada Completa**, gerando um relatório Excel com 20 colunas técnicas e de negócio, consolidando hierarquias (1, 2 e 3) para exibir apenas códigos sob o rótulo "Hierarquia X".
-    - Padronização visual dos campos display para facilitar o rastreamento técnico entre o Dashboard e o SAP.
-    - Transformação do campo Status para exibição humanizada ("Ativo"/"Inativo") no modal.
-
----
-
-## [2.1.0] - 2026-04-16
-### Adicionado
-- **Detalhamento de Cutoff (Reestruturação & UX)**:
-    - Reestruturação completa do modal de inconsistências de Cutoff com foco em rastreabilidade técnica.
-    - Novas colunas: "Erros", "Lote", "Cutoff" e "Nº Doc. Faturamento".
-    - Sincronização do campo **Lote** no backend (SQL) para visibilidade no Dashboard.
-    - Aplicado alinhamento centralizado em todas as colunas para consistência de design.
-    - Implementação da **Exportação Detalhada** para Cutoff com mapeamento fiel conforme solicitado.
-    - Atualização do botão de exportação para o rótulo intuitivo **"Exportação Detalhada"**.
-
----
-
 ## [2.2.0] - 2026-04-16
 ### Adicionado
-- **Detalhamento de Usuários (Reestruturação & UX)**:
-    - Modernização do modal de pré-cadastro de usuários com foco em auditoria e gestão.
-    - Novas colunas visuais: "Erros", "Lote", "Email", "Matrícula", "Perfil", "Estrutura", "Divisão" e "Status".
-    - Implementação de **Humanização de Dados**: Campos lógicos (Recebe e-mail, Aprova Workflow, Status) agora exibem "Sim/Não" ou "Ativo/Inativo" em vez de valores técnicos.
-    - Sincronização do campo **Lote** no backend para rastreio do processamento de origem.
-    - Implementação da **Exportação Detalhada** (10 colunas) com mapeamento completo de governança.
-    - Atualização do botão de exportação para o rótulo padrão **"Exportação Detalhada"**.
+- **Reestruturação de Inconsistências (Cadastro)**:
+    - **Produtos**: Modernização do modal com layout otimizado (ID, Nome, Status e Hierarquia 1). Implementada Exportação Detalhada com 20 colunas e consolidação de hierarquias.
+    - **Cutoff**: Novo layout de modal incluindo campos de **Lote** e **Nº Doc. Faturamento** para maior rastreabilidade.
+    - **Usuários**: Reestruturação completa do pré-cadastro com humanização de dados (Sim/Não para booleanos) e rastreio por Lote.
+- **Padronização de UX Pro Max**: Centralização global de cabeçalhos e dados em todos os modais de inconsistência para paridade visual premium.
+- **Exportação Detalhada**: Implementado o motor de exportação customizada para os módulos de Produtos (20 colunas), Usuários (10 colunas) e Cutoff.
+
+### Corrigido
+- **Exportação Excel (Bug de Layout)**: Resolvido bug de aninhagem no payload (`api.js`) que causava a exportação de colunas genéricas (`title`/`sheets`) em vez dos dados reais.
+- **Humanização de Dados**: Garantida a aplicação de labels de negócio (Ativo/Inativo, Sim/Não) tanto na visualização em tela quanto nos arquivos exportados.
 
 ---
 

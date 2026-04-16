@@ -155,7 +155,10 @@ export const exportRelatorioSaldos = async (startDate, endDate) => {
 }
 
 export const exportStyledData = async (data, title) => {
-    const response = await api.post('/data/export/styled', { data, title }, {
+    // Se data já for o objeto completo com sheets, espalha ele. 
+    // Caso contrário, trata como dados de aba única via fallback 'data'.
+    const payload = (data && data.sheets) ? { ...data, title } : { data, title };
+    const response = await api.post('/data/export/styled', payload, {
         responseType: 'blob'
     });
     return response.data;
