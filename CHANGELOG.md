@@ -11,8 +11,8 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - **Cutoff**: Novo layout de modal incluindo campos de **Lote** e **Nº Doc. Faturamento** para maior rastreabilidade.
     - **Usuários**: Reestruturação completa do pré-cadastro com humanização de dados (Sim/Não para booleanos) e rastreio por Lote.
     - **Integrações (VK11, ZAJU, ZVER)**: Refatoração completa dos modais com centralização de dados, priorização da coluna de Erros e exportação técnica de alta fidelidade. Implementada funcionalidade de **tooltip inteligente** para visualização de mensagens de erro longas.
-- **Nomenclatura Executiva**: Evolução do título dos modais de detalhamento para **"Log de Inconsistências: [Categoria]"**, eliminando termos genéricos e elevando o tom corporativo da plataforma.
-- **Padronização de UX Pro Max**: Centralização global de cabeçalhos e dados em todos os modais de inconsistência e integração para paridade visual premium. Rótulo unificado **"Exportação Detalhada"** aplicado universalmente a todos os botões de exportação (cards e modais).
+- **Nomenclatura Executiva**: Evolução do título dos modais de detalhamento para **"Log de Inconsistências: [Categoria]"**, eliminando termos genéricos e elevando o tom corporativo da plataforma (ex: **Faturamento (Sell-In)**).
+- **Padronização de UX Pro Max**: Centralização global de cabeçalhos e dados em todos os modais de inconsistência e integração para paridade visual premium. Rótulo unificado **"Exportação Detalhada"** aplicado universalmente a todos os botões de exportação (cards e modais). Padronização das abas de navegação para **Pagamento (ZVER)**.
 - **Exportação Detalhada**: Implementado o motor de exportação customizada de alta fidelidade para os módulos de Produtos, Usuários, Cutoff, Pagamentos, VK11 e ZAJU.
 
 ### Corrigido

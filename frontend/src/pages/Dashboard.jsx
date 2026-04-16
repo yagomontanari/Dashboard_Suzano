@@ -409,7 +409,7 @@ export default function Dashboard() {
 
   const getCategoryLabel = (category) => {
     const labels = {
-      'sellin': 'Vendas (Sell-In)',
+      'sellin': 'Faturamento (Sell-In)',
       'clientes': 'Cadastro de Clientes',
       'produtos': 'Cadastro de Produtos',
       'cutoff': 'Controle de Cutoff',
@@ -804,7 +804,7 @@ export default function Dashboard() {
 
   const tabs = [
     { id: 'geral', label: 'Geral' },
-    { id: 'pagamentos', label: 'Pagamentos' },
+    { id: 'pagamentos', label: 'Pagamento (ZVER)' },
     { id: 'vk11', label: 'Provisão (VK11)' },
     { id: 'zaku', label: 'Ajuste de Provisão (ZAJU)' }
   ];
@@ -975,7 +975,9 @@ export default function Dashboard() {
                             disabled={isZero}
                             className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
                           >
-                            <span className="font-bold text-slate-700 capitalize group-hover:text-blue-600 transition-colors">{key}</span>
+                            <span className="font-bold text-slate-700 capitalize group-hover:text-blue-600 transition-colors">
+                              {getCategoryLabel(key)}
+                            </span>
                             <span className={`px-3 py-1 rounded-full text-xs font-black shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
                               isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
                             }`}>
