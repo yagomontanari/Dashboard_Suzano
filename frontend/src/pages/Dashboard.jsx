@@ -407,6 +407,20 @@ export default function Dashboard() {
     setInconsistencyData([]);
   };
 
+  const getCategoryLabel = (category) => {
+    const labels = {
+      'sellin': 'Vendas (Sell-In)',
+      'clientes': 'Cadastro de Clientes',
+      'produtos': 'Cadastro de Produtos',
+      'cutoff': 'Controle de Cutoff',
+      'usuarios': 'Gestão de Usuários',
+      'pagamentos': 'Integração de Pagamentos (ZVER)',
+      'vk11': 'Integração de Preços (VK11)',
+      'zaju': 'Ajustes de Provisão (ZAJU)'
+    };
+    return labels[category] || category;
+  };
+
   const getColumnsForCategory = (category) => {
     switch(category) {
       case 'sellin': return [
@@ -1288,7 +1302,7 @@ export default function Dashboard() {
       <Modal 
         isOpen={modalOpen} 
         onClose={handleCloseModal} 
-        title={`Detalhamento de Inconsistência: ${selectedInconsistency}`}
+        title={`Log de Inconsistências: ${getCategoryLabel(selectedInconsistency)}`}
         actions={
           <button 
             onClick={exportInconsistencyCategory}
@@ -1296,7 +1310,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-900 text-white rounded-lg shadow-sm text-sm font-semibold hover:bg-slate-800 hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             <Download size={14} strokeWidth={2.5} /> 
-            {['sellin', 'clientes', 'produtos', 'cutoff', 'usuarios'].includes(selectedInconsistency) ? 'Exportação Detalhada' : 'Exportar Excel'}
+            Exportação Detalhada
           </button>
         }
       >
