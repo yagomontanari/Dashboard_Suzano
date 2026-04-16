@@ -4,6 +4,16 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.0.0] - 2026-04-16
+### Adicionado
+- **Detalhamento de Produtos (Reestruturação)**:
+    - Novo layout do modal de inconsistências de produtos com colunas otimizadas: "Erros", "Lote", "Produto" (ID + Nome), "Hierarquia 1" (ID + Nome) e "Status".
+    - Implementação da **Exportação Detalhada Completa**, gerando um relatório Excel com 23 colunas técnicas e de negócio, incluindo hierarquias completas, classes, famílias e unidades de negócio.
+    - Padronização visual dos campos display para facilitar o rastreamento técnico entre o Dashboard e o SAP.
+    - Transformação do campo Status para exibição humanizada ("Ativo"/"Inativo") no modal.
+
+---
+
 ## [1.9.9] - 2026-04-15
 ### Adicionado
 - **Detalhamento de Clientes (UX & Relatório)**:
@@ -360,4 +370,4 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Componentização visual com Lucide React.
 
 ---
-*Atualizado em: 15 de Abril de 2026 por Antigravity AI.*
+*Atualizado em: 16 de Abril de 2026 por Antigravity AI.*

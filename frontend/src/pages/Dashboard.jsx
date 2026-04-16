@@ -332,6 +332,14 @@ export default function Dashboard() {
           status_label: item.ativo_inativo ? 'Ativo' : 'Inativo'
         }));
       }
+      if (category === 'produtos') {
+        processedData = processedData.map(item => ({
+          ...item,
+          produto_display: `${item.id_produto} - ${item.nom_produto}`,
+          hierarquia1_display: `${item.cod_hierarquia1} - ${item.hierarquia1}`,
+          status_label: item.ativo_inativo ? 'Ativo' : 'Inativo'
+        }));
+      }
       setInconsistencyData(processedData);
       setCurrentPage(result.page);
       setTotalPages(result.total_pages);
@@ -388,12 +396,11 @@ export default function Dashboard() {
         {key: 'regional_display', label:'Regional', align: 'center'}
       ];
       case 'produtos': return [
+        {key: 'erros', label: 'Erros'}, 
         {key: 'lote', label: 'Lote'}, 
-        {key: 'id_produto', label:'ID Prod'}, 
-        {key: 'nom_produto', label:'Nome Produto'}, 
-        {key: 'ativo_inativo', label:'Ativo'}, 
-        {key: 'setor_atividade', label:'Setor'}, 
-        {key: 'erros', label:'Erros (JSON)'}
+        {key: 'produto_display', label: 'Produto'}, 
+        {key: 'hierarquia1_display', label: 'Hierarquia 1'}, 
+        {key: 'status_label', label: 'Status'}
       ];
       case 'cutoff': return [{key: 'nro_documento', label:'Num Fatura'}, {key: 'cutoff', label:'Cutoff'}, {key: 'tipo', label:'Tipo'}, {key: 'erros', label:'Erros (JSON)'}];
       case 'usuarios': return [
@@ -446,24 +453,29 @@ export default function Dashboard() {
         {key: 'dta_alteracao', label: 'Data Última Alteração'}
       ];
       case 'produtos': return [
-        {key: 'lote', label: 'Lote'},
         {key: 'erros', label: 'Erros'},
-        {key: 'id_produto', label: 'Cód. Produto'},
-        {key: 'nom_produto', label: 'Nome Produto'},
-        {key: 'ativo_inativo', label: 'Ativo'},
+        {key: 'id_produto', label: 'Cod. Produto'},
+        {key: 'nom_produto', label: 'Produto'},
+        {key: 'ativo_inativo', label: 'Status'},
         {key: 'volume', label: 'Volume'},
         {key: 'peso', label: 'Peso'},
-        {key: 'unidade_medida', label: 'UM'},
-        {key: 'cod_classe', label: 'Cód. Classe'},
+        {key: 'unidade_medida', label: 'Unidade de Medida'},
+        {key: 'cod_classe', label: 'Cod. Classe'},
         {key: 'classe', label: 'Classe'},
+        {key: 'cod_linha_produto', label: 'Linha de Produto'},
         {key: 'grupo_mercadoria', label: 'Grupo Mercadoria'},
-        {key: 'familia', label: 'Família'},
-        {key: 'setor_atividade', label: 'Setor Atividade'},
+        {key: 'cod_familia', label: 'Cod. Familia'},
+        {key: 'familia', label: 'Familia'},
+        {key: 'cod_setor_atividade', label: 'Cod. Setor'},
+        {key: 'setor_atividade', label: 'Setor'},
+        {key: 'cod_hierarquia1', label: 'Cod. Hierarquia 1'},
         {key: 'hierarquia1', label: 'Hierarquia 1'},
+        {key: 'cod_hierarquia2', label: 'Cod. Hierarquia 2'},
         {key: 'hierarquia2', label: 'Hierarquia 2'},
+        {key: 'cod_hierarquia3', label: 'Cod. Hierarquia 3'},
         {key: 'hierarquia3', label: 'Hierarquia 3'},
-        {key: 'unidade_negocio', label: 'Unidade Negócio'},
-        {key: 'dta_alteracao', label: 'Data Alteração'}
+        {key: 'cod_unidade_negocio', label: 'Cod. Unidade Negócio'},
+        {key: 'unidade_negocio', label: 'Unidade de Negocio'}
       ];
       case 'sellin': return [
         {key: 'erros', label: 'Erros'},
