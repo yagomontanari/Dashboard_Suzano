@@ -186,42 +186,42 @@ const IntegrationLog = ({ updates }) => {
   };
 
   return (
-    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col h-full overflow-hidden">
+    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col max-h-[450px]">
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-slate-900 text-white rounded-2xl">
-            <Activity size={18} />
+            <List size={18} />
           </div>
-          <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm">Painel de Eventos</h3>
+          <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm">Log de Integrações</h3>
         </div>
         <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Últimas 24h</span>
       </div>
       
-      <div className="space-y-0.5 overflow-y-auto pr-4 custom-scrollbar relative">
-        {/* Timeline Axis */}
-        <div className="absolute left-[23px] top-4 bottom-4 w-px bg-slate-100/80"></div>
-
+      <div className="space-y-2 overflow-y-auto pr-4 custom-scrollbar">
         {updates && updates.map((update, index) => (
-          <div key={index} className="relative flex gap-6 group py-4 transition-all hover:bg-slate-50/50 rounded-2xl px-2 -mx-2">
-            <div className={`relative z-10 p-3 rounded-2xl flex-shrink-0 flex items-center justify-center h-12 w-12 ring-4 ring-white shadow-sm transition-transform group-hover:scale-110 ${getIconBg(update.categoria)}`}>
+          <div key={index} className="flex gap-5 group py-4 transition-all hover:bg-slate-50/50 rounded-2xl px-3 -mx-2 border border-transparent hover:border-slate-100/50">
+            <div className={`p-3 rounded-2xl flex-shrink-0 flex items-center justify-center h-12 w-12 shadow-sm transition-transform group-hover:rotate-6 ${getIconBg(update.categoria)}`}>
               {getIcon(update.categoria)}
             </div>
             <div className="flex flex-col flex-grow justify-center">
               <div className="flex items-center justify-between gap-4">
-                <h4 className="font-black text-slate-800 tracking-tight text-sm truncate uppercase">
+                <h4 className="font-bold text-slate-800 tracking-tight text-sm uppercase">
                   {update.categoria}
                 </h4>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                   <div className={`h-1.5 w-1.5 rounded-full ${update.direcao === 'Inbound' ? 'bg-blue-500 animate-pulse' : 'bg-slate-400'}`}></div>
-                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
-                      {update.direcao === 'Inbound' ? 'Sync SAP' : 'Outbound'}
+                   <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border ${
+                     update.direcao === 'Inbound' 
+                       ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                       : 'bg-slate-50 text-slate-400 border-slate-200'
+                   }`}>
+                      {update.direcao === 'Inbound' ? '↓ SAP -> TL' : '↑ TL -> SAP'}
                    </span>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 mt-1 lines-clamp-1 font-medium italic">
+              <p className="text-xs text-slate-500 mt-1 font-medium italic opacity-80">
                 {update.mensagem}
               </p>
-              <p className="text-[9px] font-black text-blue-600/60 uppercase mt-2 tracking-widest">
+              <p className="text-[9px] font-black text-slate-400 uppercase mt-2 tracking-widest">
                 {formatTime(update.data)}
               </p>
             </div>
