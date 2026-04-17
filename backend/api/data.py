@@ -234,10 +234,12 @@ async def get_inconsistencies(
             
         paginated_query_orig, count_query = query_map[category]
         
-        # Determine the final query with dynamic sorting if requested
-        from sqlalchemy import text
-        
-            # Validação rigorosa contra SQL Injection já presente
+        if sort_by:
+            import re
+            # Validação rigorosa contra SQL Injection
+            if not re.match(r"^[a-zA-Z0-9_]+$", sort_by):
+                raise HTTPException(status_code=400, detail="Parâmetro de ordenação inválido")
+                
             valid_order = "ASC" if order.upper() == "ASC" else "DESC"
             
             # Refatoração Defensiva: Usamos uma subquery limpa. 
