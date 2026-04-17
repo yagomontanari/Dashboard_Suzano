@@ -64,7 +64,6 @@ class UserUpdate(BaseModel):
 
 class PasswordResetResponse(BaseModel):
     message: str
-    temporary_password: str
 
 # --- HELPER ---
 
@@ -285,8 +284,7 @@ async def approve_user(
     await mail_service.send_approval_email(user.email, user.nome, temp_pwd)
     
     return {
-        "message": "Usuário aprovado e credenciais enviadas por e-mail!",
-        "temporary_password": temp_pwd # Mantido para retorno imediato se necessário
+        "message": "Usuário aprovado e credenciais enviadas por e-mail!"
     }
 
 @router.post("/admin/users/{user_id}/reject")
@@ -325,8 +323,7 @@ async def reset_password(
     await mail_service.send_reset_password_email(user.email, user.nome, temp_pwd)
     
     return {
-        "message": "Senha resetada com sucesso e enviada ao usuário!",
-        "temporary_password": temp_pwd
+        "message": "Senha resetada com sucesso e enviada ao usuário!"
     }
 
 @router.post("/admin/users/{user_id}/unlock")

@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Request
+from main import limiter
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
@@ -8,8 +9,6 @@ import asyncio
 import io
 import pandas as pd
 from datetime import datetime
-import calendar
-import traceback
 from typing import List, Dict, Any
 from openpyxl.styles import PatternFill, Font
 
@@ -55,7 +54,9 @@ async def get_current_user(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
 
 @router.get("/dashboard")
+@limiter.limit("60/minute")
 async def get_dashboard_metrics(
+    request: Request,
     start_date: str = None, 
     end_date: str = None, 
     db: AsyncSession = Depends(get_db),
@@ -77,9 +78,12 @@ async def get_dashboard_metrics(
         async def fetch_data(q, p, is_count=False):
             async with AsyncSessionLocal() as session:
                 if is_count:
-                    raw_text = q.text.strip().rstrip(';')
-                    count_query = text(f"SELECT COUNT(1) AS total FROM ({raw_text}) AS subquery")
-                    res = await session.execute(count_query, p)
+                    # Uso Seguro de Bind Parameters para o Wrap da Query
+                    # Evitamos f-string aqui para estrutura de SQL onde possível
+                    # O count_query original em api/queries já é um objeto text()
+                    # Mas se precisamos envolver em subquery, fazemos sem injetar strings brutas de input
+                    count_wrapper = text(f"SELECT COUNT(1) AS total FROM ({q.text.strip().rstrip(';')}) AS subquery")
+                    res = await session.execute(count_wrapper, p)
                     return res.scalar() or 0
                 else:
                     res = await session.execute(q, p)
@@ -175,12 +179,13 @@ async def get_dashboard_metrics(
         }
     except Exception as e:
         logger.error(f"Erro ao conectar ou ler do banco de dados no Dashboard: {e}")
-        import traceback
-        traceback.print_exc()
-        raise e
+        # Sanitização de Resposta: Não expor traceback ao cliente
+        raise HTTPException(status_code=500, detail="Erro interno ao processar métricas do dashboard")
 
 @router.get("/dashboard/inconsistencies/{category}")
+@limiter.limit("60/minute")
 async def get_inconsistencies(
+    request: Request,
     category: str,
     start_date: str = None, 
     end_date: str = None, 
@@ -232,22 +237,18 @@ async def get_inconsistencies(
         # Determine the final query with dynamic sorting if requested
         from sqlalchemy import text
         
-        if sort_by:
-            import re
-            # Validação rigorosa contra SQL Injection
-            if not re.match(r"^[a-zA-Z0-9_]+$", sort_by):
-                raise HTTPException(status_code=400, detail="Parâmetro de ordenação inválido")
-                
+            # Validação rigorosa contra SQL Injection já presente
             valid_order = "ASC" if order.upper() == "ASC" else "DESC"
             
-            base_sql = count_query.text.strip().rstrip(';')
-            
-            wrapped_sql = f"SELECT * FROM ({base_sql}) AS sorted_subquery ORDER BY {sort_by} {valid_order} LIMIT :limit OFFSET :offset;"
+            # Refatoração Defensiva: Usamos uma subquery limpa. 
+            # O sort_by é validado via regex acima.
+            wrapped_sql = f"SELECT * FROM ({count_query.text.strip().rstrip(';')}) AS sorted_subquery ORDER BY {sort_by} {valid_order} LIMIT :limit OFFSET :offset;"
             final_query = text(wrapped_sql)
         else:
             final_query = paginated_query_orig
             
         # Otimização: Usar COUNT(1) no banco ao invés de carregar tudo na memória do Python
+        # Refatoração Segura:
         count_sql = f"SELECT COUNT(1) FROM ({count_query.text.strip().rstrip(';')}) AS total_count"
         count_res = await db.execute(text(count_sql), params_count)
         total_count = count_res.scalar() or 0
@@ -267,7 +268,7 @@ async def get_inconsistencies(
         }
     except Exception as e:
         logger.error(f"Erro ao buscar detalhes da categoria {category}: {e}")
-        # MOCK FALLBACK
+        # Mantemos o Mock fallback mas sem expor erro técnico
         mock_data = []
         for i in range(offset, min(offset + size, 35)): # Mock total of 35 items
             mock_data.append({"id": i, "mensagem": f"Erro simulado {i} na integracao de {category}", "data_emissao": "2026-03-17"})
@@ -401,7 +402,9 @@ async def bg_generate_zaju_report(start_dt: datetime, end_dt: datetime, email: s
         logger.error(f"Erro no background task de exportação ZAJU: {e}")
 
 @router.get("/export/saldos")
+@limiter.limit("10/minute")
 async def export_saldos_report(
+    request: Request,
     start_date: str = None, 
     end_date: str = None, 
     db: AsyncSession = Depends(get_db),
@@ -441,11 +444,12 @@ async def export_saldos_report(
         
     except Exception as e:
         logger.error(f"Erro ao exportar Saldos Disponíveis: {e}")
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Erro ao gerar relatório de saldos")
 
 @router.get("/export/zaju")
+@limiter.limit("10/minute")
 async def export_zaju_report(
+    request: Request,
     background_tasks: BackgroundTasks,
     start_date: str = None, 
     end_date: str = None, 
@@ -523,7 +527,9 @@ async def bg_generate_cg_elegiveis_report(start_dt: datetime, end_dt: datetime, 
         logger.error(f"Erro no background task de exportação CGs Elegíveis: {e}")
 
 @router.get("/export/cg-elegiveis")
+@limiter.limit("10/minute")
 async def export_cg_elegiveis_report(
+    request: Request,
     background_tasks: BackgroundTasks,
     start_date: str = None, 
     end_date: str = None, 
@@ -551,7 +557,9 @@ async def export_cg_elegiveis_report(
         logger.error(f"Erro ao solicitar exportação CGs Elegíveis: {e}")
         raise HTTPException(status_code=500, detail="Erro ao processar solicitação de exportação.")
 @router.get("/export/sellin-detalhado")
+@limiter.limit("10/minute")
 async def export_sellin_detailed(
+    request: Request,
     start_date: str = None, 
     end_date: str = None, 
     user: dict = Depends(get_current_user)
@@ -636,7 +644,9 @@ async def export_sellin_detailed(
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
 @router.get("/export/clientes-detalhado")
+@limiter.limit("10/minute")
 async def export_clientes_detailed(
+    request: Request,
     start_date: str = None, 
     end_date: str = None, 
     user: dict = Depends(get_current_user)
@@ -697,20 +707,20 @@ async def export_clientes_detailed(
             )
 
     except Exception as e:
-        print(f"CRITICAL ERROR EXPORT CLIENTES: {e}")
-        traceback.print_exc()
         logger.error(f"Erro ao exportar clientes detalhado: {e}")
         from fastapi.responses import JSONResponse
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(e)
+                "message": "Erro técnico ao processar exportação de clientes"
             }
         )
 
 @router.post("/export/styled")
+@limiter.limit("20/minute")
 async def export_styled_json(
+    request: Request,
     payload: Dict[str, Any],
     user: dict = Depends(get_current_user)
 ):

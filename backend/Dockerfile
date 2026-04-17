@@ -16,6 +16,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copia o código da aplicação
 COPY . .
+# Adicionar usuário sem privilégios (Security Best Practice)
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN chown -R appuser:appuser /app
+USER appuser
 
 # Expor porta
 EXPOSE 8000
