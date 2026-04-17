@@ -882,6 +882,7 @@ export default function Dashboard() {
                       <Activity size={20} />
                     </div>
                   </div>
+                  <div className="flex items-baseline gap-2">
                     <h3 className="text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                       {(((data?.vk11?.success || 0) + (data?.zaju?.success || 0) + (data?.zver?.success || 0)) / 
                         ((data?.vk11?.total || 1) + (data?.zaju?.total || 1) + (data?.zver?.total || 1)) * 100).toFixed(1)}<span className="text-xl text-emerald-500">%</span>
