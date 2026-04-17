@@ -10,6 +10,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - Implementação do componente **ErrorBoundary** nas rotas protegidas para capturar erros de renderização e evitar a "tela branca" total.
     - Adição de proteções defensivas (*Optional Chaining* e *Default Values*) em todos os cálculos de KPI do Cockpit para lidar com respostas parciais do backend.
 
+### Alterado
+- **UX/UI Premium (Painel Geral)**:
+    - **Acessibilidade Cognitiva**: Melhoria do feedback de sucesso na Central de Inconsistências. Casos com "Zero erros" agora recebem a tag de verificação explícita ("Tudo OK") em vez de adotarem visual inativo/desabilitado.
+    - **Scannability (Leitura Dinâmica)**: Injeção de iconografia nativa `lucide-react` antes de cada categoria no Hub de Ações, encurtando o tempo de reconhecimento dos usuários para cada módulo operacional (ex. Cartão de Crédito para Pagamentos, Pacote para Produtos).
+    - **Micro-interações e Sombras**: Adição de elevações virtuais responsivas ao uso do mouse (`hover:-translate-y-1`) nos cards de KPI superiores, e refinamento dos fundos trocando relevos densos (`shadow-xl`) por difusores suaves de menor espessura (`shadow-lg`).
+
 ### Corrigido
 - **Bug Crítico de Renderização**: Resolvida a falha de referência ao ícone `Zap` que causava travamento do Dashboard imediatamente após o carregamento.
 

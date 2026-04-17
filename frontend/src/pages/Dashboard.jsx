@@ -873,31 +873,31 @@ export default function Dashboard() {
             {/* Premium KPI Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Card 1: Registros Integrados */}
-              <div className="bg-slate-900 p-8 rounded-[2rem] border border-slate-800 shadow-2xl shadow-slate-900/40 group hover:scale-[1.02] transition-all duration-500 overflow-hidden relative">
+              <div className="bg-slate-900 p-8 rounded-[2rem] border border-slate-800 shadow-xl shadow-emerald-900/20 group hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-900/40 transition-all duration-300 overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-emerald-500/20 transition-colors"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-4">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Integrados com sucesso</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Integrados com sucesso</p>
                     <div className="p-3 bg-slate-800/80 backdrop-blur-sm text-emerald-500 rounded-2xl border border-white/5 group-hover:border-emerald-500/30 transition-colors">
                       <CheckCircle2 size={20} />
                     </div>
                   </div>
-                  <div className="flex items-baseline gap-2">
-                    <h3 className="text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                  <div className="flex items-baseline gap-2 mt-2">
+                    <h3 className="text-4xl font-black text-white tracking-tight drop-shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                       {(data?.vk11?.success || 0) + (data?.zaju?.success || 0) + (data?.zver?.success || 0)}
                     </h3>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 group hover:scale-[1.02] transition-all duration-500 relative">
+              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg shadow-slate-200/30 group hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Integrações Pendentes</p>
-                    <h3 className="text-4xl font-black text-slate-800 tracking-tighter">
+                    <h3 className="text-4xl font-black text-slate-800 tracking-tight">
                         {(data?.vk11?.pending || 0) + (data?.zaju?.pending || 0) + (data?.zver?.pending || 0)}
                     </h3>
-                    <p className="text-[10px] font-bold text-amber-600 mt-2 flex items-center gap-1 uppercase tracking-widest">
+                    <p className="text-[10px] font-bold text-amber-600 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
                        <Clock size={10} /> Aguardando SAP
                     </p>
                   </div>
@@ -907,14 +907,14 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 group hover:scale-[1.02] transition-all duration-500 relative">
+              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg shadow-slate-200/30 group hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Erros de Integração</p>
-                    <h3 className="text-4xl font-black text-rose-600 tracking-tighter">
+                    <h3 className="text-4xl font-black text-rose-600 tracking-tight">
                         {(data?.vk11?.error || 0) + (data?.zaju?.error || 0) + (data?.zver?.error || 0)}
                     </h3>
-                    <p className="text-[10px] font-bold text-rose-400 mt-2 flex items-center gap-1 uppercase tracking-widest">
+                    <p className="text-[10px] font-bold text-rose-400 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
                        <AlertCircle size={10} /> Erros SAP
                     </p>
                   </div>
@@ -924,18 +924,18 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 group hover:scale-[1.02] transition-all duration-500 relative ring-2 ring-transparent hover:ring-rose-100">
+              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg shadow-slate-200/30 group hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative ring-2 ring-transparent hover:ring-rose-100">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Inconsistências (Cadastro)</p>
-                    <h3 className="text-4xl font-black text-slate-800 tracking-tighter">
+                    <h3 className="text-4xl font-black text-slate-800 tracking-tight">
                        {totalErrors}
                     </h3>
-                    <p className="text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1 uppercase tracking-widest">
+                    <p className="text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
                        <AlertCircle size={10} /> Cadastro TL
                     </p>
                   </div>
-                  <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 shadow-lg shadow-rose-100 group-hover:shadow-rose-300">
+                  <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl shadow-sm shadow-rose-100 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 group-hover:shadow-rose-300">
                     <AlertCircle size={20} />
                   </div>
                 </div>
@@ -977,20 +977,26 @@ export default function Dashboard() {
                     <div className="space-y-3">
                       {['pagamentos', 'vk11', 'zaju'].map((key) => {
                         const val = data.errors[key] || 0;
+                        const iconMap = {
+                          'pagamentos': <CreditCard size={14} className="inline mr-2 opacity-70" />,
+                          'vk11': <BarChart3 size={14} className="inline mr-2 opacity-70" />,
+                          'zaju': <ArrowDownUp size={14} className="inline mr-2 opacity-70" />
+                        };
                         return (
                           <button 
                             key={key} 
                             onClick={() => handleOpenModal(key)}
                             disabled={val === 0}
-                            className="w-full flex items-center justify-between p-5 rounded-3xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-100 hover:shadow-xl hover:shadow-slate-200/40 transition-all group disabled:opacity-40"
+                            className={`w-full flex items-center justify-between p-5 rounded-3xl bg-slate-50 border border-transparent transition-all group ${val === 0 ? 'cursor-default opacity-90' : 'hover:bg-white hover:border-slate-100 hover:shadow-lg hover:shadow-slate-200/30 hover:-translate-y-0.5 relative z-10'}`}
                           >
-                            <span className="font-black text-slate-700 text-[11px] uppercase tracking-wider group-hover:text-blue-600 transition-colors">
+                            <span className={`font-black text-[11px] uppercase tracking-wider transition-colors flex items-center ${val === 0 ? 'text-slate-500' : 'text-slate-700 group-hover:text-blue-600'}`}>
+                               {iconMap[key]}
                                {key === 'pagamentos' ? 'Pagamento (ZVER)' : key === 'vk11' ? 'Provisão (VK11)' : 'Ajustes (ZAJU)'}
                             </span>
-                            <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all ${
-                               val === 0 ? 'bg-emerald-50 text-emerald-600 shadow-sm shadow-emerald-100' : 'bg-rose-600 text-white shadow-xl shadow-rose-200 group-hover:scale-105'
+                            <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all flex items-center ${
+                               val === 0 ? 'bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 shadow-sm shadow-emerald-50' : 'bg-rose-600 text-white shadow-lg shadow-rose-200 group-hover:scale-105'
                             }`}>
-                               {val} {val === 1 ? 'erro' : 'erros'}
+                               {val === 0 ? <><CheckCircle2 size={12} className="mr-1 inline" /> OK</> : <>{val} {val === 1 ? 'erro' : 'erros'}</>}
                             </span>
                           </button>
                         );
@@ -1006,20 +1012,28 @@ export default function Dashboard() {
                     <div className="space-y-3">
                       {['sellin', 'clientes', 'produtos', 'cutoff', 'usuarios'].map((key) => {
                         const val = data.errors[key] || 0;
+                        const iconMap = {
+                          'sellin': <HandCoins size={14} className="inline mr-2 opacity-70" />,
+                          'clientes': <Contact size={14} className="inline mr-2 opacity-70" />,
+                          'produtos': <Package size={14} className="inline mr-2 opacity-70" />,
+                          'cutoff': <CalendarClock size={14} className="inline mr-2 opacity-70" />,
+                          'usuarios': <UserCheck size={14} className="inline mr-2 opacity-70" />
+                        };
                         return (
                           <button 
                             key={key} 
                             onClick={() => handleOpenModal(key)}
                             disabled={val === 0}
-                            className="w-full flex items-center justify-between p-5 rounded-3xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-100 hover:shadow-xl hover:shadow-slate-200/40 transition-all group disabled:opacity-40"
+                            className={`w-full flex items-center justify-between p-5 rounded-3xl bg-slate-50 border border-transparent transition-all group ${val === 0 ? 'cursor-default opacity-90' : 'hover:bg-white hover:border-slate-100 hover:shadow-lg hover:shadow-slate-200/30 hover:-translate-y-0.5 relative z-10'}`}
                           >
-                            <span className="font-black text-slate-700 text-[11px] uppercase tracking-wider group-hover:text-blue-600 transition-colors">
+                            <span className={`font-black text-[11px] uppercase tracking-wider transition-colors flex items-center ${val === 0 ? 'text-slate-500' : 'text-slate-700 group-hover:text-blue-600'}`}>
+                               {iconMap[key]}
                                {getCategoryLabel(key)}
                             </span>
-                            <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all ${
-                               val === 0 ? 'bg-emerald-50 text-emerald-600 shadow-sm shadow-emerald-100' : 'bg-rose-600 text-white shadow-xl shadow-rose-200 group-hover:scale-105'
+                            <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all flex items-center ${
+                               val === 0 ? 'bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 shadow-sm shadow-emerald-50' : 'bg-rose-600 text-white shadow-lg shadow-rose-200 group-hover:scale-105'
                             }`}>
-                               {val} {val === 1 ? 'erro' : 'erros'}
+                               {val === 0 ? <><CheckCircle2 size={12} className="mr-1 inline" /> OK</> : <>{val} {val === 1 ? 'erro' : 'erros'}</>}
                             </span>
                           </button>
                         );
