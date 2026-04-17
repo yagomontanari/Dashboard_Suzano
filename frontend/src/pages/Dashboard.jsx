@@ -69,7 +69,7 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
   return (
     <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/50 transition-all group flex flex-col h-full">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="font-black text-slate-800 tracking-tighter text-xs uppercase tracking-[0.15em] opacity-60 group-hover:opacity-100 transition-opacity">{title}</h3>
+        <h3 className="font-black text-slate-800 tracking-tighter text-sm uppercase tracking-[0.15em] opacity-70 group-hover:opacity-100 transition-opacity">{title}</h3>
       </div>
       
       <div className="flex flex-col items-center gap-8 flex-grow justify-center">
@@ -95,10 +95,10 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status</span>
-             <span className="text-2xl font-black text-slate-800 leading-none mt-1 tracking-tighter">
-                {getPercentage(success)}<span className="text-xs text-emerald-500 font-bold">%</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
+             <span className="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">Status</span>
+             <span className="text-3xl font-black text-slate-800 leading-none mt-2 tracking-tighter">
+                {getPercentage(success)}<span className="text-sm text-emerald-500 font-bold">%</span>
              </span>
           </div>
         </div>
@@ -108,33 +108,33 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sucesso</span>
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Sucesso</span>
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-sm font-black text-slate-800">{success}</span>
-              <span className="text-[10px] font-bold text-slate-400">REG.</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base font-black text-slate-800">{success}</span>
+              <span className="text-xs font-bold text-slate-400">REG.</span>
             </div>
           </div>
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div>
-               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pendentes</span>
+               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Pendentes</span>
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-sm font-black text-slate-800">{pending}</span>
-              <span className="text-[10px] font-bold text-slate-400">REG.</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base font-black text-slate-800">{pending}</span>
+              <span className="text-xs font-bold text-slate-400">REG.</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
              <div className="flex items-center gap-3">
                <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]"></div>
-               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Erro</span>
+               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Erro</span>
              </div>
-             <div className="flex items-baseline gap-1">
-               <span className="text-sm font-black text-rose-500">{error}</span>
-               <span className="text-[10px] font-bold text-slate-400">REG.</span>
+             <div className="flex items-baseline gap-1.5">
+               <span className="text-base font-black text-rose-500">{error}</span>
+               <span className="text-xs font-bold text-slate-400">REG.</span>
              </div>
           </div>
         </div>
@@ -192,9 +192,9 @@ const IntegrationLog = ({ updates }) => {
           <div className="p-2.5 bg-slate-900 text-white rounded-2xl">
             <List size={18} />
           </div>
-          <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm">Log de Integrações</h3>
+          <h3 className="font-black text-slate-800 uppercase tracking-tighter text-base">Log de Integrações</h3>
         </div>
-        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Últimas 24h</span>
+        <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Últimas 24h</span>
       </div>
       
       <div className="space-y-2 overflow-y-auto pr-4 custom-scrollbar">
@@ -209,7 +209,7 @@ const IntegrationLog = ({ updates }) => {
                   {update.categoria}
                 </h4>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                   <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border ${
+                   <span className={`text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border ${
                      update.direcao === 'Inbound' 
                        ? 'bg-blue-50 text-blue-600 border-blue-100' 
                        : 'bg-slate-50 text-slate-400 border-slate-200'
@@ -218,10 +218,10 @@ const IntegrationLog = ({ updates }) => {
                    </span>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 mt-1 font-medium italic opacity-80">
+              <p className="text-sm text-slate-500 mt-1 font-medium italic opacity-80">
                 {update.mensagem}
               </p>
-              <p className="text-[9px] font-black text-slate-400 uppercase mt-2 tracking-widest">
+              <p className="text-[10px] font-black text-slate-400 uppercase mt-2 tracking-widest">
                 {formatTime(update.data)}
               </p>
             </div>
@@ -877,9 +877,9 @@ export default function Dashboard() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-emerald-500/20 transition-colors"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-4">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Integrados com sucesso</p>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Integrados com sucesso</p>
                     <div className="p-3 bg-slate-800/80 backdrop-blur-sm text-emerald-500 rounded-2xl border border-white/5 group-hover:border-emerald-500/30 transition-colors">
-                      <CheckCircle2 size={20} />
+                      <CheckCircle2 size={24} />
                     </div>
                   </div>
                   <div className="flex items-baseline gap-2 mt-2">
@@ -893,16 +893,16 @@ export default function Dashboard() {
               <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg shadow-slate-200/30 group hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Integrações Pendentes</p>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Integrações Pendentes</p>
                     <h3 className="text-4xl font-black text-slate-800 tracking-tight">
                         {(data?.vk11?.pending || 0) + (data?.zaju?.pending || 0) + (data?.zver?.pending || 0)}
                     </h3>
-                    <p className="text-[10px] font-bold text-amber-600 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
-                       <Clock size={10} /> Aguardando SAP
+                    <p className="text-xs font-bold text-amber-600 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
+                       <Clock size={12} /> Aguardando SAP
                     </p>
                   </div>
                   <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
-                    <Clock size={20} />
+                    <Clock size={24} />
                   </div>
                 </div>
               </div>
@@ -910,16 +910,16 @@ export default function Dashboard() {
               <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg shadow-slate-200/30 group hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Erros de Integração</p>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Erros de Integração</p>
                     <h3 className="text-4xl font-black text-rose-600 tracking-tight">
                         {(data?.vk11?.error || 0) + (data?.zaju?.error || 0) + (data?.zver?.error || 0)}
                     </h3>
-                    <p className="text-[10px] font-bold text-rose-400 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
-                       <AlertCircle size={10} /> Erros SAP
+                    <p className="text-xs font-bold text-rose-400 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
+                       <AlertCircle size={12} /> Erros SAP
                     </p>
                   </div>
                   <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl group-hover:bg-rose-600 group-hover:text-white transition-all duration-300">
-                    <AlertCircle size={20} />
+                    <AlertCircle size={24} />
                   </div>
                 </div>
               </div>
@@ -927,16 +927,16 @@ export default function Dashboard() {
               <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg shadow-slate-200/30 group hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative ring-2 ring-transparent hover:ring-rose-100">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Inconsistências (Cadastro)</p>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Inconsistências (Cadastro)</p>
                     <h3 className="text-4xl font-black text-slate-800 tracking-tight">
                        {totalErrors}
                     </h3>
-                    <p className="text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
-                       <AlertCircle size={10} /> Cadastro TL
+                    <p className="text-xs font-bold text-slate-400 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
+                       <AlertCircle size={12} /> Cadastro TL
                     </p>
                   </div>
                   <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl shadow-sm shadow-rose-100 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 group-hover:shadow-rose-300">
-                    <AlertCircle size={20} />
+                    <AlertCircle size={24} />
                   </div>
                 </div>
               </div>
@@ -946,7 +946,7 @@ export default function Dashboard() {
               {/* Saúde das Integrações (60%) */}
               <div className="lg:col-span-6 space-y-8">
                 <div className="flex items-center justify-between px-2">
-                  <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-3">
+                  <h2 className="text-sm font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-3">
                     <span className="w-8 h-px bg-slate-200"></span> Operação Ativa
                   </h2>
                 </div>
@@ -963,7 +963,7 @@ export default function Dashboard() {
               {/* Hub de Resolução (40%) */}
               <div className="lg:col-span-4 space-y-8">
                 <div className="flex items-center justify-between px-2">
-                  <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-3">
+                  <h2 className="text-sm font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-3">
                     <span className="w-8 h-px bg-slate-200"></span> Central de Inconsistências
                   </h2>
                 </div>
@@ -971,16 +971,16 @@ export default function Dashboard() {
                 <div className="space-y-6">
                   {/* Category Group 1: Integração Financeira */}
                   <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50">
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                       <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]"></div> Inconsistencias Integração
+                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+                       <div className="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]"></div> Inconsistencias Integração
                     </h4>
                     <div className="space-y-3">
                       {['pagamentos', 'vk11', 'zaju'].map((key) => {
                         const val = data.errors[key] || 0;
                         const iconMap = {
-                          'pagamentos': <CreditCard size={14} className="inline mr-2 opacity-70" />,
-                          'vk11': <BarChart3 size={14} className="inline mr-2 opacity-70" />,
-                          'zaju': <ArrowDownUp size={14} className="inline mr-2 opacity-70" />
+                          'pagamentos': <CreditCard size={18} className="inline mr-2.5 opacity-70" />,
+                          'vk11': <BarChart3 size={18} className="inline mr-2.5 opacity-70" />,
+                          'zaju': <ArrowDownUp size={18} className="inline mr-2.5 opacity-70" />
                         };
                         return (
                           <button 
@@ -989,14 +989,14 @@ export default function Dashboard() {
                             disabled={val === 0}
                             className={`w-full flex items-center justify-between p-5 rounded-3xl bg-slate-50 border border-transparent transition-all group ${val === 0 ? 'cursor-default opacity-90' : 'hover:bg-white hover:border-slate-100 hover:shadow-lg hover:shadow-slate-200/30 hover:-translate-y-0.5 relative z-10'}`}
                           >
-                            <span className={`font-black text-[11px] uppercase tracking-wider transition-colors flex items-center ${val === 0 ? 'text-slate-500' : 'text-slate-700 group-hover:text-blue-600'}`}>
+                            <span className={`font-black text-sm uppercase tracking-wider transition-colors flex items-center ${val === 0 ? 'text-slate-500' : 'text-slate-700 group-hover:text-blue-600'}`}>
                                {iconMap[key]}
                                {key === 'pagamentos' ? 'Pagamento (ZVER)' : key === 'vk11' ? 'Provisão (VK11)' : 'Ajustes (ZAJU)'}
                             </span>
-                            <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all flex items-center ${
+                            <span className={`px-5 py-2 rounded-2xl text-xs font-black transition-all flex items-center ${
                                val === 0 ? 'bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 shadow-sm shadow-emerald-50' : 'bg-rose-600 text-white shadow-lg shadow-rose-200 group-hover:scale-105'
                             }`}>
-                               {val === 0 ? <><CheckCircle2 size={12} className="mr-1 inline" /> OK</> : <>{val} {val === 1 ? 'erro' : 'erros'}</>}
+                               {val === 0 ? <><CheckCircle2 size={14} className="mr-1.5 inline" /> OK</> : <>{val} {val === 1 ? 'erro' : 'erros'}</>}
                             </span>
                           </button>
                         );
@@ -1006,18 +1006,18 @@ export default function Dashboard() {
 
                   {/* Category Group 2: Cadeia de Suprimentos */}
                   <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50">
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                       <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div> Inconsistências de Cadastro
+                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+                       <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div> Inconsistências de Cadastro
                     </h4>
                     <div className="space-y-3">
                       {['sellin', 'clientes', 'produtos', 'cutoff', 'usuarios'].map((key) => {
                         const val = data.errors[key] || 0;
                         const iconMap = {
-                          'sellin': <HandCoins size={14} className="inline mr-2 opacity-70" />,
-                          'clientes': <Contact size={14} className="inline mr-2 opacity-70" />,
-                          'produtos': <Package size={14} className="inline mr-2 opacity-70" />,
-                          'cutoff': <CalendarClock size={14} className="inline mr-2 opacity-70" />,
-                          'usuarios': <UserCheck size={14} className="inline mr-2 opacity-70" />
+                          'sellin': <HandCoins size={18} className="inline mr-2.5 opacity-70" />,
+                          'clientes': <Contact size={18} className="inline mr-2.5 opacity-70" />,
+                          'produtos': <Package size={18} className="inline mr-2.5 opacity-70" />,
+                          'cutoff': <CalendarClock size={18} className="inline mr-2.5 opacity-70" />,
+                          'usuarios': <UserCheck size={18} className="inline mr-2.5 opacity-70" />
                         };
                         return (
                           <button 
@@ -1026,14 +1026,14 @@ export default function Dashboard() {
                             disabled={val === 0}
                             className={`w-full flex items-center justify-between p-5 rounded-3xl bg-slate-50 border border-transparent transition-all group ${val === 0 ? 'cursor-default opacity-90' : 'hover:bg-white hover:border-slate-100 hover:shadow-lg hover:shadow-slate-200/30 hover:-translate-y-0.5 relative z-10'}`}
                           >
-                            <span className={`font-black text-[11px] uppercase tracking-wider transition-colors flex items-center ${val === 0 ? 'text-slate-500' : 'text-slate-700 group-hover:text-blue-600'}`}>
+                            <span className={`font-black text-sm uppercase tracking-wider transition-colors flex items-center ${val === 0 ? 'text-slate-500' : 'text-slate-700 group-hover:text-blue-600'}`}>
                                {iconMap[key]}
                                {getCategoryLabel(key)}
                             </span>
-                            <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all flex items-center ${
+                            <span className={`px-5 py-2 rounded-2xl text-xs font-black transition-all flex items-center ${
                                val === 0 ? 'bg-emerald-50/80 text-emerald-600 border border-emerald-100/50 shadow-sm shadow-emerald-50' : 'bg-rose-600 text-white shadow-lg shadow-rose-200 group-hover:scale-105'
                             }`}>
-                               {val === 0 ? <><CheckCircle2 size={12} className="mr-1 inline" /> OK</> : <>{val} {val === 1 ? 'erro' : 'erros'}</>}
+                               {val === 0 ? <><CheckCircle2 size={14} className="mr-1.5 inline" /> OK</> : <>{val} {val === 1 ? 'erro' : 'erros'}</>}
                             </span>
                           </button>
                         );
@@ -1049,7 +1049,24 @@ export default function Dashboard() {
         {activeTab === 'pagamentos' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Health & Efficiency Header */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              <div className="bg-emerald-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-sm hover:shadow-md transition-all group">
+                 <div className="absolute top-0 right-0 p-4 opacity-20 transition-transform group-hover:scale-110 group-hover:rotate-12">
+                    <Target size={60} />
+                 </div>
+                 <div className="relative z-10 flex flex-col justify-between h-full">
+                   <div>
+                     <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Meta do Período</h5>
+                     <p className="text-4xl font-black tracking-tighter text-white">99.5%</p>
+                     <p className="text-emerald-300 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
+                        <Target size={12} /> Integração
+                     </p>
+                   </div>
+                   <div className="mt-4 p-2 bg-emerald-800/50 rounded-lg">
+                      <p className="text-emerald-100 text-[9px] uppercase font-bold text-center tracking-wider">Objetivo Corporativo</p>
+                   </div>
+                 </div>
+              </div>
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
                 <div className="relative z-10 flex items-start justify-between">
@@ -1106,55 +1123,56 @@ export default function Dashboard() {
             </div>
 
             {/* Premium Hero Section: Integrated Value */}
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 shadow-2xl shadow-emerald-200/50">
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 shadow-2xl shadow-emerald-200/50 p-10 flex flex-col gap-10">
               <div className="absolute top-0 right-0 p-12 opacity-10">
-                <CreditCard size={200} className="text-white" />
+                <CreditCard size={240} className="text-white" />
               </div>
-              <div className="relative z-10 p-10 flex flex-col md:flex-row items-center justify-between gap-12">
-                <div className="flex-1 space-y-6">
-                  <div>
-                    <h2 className="text-emerald-100 font-bold text-sm uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                       <span className="w-8 h-1 bg-emerald-300 rounded-full"></span> 
-                       Fluxo Financeiro Integrado
-                    </h2>
-                    <div className="flex items-baseline gap-4">
-                      <span className="text-emerald-200 text-3xl font-medium">R$</span>
-                      <h3 className="text-7xl font-black text-white tracking-tighter drop-shadow-lg">
-                        {formatCurrency(data.zver.value_success).replace('R$', '').trim()}
-                      </h3>
-                    </div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div>
+                  <h2 className="text-emerald-100 font-bold text-sm uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                     <span className="w-8 h-1 bg-emerald-300 rounded-full"></span> 
+                     Fluxo Financeiro Integrado
+                  </h2>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-emerald-200 text-3xl font-medium">R$</span>
+                    <h3 className="text-7xl font-black text-white tracking-tighter drop-shadow-lg">
+                      {formatCurrency(data.zver.value_success).replace('R$', '').trim()}
+                    </h3>
                   </div>
-                  
-                  <div className="flex items-center gap-4">
-                    <div className="px-6 py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-                      <p className="text-emerald-200 text-[10px] font-bold uppercase tracking-wider">Volume Mensal</p>
-                      <p className="text-white font-black text-xl">{data.zver.total} <span className="text-xs font-medium text-emerald-300 tracking-normal">operações</span></p>
-                    </div>
-                    <button 
-                      onClick={() => exportCategory('pagamentos_sucesso', data.zver.success)}
-                      className="px-6 py-3 bg-emerald-400 hover:bg-emerald-300 text-emerald-900 font-black text-sm uppercase rounded-2xl transition-all hover:-translate-y-1 shadow-lg shadow-emerald-500/20 active:translate-y-0"
-                    >
-                      Exportar Sucessos
-                    </button>
+                </div>
+              </div>
+
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 space-y-2 flex flex-col justify-center">
+                  <p className="text-emerald-200 font-black text-[10px] uppercase tracking-widest">Volume Mensal</p>
+                  <p className="text-white font-black text-2xl">{data.zver.total}</p>
+                  <p className="text-[10px] uppercase font-bold text-emerald-300 tracking-widest">Operações Realizadas</p>
+                </div>
+
+                <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2 flex flex-col justify-center">
+                  <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Impacto em Erro</p>
+                  <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_error)}</p>
+                  <div className="w-full h-1 bg-white/10 rounded-full mt-2">
+                     <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(data.zver.value_error / Math.max(1, data.zver.value_success)) * 100}%` }}></div>
                   </div>
                 </div>
 
-                <div className="w-full md:w-auto grid grid-cols-2 gap-4">
-                  <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2">
-                    <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Impacto em Erro</p>
-                    <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_error)}</p>
-                    <div className="w-full h-1 bg-white/10 rounded-full">
-                       <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(data.zver.value_error / data.zver.value_success) * 100}%` }}></div>
-                    </div>
-                  </div>
-                  <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2">
-                    <p className="text-amber-400 font-black text-[10px] uppercase tracking-widest">Previsão Pendente</p>
-                    <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</p>
-                    <div className="w-full h-1 bg-white/10 rounded-full">
-                       <div className="h-full bg-amber-400 rounded-full" style={{ width: '40%' }}></div>
-                    </div>
+                <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2 flex flex-col justify-center">
+                  <p className="text-amber-400 font-black text-[10px] uppercase tracking-widest">Previsão Pendente</p>
+                  <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</p>
+                  <div className="w-full h-1 bg-white/10 rounded-full mt-2">
+                     <div className="h-full bg-amber-400 rounded-full" style={{ width: '40%' }}></div>
                   </div>
                 </div>
+
+                <button 
+                  onClick={() => exportCategory('pagamentos_sucesso', data.zver.success)}
+                  className="bg-emerald-400 hover:bg-emerald-300 text-emerald-900 border border-emerald-300 p-6 rounded-3xl shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-1 active:translate-y-0 group flex flex-col items-center justify-center gap-3"
+                >
+                  <Download size={24} className="opacity-80 group-hover:scale-110 transition-transform" />
+                  <span className="font-black text-sm text-center tracking-[0.1em] leading-tight">PAGAMENTOS<br/>COM SUCESSO</span>
+                </button>
               </div>
             </div>
 
@@ -1167,8 +1185,8 @@ export default function Dashboard() {
                       <Trophy size={20} />
                     </div>
                     <div>
-                      <h3 className="font-black text-slate-800 uppercase tracking-tight">Performance por Cliente</h3>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Maiores volumes financeiros integrados</p>
+                      <h3 className="font-black text-slate-800 uppercase tracking-tight text-lg">Performance por Cliente</h3>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Maiores volumes financeiros integrados</p>
                     </div>
                   </div>
                   <TrendingUp size={20} className="text-emerald-500" />
@@ -1191,14 +1209,14 @@ export default function Dashboard() {
                             {index === 0 && <span className="absolute -top-1 -right-1 flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span></span>}
                           </div>
                           <div>
-                            <p className="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors uppercase text-xs">{client.nome}</p>
-                            <p className="text-[10px] text-slate-400 font-bold mt-1">ID: {client.id} • {client.qtd} REGISTROS</p>
+                            <p className="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors uppercase text-sm">{client.nome}</p>
+                            <p className="text-xs text-slate-400 font-bold mt-1">ID: {client.id} • {client.qtd} {client.qtd === 1 ? 'PAGAMENTO' : 'PAGAMENTOS'}</p>
                           </div>
                         </div>
                         <div className="text-right space-y-1.5">
-                          <p className="font-black text-slate-900 group-hover:scale-105 transition-transform origin-right">{formatCurrency(client.valor)}</p>
-                          <div className="flex items-center justify-end gap-2 text-[10px] font-bold text-emerald-600">
-                            <span className="opacity-50 tracking-tighter uppercase whitespace-nowrap">Volume de Participação</span>
+                          <p className="font-black text-slate-900 text-base group-hover:scale-105 transition-transform origin-right">{formatCurrency(client.valor)}</p>
+                          <div className="flex items-center justify-end gap-2 text-xs font-bold text-emerald-600">
+                            <span className="opacity-60 tracking-tighter uppercase whitespace-nowrap">Volume de Participação</span>
                             <div className="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                               <div 
                                 className="h-full bg-emerald-500 rounded-full transition-all duration-1000 group-hover:bg-emerald-400" 
@@ -1219,37 +1237,30 @@ export default function Dashboard() {
               </div>
 
               {/* Resolution Hub Banner */}
-              <div className="lg:col-span-4 space-y-6">
-                <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
+              <div className="lg:col-span-4 flex flex-col h-full">
+                <div className="flex-1 bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group flex flex-col justify-center">
                   <div className="absolute -top-10 -left-10 w-40 h-40 bg-rose-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                  <div className="relative z-10 text-center space-y-6">
-                    <div className="w-20 h-20 bg-rose-100 text-rose-600 rounded-3xl mx-auto flex items-center justify-center shadow-lg shadow-rose-100 transition-transform group-hover:-rotate-12">
-                      <AlertCircle size={40} strokeWidth={2.5} />
+                  <div className="relative z-10 text-center space-y-8">
+                    <div className="w-24 h-24 bg-rose-50 text-rose-600 rounded-[2rem] mx-auto flex items-center justify-center shadow-lg shadow-rose-100/50 transition-transform group-hover:-rotate-12 border border-rose-100">
+                      <AlertCircle size={48} strokeWidth={2} />
                     </div>
                     <div>
-                      <h4 className="text-xl font-black text-slate-800">Resolução de <span className="text-rose-600">Conflitos</span></h4>
-                      <p className="text-slate-500 text-sm mt-3 font-medium leading-relaxed">
-                        Existem <strong className="text-slate-800">{data.errors.pagamentos} inconsistências</strong> detectadas na integração de pagamentos que aguardam sua auditoria.
+                      <h4 className="text-2xl font-black text-slate-800 tracking-tight">Resolução de <span className="text-rose-600">Conflitos</span></h4>
+                      <p className="text-slate-500 text-base mt-4 font-medium leading-relaxed max-w-xs mx-auto">
+                        Existem <strong className="text-slate-800 font-bold">{data.errors.pagamentos} inconsistências</strong> detectadas na integração de pagamentos que aguardam sua auditoria.
                       </p>
                     </div>
-                    <button 
-                      onClick={() => handleOpenModal('pagamentos')}
-                      disabled={data.errors.pagamentos === 0}
-                      className="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-rose-200 transition-all hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:shadow-none"
-                    >
-                      Acessar Log de Inconsistências
-                    </button>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ação Corretiva Obrigatória</p>
+                    <div className="pt-4">
+                      <button 
+                        onClick={() => handleOpenModal('pagamentos')}
+                        disabled={data.errors.pagamentos === 0}
+                        className="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white font-black text-sm uppercase tracking-[0.15em] rounded-2xl shadow-xl shadow-rose-200 transition-all hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:shadow-none"
+                      >
+                        Acessar Log
+                      </button>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">Ação Corretiva Obrigatória</p>
+                    </div>
                   </div>
-                </div>
-
-                <div className="bg-emerald-900 p-8 rounded-[2.5rem] text-white relative overflow-hidden">
-                   <div className="absolute bottom-0 right-0 p-8 opacity-20 rotate-12">
-                      <Target size={80} />
-                   </div>
-                   <h5 className="font-bold text-emerald-400 text-xs uppercase tracking-[0.2em] mb-4">Meta do Período</h5>
-                   <p className="text-2xl font-black">99.5% Integração</p>
-                   <p className="text-emerald-500 text-xs mt-2 font-bold uppercase">Objetivo corporativo de redução de erros</p>
                 </div>
               </div>
             </div>

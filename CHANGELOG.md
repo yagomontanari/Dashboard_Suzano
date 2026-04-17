@@ -15,6 +15,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - **Acessibilidade Cognitiva**: Melhoria do feedback de sucesso na Central de Inconsistências. Casos com "Zero erros" agora recebem a tag de verificação explícita ("Tudo OK") em vez de adotarem visual inativo/desabilitado.
     - **Scannability (Leitura Dinâmica)**: Injeção de iconografia nativa `lucide-react` antes de cada categoria no Hub de Ações, encurtando o tempo de reconhecimento dos usuários para cada módulo operacional (ex. Cartão de Crédito para Pagamentos, Pacote para Produtos).
     - **Micro-interações e Sombras**: Adição de elevações virtuais responsivas ao uso do mouse (`hover:-translate-y-1`) nos cards de KPI superiores, e refinamento dos fundos trocando relevos densos (`shadow-xl`) por difusores suaves de menor espessura (`shadow-lg`).
+    - **Ergonomia e Legibilidade (Upscale Tipográfico)**: Aumento generalizado na escala das fontes (de `10px` e `11px` para `12px`, `14px` e `16px`) em indicadores, logs e categorias, promovendo melhor conforto visual em sessões prolongadas de uso e suporte a telas grandes, sem quebrar o grid operacional 60/40.
+- **UX/UI Premium (Aba Pagamentos)**:
+    - **Redistribuição Estratégica (Hero Section)**: O card "Meta do Período" (99.5% de Integração) foi realocado para o topo, expandindo a malha de totalizadores para 5 colunas. Essa mudança posiciona o KPI corporativo na área principal de visualização da tela.
+    - **Aprimoramento do Painel de Resolução**: O painel "Resolução de Conflitos" foi reestruturado para acompanhar perfeitamente o crescimento vertical da barra de performance vizinha (`flex-1 h-full`), com escalas de alertas, centralização e proporção alinhadas ao padrão de impacto visual.
+    - **Grid Simétrico (Fluxo Financeiro)**: A área sob o grande valor em destaque de "Fluxo Financeiro Integrado" foi redesenhada de um agrupamento misto flex para uma grade simétrica rígida de 4 divisões fixas (Volume Mensal, Impacto em Erro, Previsão Pendente e um novo CTA de Exportar "PAGAMENTOS COM SUCESSO"), trazendo estabilidade visual máxima.
+    - **Afinamento Tipográfico (Clientes)**: Ampliação estruturada em cascata para textos do ranking `Performance por Cliente` e alteração da nomenclatura base de volume de mercado de "X REGISTROS" para a semântica mais apurada "X PAGAMENTOS".
 
 ### Corrigido
 - **Bug Crítico de Renderização**: Resolvida a falha de referência ao ícone `Zap` que causava travamento do Dashboard imediatamente após o carregamento.
