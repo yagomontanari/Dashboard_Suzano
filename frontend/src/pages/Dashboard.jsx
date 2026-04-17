@@ -743,10 +743,13 @@ export default function Dashboard() {
         }
         if (cat === 'pagamentos' || cat === 'pagamentos_sucesso') {
           transformed.cliente_display = `${transformed.cod_cliente || ""} - ${transformed.nom_cliente || ""}`;
-          if (transformed.valor_pagamento) {
-            const numVal = parseFloat(String(transformed.valor_pagamento).replace(',', '.'));
-            transformed.valor_pagamento = isNaN(numVal) ? transformed.valor_pagamento : formatCurrency(numVal);
+          
+          let val = transformed.valor_pagamento;
+          if (val === null || val === undefined || val === '') {
+            val = 0;
           }
+          const numVal = parseFloat(String(val).replace(',', '.'));
+          transformed.valor_pagamento = isNaN(numVal) ? val : formatCurrency(numVal);
         }
         return transformed;
       };
