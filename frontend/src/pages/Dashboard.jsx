@@ -61,31 +61,32 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
     ...(pendingReturn !== null ? [{ name: 'Pendente Retorno', value: pendingReturn, color: '#4f46e5' }] : [])
   ].filter(item => item.value > 0);
 
-  // Se tudo for zero, mostra um anel cinza
-  const displayData = data.length > 0 ? data : [{ name: 'Vazio', value: 1, color: '#e2e8f0' }];
+  const displayData = data.length > 0 ? data : [{ name: 'Vazio', value: 1, color: '#f1f5f9' }];
   
   const getPercentage = (val) => total > 0 ? ((val / total) * 100).toFixed(1) : "0";
 
   return (
-    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-slate-300 transition-all group">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-slate-800 tracking-tight text-sm uppercase tracking-wide">{title}</h3>
+    <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/50 transition-all group flex flex-col h-full">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="font-black text-slate-800 tracking-tighter text-xs uppercase tracking-[0.15em] opacity-60 group-hover:opacity-100 transition-opacity">{title}</h3>
       </div>
       
-      <div className="flex flex-col items-center gap-6">
-        {/* Donut Chart */}
-        <div className="w-48 h-48 relative flex-shrink-0">
+      <div className="flex flex-col items-center gap-8 flex-grow justify-center">
+        {/* Modern Donut Chart */}
+        <div className="w-44 h-44 relative flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={displayData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={3}
+                innerRadius={65}
+                outerRadius={85}
+                paddingAngle={4}
                 dataKey="value"
                 stroke="none"
+                animationBegin={0}
+                animationDuration={1500}
               >
                 {displayData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -94,46 +95,47 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-             <span className="text-[10px] font-black text-slate-400 uppercase leading-none">TOTAL</span>
-             <span className="text-xl font-black text-slate-800 leading-none mt-0.5">{total}</span>
+             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status</span>
+             <span className="text-2xl font-black text-slate-800 leading-none mt-1 tracking-tighter">
+                {getPercentage(success)}<span className="text-xs text-emerald-500 font-bold">%</span>
+             </span>
           </div>
         </div>
 
-        {/* Custom Legend (Image Style) */}
-        <div className="w-full space-y-3 pt-2">
-          <div className="flex items-center justify-between border-b border-slate-50 pb-2">
+        {/* High-Fidelity Legend */}
+        <div className="w-full space-y-4 pt-4 border-t border-slate-50">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-sm bg-emerald-500"></div>
-              <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Sucesso</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sucesso</span>
             </div>
-            <span className="text-sm font-black text-slate-700">{success} <span className="text-slate-400 font-bold">({getPercentage(success)}%)</span></span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-sm font-black text-slate-800">{success}</span>
+              <span className="text-[10px] font-bold text-slate-400">REG.</span>
+            </div>
           </div>
           
-          <div className="flex items-center justify-between border-b border-slate-50 pb-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-sm bg-amber-500"></div>
-               <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Pendentes</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div>
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pendentes</span>
             </div>
-            <span className="text-sm font-black text-slate-700">{pending} <span className="text-slate-400 font-bold">({getPercentage(pending)}%)</span></span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-sm font-black text-slate-800">{pending}</span>
+              <span className="text-[10px] font-bold text-slate-400">REG.</span>
+            </div>
           </div>
 
-          <div className="flex items-center justify-between border-b border-slate-50 pb-2">
+          <div className="flex items-center justify-between">
              <div className="flex items-center gap-3">
-               <div className="w-3 h-3 rounded-sm bg-rose-500"></div>
-               <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Erros de Integração</span>
+               <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]"></div>
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Erro</span>
              </div>
-             <span className="text-sm font-black text-slate-700">{error} <span className="text-slate-400 font-bold">({getPercentage(error)}%)</span></span>
+             <div className="flex items-baseline gap-1">
+               <span className="text-sm font-black text-rose-500">{error}</span>
+               <span className="text-[10px] font-bold text-slate-400">REG.</span>
+             </div>
           </div>
-
-          {pendingReturn !== null && (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-sm bg-indigo-600"></div>
-                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Aguardando Retorno</span>
-              </div>
-              <span className="text-sm font-black text-slate-700">{pendingReturn} <span className="text-slate-400 font-bold">({getPercentage(pendingReturn)}%)</span></span>
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -143,74 +145,83 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
 const IntegrationLog = ({ updates }) => {
   const getIcon = (category) => {
     switch(category) {
-      case 'Sell-In': return <HandCoins size={18} />;
-      case 'Clientes': return <Contact size={18} />;
-      case 'Produtos': return <Package size={18} />;
-      case 'Usuários': return <UserCheck size={18} />;
-      case 'ZAJU': return <ArrowDownUp size={18} />;
-      case 'ZVER': return <CreditCard size={18} />;
-      case 'VK11': return <BarChart3 size={18} />;
-      case 'Dados Provisões': return <ShieldCheck size={18} />;
-      case 'Retorno Pagamento': return <ReceiptText size={18} />;
-      case 'Cutoff': return <CalendarClock size={18} />;
-      default: return <History size={18} />;
+      case 'Sell-In': return <HandCoins size={16} />;
+      case 'Clientes': return <Contact size={16} />;
+      case 'Produtos': return <Package size={16} />;
+      case 'Usuários': return <UserCheck size={16} />;
+      case 'ZAJU': return <ArrowDownUp size={16} />;
+      case 'ZVER': return <CreditCard size={16} />;
+      case 'VK11': return <BarChart3 size={16} />;
+      case 'Dados Provisões': return <ShieldCheck size={16} />;
+      case 'Retorno Pagamento': return <ReceiptText size={16} />;
+      case 'Cutoff': return <CalendarClock size={16} />;
+      default: return <History size={16} />;
     }
   };
 
   const getIconBg = (category) => {
     const colors = {
-      'Sell-In': 'bg-blue-50 text-blue-600',
-      'Clientes': 'bg-amber-50 text-amber-600',
-      'Produtos': 'bg-indigo-50 text-indigo-600',
-      'Usuários': 'bg-emerald-50 text-emerald-600',
-      'ZAJU': 'bg-rose-50 text-rose-600',
-      'ZVER': 'bg-sky-50 text-sky-600',
-      'VK11': 'bg-violet-50 text-violet-600',
-      'Dados Provisões': 'bg-teal-50 text-teal-600',
-      'Retorno Pagamento': 'bg-orange-50 text-orange-600',
-      'Cutoff': 'bg-slate-50 text-slate-600'
+      'Sell-In': 'bg-blue-50 text-blue-600 ring-blue-100',
+      'Clientes': 'bg-amber-50 text-amber-600 ring-amber-100',
+      'Produtos': 'bg-indigo-50 text-indigo-600 ring-indigo-100',
+      'Usuários': 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+      'ZAJU': 'bg-rose-50 text-rose-600 ring-rose-100',
+      'ZVER': 'bg-sky-50 text-sky-600 ring-sky-100',
+      'VK11': 'bg-violet-50 text-violet-600 ring-violet-100',
+      'Dados Provisões': 'bg-teal-50 text-teal-600 ring-teal-100',
+      'Retorno Pagamento': 'bg-orange-50 text-orange-600 ring-orange-100',
+      'Cutoff': 'bg-slate-50 text-slate-600 ring-slate-100'
     };
-    return colors[category] || 'bg-slate-50 text-slate-400';
+    return colors[category] || 'bg-slate-50 text-slate-400 ring-slate-100';
   };
 
   const formatTime = (isoDate) => {
-    if (!isoDate) return "--/--/-- --:--";
+    if (!isoDate) return "--/--";
     const date = new Date(isoDate);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = String(date.getFullYear()).slice(-2);
     const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    return `${day}/${month}/${year} ${time}`;
+    return `${day}/${month} às ${time}`;
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col max-h-[400px]">
-      <div className="flex items-center gap-2 mb-6 border-b border-slate-100 pb-4">
-        <List size={20} className="text-slate-400" />
-        <h3 className="font-bold text-slate-800">Log de Integrações</h3>
+    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col h-full overflow-hidden">
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-slate-900 text-white rounded-2xl">
+            <Activity size={18} />
+          </div>
+          <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm">Painel de Eventos</h3>
+        </div>
+        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Últimas 24h</span>
       </div>
       
-      <div className="space-y-6 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="space-y-0.5 overflow-y-auto pr-4 custom-scrollbar relative">
+        {/* Timeline Axis */}
+        <div className="absolute left-[23px] top-4 bottom-4 w-px bg-slate-100/80"></div>
+
         {updates && updates.map((update, index) => (
-          <div key={index} className="flex gap-4 group transition-all">
-            <div className={`p-3 rounded-full flex-shrink-0 flex items-center justify-center h-12 w-12 border-2 border-white shadow-sm ${getIconBg(update.categoria)}`}>
+          <div key={index} className="relative flex gap-6 group py-4 transition-all hover:bg-slate-50/50 rounded-2xl px-2 -mx-2">
+            <div className={`relative z-10 p-3 rounded-2xl flex-shrink-0 flex items-center justify-center h-12 w-12 ring-4 ring-white shadow-sm transition-transform group-hover:scale-110 ${getIconBg(update.categoria)}`}>
               {getIcon(update.categoria)}
             </div>
-            <div className="flex flex-col flex-grow">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-800 text-[15px] leading-tight group-hover:text-blue-600 transition-colors">
+            <div className="flex flex-col flex-grow justify-center">
+              <div className="flex items-center justify-between gap-4">
+                <h4 className="font-black text-slate-800 tracking-tight text-sm truncate uppercase">
                   {update.categoria}
                 </h4>
-                <span className={`text-[10px] uppercase font-black px-3 py-1 rounded-md border shadow-sm ${
-                  update.direcao === 'Inbound' 
-                    ? 'bg-blue-50 text-blue-600 border-blue-100' 
-                    : 'bg-slate-50 text-slate-500 border-slate-200'
-                }`}>
-                  {update.direcao === 'Inbound' ? '↓ SAP -> TL' : '↑ TL -> SAP'}
-                </span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                   <div className={`h-1.5 w-1.5 rounded-full ${update.direcao === 'Inbound' ? 'bg-blue-500 animate-pulse' : 'bg-slate-400'}`}></div>
+                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                      {update.direcao === 'Inbound' ? 'Sync SAP' : 'Outbound'}
+                   </span>
+                </div>
               </div>
-              <p className="text-xs text-slate-400 mt-1">
-                <span className="font-black text-slate-600">{formatTime(update.data)}</span> — {update.mensagem}
+              <p className="text-xs text-slate-500 mt-1 lines-clamp-1 font-medium italic">
+                {update.mensagem}
+              </p>
+              <p className="text-[9px] font-black text-blue-600/60 uppercase mt-2 tracking-widest">
+                {formatTime(update.data)}
               </p>
             </div>
           </div>
@@ -857,131 +868,138 @@ export default function Dashboard() {
 
       <main className="flex-1 p-8 space-y-8 max-w-[1600px] w-full mx-auto">
         {activeTab === 'geral' && (
-          <>
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm shadow-slate-900/20 hover:shadow-md hover:shadow-slate-900/40 transition-all text-white">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-sm font-medium text-slate-400 mb-1">Integrados com sucesso</p>
-                    <h3 className="text-3xl font-bold text-emerald-500">
-                        {data.vk11.success + data.zaju.success + data.zver.success}
-                    </h3>
-                  </div>
-                  <div className="p-3 bg-slate-800 text-emerald-500 rounded-lg"><CheckCircle2 size={24} /></div>
-                </div>
-              </div>
+          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+            {/* Global Integrity Hero */}
+            <div className="relative overflow-hidden rounded-[3rem] bg-slate-900 border border-slate-800 shadow-2xl shadow-slate-900/40 p-10 group">
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-emerald-500/10 to-transparent rounded-full -mr-32 -mt-32 blur-3xl"></div>
               
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-sm font-medium text-slate-500 mb-1">Integrações Pendentes</p>
-                    <h3 className="text-3xl font-bold text-amber-600">
-                        {data.vk11.pending + data.zaju.pending + data.zver.pending}
-                    </h3>
-                  </div>
-                  <div className="p-3 bg-amber-50 text-amber-600 rounded-lg"><Clock size={24} /></div>
+              <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div className="space-y-4 text-center lg:text-left">
+                  <h2 className="text-emerald-400 font-black text-xs uppercase tracking-[0.4em] mb-2">Ecossistema de Dados Suzano</h2>
+                  <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
+                    Status de Integridade <span className="text-emerald-500 italic shrink-0">Global</span>
+                  </h3>
+                  <p className="text-slate-400 text-sm font-medium max-w-lg">
+                    Monitoramento consolidado de fluxos financeiros, cadastrais e logísticos. 
+                    Sincronização em tempo real entre SAP e Dashboard.
+                  </p>
                 </div>
-              </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-sm font-medium text-slate-500 mb-1">Erros de Integração</p>
-                    <h3 className="text-3xl font-bold text-red-600">
-                        {data.vk11.error + data.zaju.error + data.zver.error}
-                    </h3>
+                <div className="flex items-center gap-12">
+                  <div className="text-center lg:text-right">
+                    <p className="text-slate-500 font-black text-[10px] uppercase tracking-widest mb-1">Taxa de Sucesso</p>
+                    <div className="flex items-baseline justify-center lg:justify-end gap-2">
+                       <h4 className="text-6xl md:text-7xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                          {((data.vk11.success + data.zaju.success + data.zver.success) / 
+                            ((data.vk11.total || 1) + (data.zaju.total || 1) + (data.zver.total || 1)) * 100).toFixed(1)}%
+                       </h4>
+                    </div>
                   </div>
-                  <div className="p-3 bg-red-50 text-red-600 rounded-lg"><AlertCircle size={24} /></div>
-                </div>
-              </div>
+                  
+                  <div className="h-20 w-px bg-slate-800 hidden md:block"></div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-sm font-medium text-slate-500 mb-1">Inconsistências (Cadastro)</p>
-                    <h3 className="text-3xl font-bold text-rose-600">{totalErrors}</h3>
+                  <div className="space-y-4">
+                    <div className="bg-slate-800/50 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/5 group-hover:border-emerald-500/30 transition-colors">
+                      <p className="text-slate-500 text-[9px] font-black uppercase tracking-widest">Registros Validados</p>
+                      <p className="text-emerald-400 text-xl font-black">{data.vk11.success + data.zaju.success + data.zver.success}</p>
+                    </div>
+                    <div className="bg-slate-800/50 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/5 group-hover:border-rose-500/30 transition-colors">
+                      <p className="text-slate-500 text-[9px] font-black uppercase tracking-widest">Ações Requeridas</p>
+                      <p className="text-rose-500 text-xl font-black">{totalErrors}</p>
+                    </div>
                   </div>
-                  <div className="p-3 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={24} /></div>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
-              {/* Integrações Health Board (60%) */}
-              <div className="lg:col-span-6 flex flex-col space-y-4">
-                <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
-                  <Activity size={20} className="text-blue-600" /> Saúde das Integrações
-                </h2>
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  <IntegrationHealthCard title="Ajustes de Provisão (ZAJU)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} pendingReturn={data.zaju.pending_return} />
-                  <IntegrationHealthCard title="Provisão (VK11)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
-                  <IntegrationHealthCard title="Pagamentos (ZVER)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} pendingReturn={data.zver.pending_return} />
+            {/* Distributed Layout Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              {/* Left Column: Core Health (1/3) */}
+              <div className="lg:col-span-4 space-y-8">
+                <div className="flex items-center justify-between px-2">
+                  <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm flex items-center gap-2">
+                    <ShieldCheck size={18} className="text-emerald-500" /> Fluxos Ativos
+                  </h3>
                 </div>
-
-                {/* Integration Log */}
-                <IntegrationLog updates={data.last_updates} />
+                <div className="space-y-6">
+                   <IntegrationHealthCard title="Pagamento (ZVER)" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} pendingReturn={data.zver.pending_return} />
+                   <IntegrationHealthCard title="Faturamento (Sell-In)" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
+                </div>
               </div>
 
-              {/* Errors List (40%) */}
-              <div className="lg:col-span-4 flex flex-col space-y-8">
-                {/* Integração Section */}
-                <div className="flex flex-col space-y-4">
-                  <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
-                    <History size={20} className="text-indigo-600" /> Inconsistencias Integração
-                  </h2>
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
-                    <div className="space-y-3">
+              {/* Middle Column: Secondary Hub (1/3) */}
+              <div className="lg:col-span-4 space-y-8">
+                 <div className="flex items-center justify-between px-2">
+                    <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm flex items-center gap-2">
+                      <Database size={18} className="text-indigo-500" /> Auditoria Auxiliar
+                    </h3>
+                 </div>
+                 <div className="space-y-6">
+                    <IntegrationHealthCard title="Ajuste Provisão (ZAJU)" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} pendingReturn={data.zaju.pending_return} />
+                    <IntegrationLog updates={data.last_updates} />
+                 </div>
+              </div>
+
+              {/* Right Column: Corrective Actions (1/3) */}
+              <div className="lg:col-span-4 space-y-8">
+                <div className="flex items-center justify-between px-2">
+                  <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm flex items-center gap-2">
+                    <Target size={18} className="text-rose-500" /> Resolution Hub
+                  </h3>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Category Group 1: Integração Financeira */}
+                  <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50">
+                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                       <span className="w-4 h-1 bg-indigo-500 rounded-full"></span> Integrações SAP
+                    </h4>
+                    <div className="space-y-2">
                       {['pagamentos', 'vk11', 'zaju'].map((key) => {
-                        const value = data.errors[key] || 0;
-                        const isZero = value === 0;
-                        
+                        const val = data.errors[key] || 0;
                         return (
                           <button 
                             key={key} 
                             onClick={() => handleOpenModal(key)}
-                            disabled={isZero}
-                            className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
+                            disabled={val === 0}
+                            className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-100 hover:shadow-md transition-all group"
                           >
-                            <span className="font-bold text-slate-700 uppercase text-xs tracking-wider group-hover:text-blue-600 transition-colors">
-                              {key === 'pagamentos' ? 'Pagamentos (ZVER)' : key === 'vk11' ? 'Provisão (VK11)' : 'Ajustes (ZAJU)'}
+                            <span className="font-black text-slate-700 text-xs uppercase group-hover:text-blue-600 transition-colors">
+                               {key === 'pagamentos' ? 'Pagamento (ZVER)' : key === 'vk11' ? 'Faturamento (Sell-In)' : 'Ajustes (ZAJU)'}
                             </span>
-                            <span className={`px-3 py-1 rounded-full text-xs font-black shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
-                              isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
+                            <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black transition-all ${
+                               val === 0 ? 'bg-emerald-50 text-emerald-600 opacity-60' : 'bg-rose-600 text-white shadow-lg shadow-rose-200'
                             }`}>
-                              {value} {value === 1 ? 'erro' : 'erros'}
+                               {val} {val === 1 ? 'ERR' : 'ERRS'}
                             </span>
                           </button>
                         );
                       })}
                     </div>
                   </div>
-                </div>
 
-                {/* Cadastro Section */}
-                <div className="flex flex-col space-y-4">
-                  <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
-                     <Target size={20} className="text-rose-600" /> Inconsistências de Cadastro
-                  </h2>
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
-                    <div className="space-y-3">
-                      {['sellin', 'clientes', 'produtos', 'cutoff', 'usuarios'].map((key) => {
-                        const value = data.errors[key] || 0;
-                        const isZero = value === 0;
+                  {/* Category Group 2: Cadeia de Suprimentos */}
+                  <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50">
+                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                       <span className="w-4 h-1 bg-amber-500 rounded-full"></span> Cadastros & Logística
+                    </h4>
+                    <div className="space-y-2">
+                      {['clientes', 'produtos', 'cutoff', 'usuarios'].map((key) => {
+                        const val = data.errors[key] || 0;
                         return (
                           <button 
                             key={key} 
                             onClick={() => handleOpenModal(key)}
-                            disabled={isZero}
-                            className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
+                            disabled={val === 0}
+                            className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-100 hover:shadow-md transition-all group"
                           >
-                            <span className="font-bold text-slate-700 capitalize group-hover:text-blue-600 transition-colors">
-                              {getCategoryLabel(key)}
+                            <span className="font-black text-slate-700 text-xs uppercase group-hover:text-blue-600 transition-colors">
+                               {getCategoryLabel(key)}
                             </span>
-                            <span className={`px-3 py-1 rounded-full text-xs font-black shadow-[2px_2px_0px_#cbd5e1] border transition-transform ${
-                              isZero ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200 group-hover:-translate-y-0.5'
+                            <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black transition-all ${
+                               val === 0 ? 'bg-emerald-50 text-emerald-600 opacity-60' : 'bg-rose-600 text-white shadow-lg shadow-rose-200'
                             }`}>
-                              {value} {value === 1 ? 'erro' : 'erros'}
+                               {val} {val === 1 ? 'ERR' : 'ERRS'}
                             </span>
                           </button>
                         );
@@ -991,7 +1009,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {activeTab === 'pagamentos' && (
