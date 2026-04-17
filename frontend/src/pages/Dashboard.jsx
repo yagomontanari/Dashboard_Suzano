@@ -479,6 +479,7 @@ export default function Dashboard() {
         {key: 'cod_pagamento', label: 'Cod. Pagamento', align: 'center'},
         {key: 'cliente_display', label: 'Cliente', align: 'center'},
         {key: 'nro_documento', label: 'Nº Documento', align: 'center'},
+        {key: 'valor_pagamento', label: 'Valor', align: 'center'},
         {key: 'sequencial', label: 'Sequencial', align: 'center'},
         {key: 'dta_envio_integracao', label: 'Data Envio Integração', align: 'center'},
         {key: 'status', label: 'Status', align: 'center'}
@@ -575,6 +576,7 @@ export default function Dashboard() {
         {key: 'cod_cliente', label: 'Cod. Cliente'},
         {key: 'nom_cliente', label: 'Cliente'},
         {key: 'nro_documento', label: 'Nº Documento'},
+        {key: 'valor_pagamento', label: 'Valor do Pagamento'},
         {key: 'sequencial', label: 'Sequencial'},
         {key: 'doc_type', label: 'Tipo Documento'},
         {key: 'purch_no_c', label: 'Tipo Integração'},
@@ -739,8 +741,12 @@ export default function Dashboard() {
           transformed.recebe_email_label = isTrue(transformed.ind_recebe_email) ? 'Sim' : 'Não';
           transformed.aprova_workflow_label = isTrue(transformed.ind_aprova_workflow) ? 'Sim' : 'Não';
         }
-        if (cat === 'pagamentos') {
+        if (cat === 'pagamentos' || cat === 'pagamentos_sucesso') {
           transformed.cliente_display = `${transformed.cod_cliente || ""} - ${transformed.nom_cliente || ""}`;
+          if (transformed.valor_pagamento) {
+            const numVal = parseFloat(String(transformed.valor_pagamento).replace(',', '.'));
+            transformed.valor_pagamento = isNaN(numVal) ? transformed.valor_pagamento : formatCurrency(numVal);
+          }
         }
         return transformed;
       };

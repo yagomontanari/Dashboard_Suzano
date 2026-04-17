@@ -464,6 +464,7 @@ QUERY_ERRO_PAGAMENTOS_LIST = text("""
             spi.dta_integracao as dta_envio_integracao,
             spi.status,
             spi.msg,
+            pa.vlr_final as valor_pagamento,
             ROW_NUMBER() OVER(PARTITION BY spi.id_pagamento ORDER BY spi.dta_alteracao DESC) as rn
         FROM suzano_pagamento_integracao spi
         INNER JOIN cliente c ON spi.id_cliente = c.id
@@ -482,6 +483,8 @@ QUERY_PAGAMENTOS_SUCESSO_LIST = text("""
     WITH dados AS (
         SELECT 
             spi.id_pagamento as cod_pagamento,
+            c.id_externo as cod_cliente,
+            c.nom_cliente,
             concat(c.id_externo,' - ',c.nom_cliente) as cliente,
             spi.sequencial,
             spi.purch_no_c,
@@ -490,13 +493,15 @@ QUERY_PAGAMENTOS_SUCESSO_LIST = text("""
             spi.dta_integracao as dta_envio_integracao,
             spi.status,
             spi.msg,
+            pa.vlr_final as valor_pagamento,
             ROW_NUMBER() OVER(PARTITION BY spi.id_pagamento ORDER BY spi.dta_alteracao DESC) as rn
         FROM suzano_pagamento_integracao spi
         INNER JOIN cliente c ON spi.id_cliente = c.id
+        LEFT JOIN pagamento_acao pa ON spi.id_pagamento = pa.id
         WHERE spi.status = 'INTEGRADO'
           AND spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
     )
-    SELECT cod_pagamento, cliente, sequencial, purch_no_c, dta_criacao, dta_envio_integracao, status, msg, dta_alteracao
+    SELECT cod_pagamento, cod_cliente, nom_cliente, cliente, sequencial, purch_no_c, dta_criacao, dta_envio_integracao, status, msg, dta_alteracao, valor_pagamento
     FROM dados
     WHERE rn = 1
 """)
