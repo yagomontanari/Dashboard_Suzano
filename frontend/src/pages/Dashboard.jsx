@@ -872,27 +872,20 @@ export default function Dashboard() {
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Premium KPI Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Card 1: Global Health Highlight */}
+              {/* Card 1: Registros Integrados */}
               <div className="bg-slate-900 p-8 rounded-[2rem] border border-slate-800 shadow-2xl shadow-slate-900/40 group hover:scale-[1.02] transition-all duration-500 overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-emerald-500/20 transition-colors"></div>
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-4">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Integridade Global</p>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Integrados com sucesso</p>
                     <div className="p-3 bg-slate-800/80 backdrop-blur-sm text-emerald-500 rounded-2xl border border-white/5 group-hover:border-emerald-500/30 transition-colors">
-                      <Activity size={20} />
+                      <CheckCircle2 size={20} />
                     </div>
                   </div>
                   <div className="flex items-baseline gap-2">
                     <h3 className="text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-                      {(((data?.vk11?.success || 0) + (data?.zaju?.success || 0) + (data?.zver?.success || 0)) / 
-                        ((data?.vk11?.total || 1) + (data?.zaju?.total || 1) + (data?.zver?.total || 1)) * 100).toFixed(1)}<span className="text-xl text-emerald-500">%</span>
+                      {(data?.vk11?.success || 0) + (data?.zaju?.success || 0) + (data?.zver?.success || 0)}
                     </h3>
-                  </div>
-                  <div className="mt-4 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-1000" 
-                      style={{ width: `${((data.vk11.success + data.zaju.success + data.zver.success) / ((data.vk11.total || 1) + (data.zaju.total || 1) + (data.zver.total || 1)) * 100)}%` }}
-                    ></div>
                   </div>
                 </div>
               </div>
@@ -900,24 +893,7 @@ export default function Dashboard() {
               <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 group hover:scale-[1.02] transition-all duration-500 relative">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Sucesso</p>
-                    <h3 className="text-4xl font-black text-slate-800 tracking-tighter">
-                        {(data?.vk11?.success || 0) + (data?.zaju?.success || 0) + (data?.zver?.success || 0)}
-                    </h3>
-                    <p className="text-[10px] font-bold text-emerald-600 mt-2 flex items-center gap-1 uppercase tracking-widest">
-                       <CheckCircle2 size={10} /> Registros OK
-                    </p>
-                  </div>
-                  <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
-                    <History size={20} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 group hover:scale-[1.02] transition-all duration-500 relative">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Em Processamento</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Integrações Pendentes</p>
                     <h3 className="text-4xl font-black text-slate-800 tracking-tighter">
                         {(data?.vk11?.pending || 0) + (data?.zaju?.pending || 0) + (data?.zver?.pending || 0)}
                     </h3>
@@ -926,7 +902,24 @@ export default function Dashboard() {
                     </p>
                   </div>
                   <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
-                    <Zap size={20} />
+                    <Clock size={20} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 group hover:scale-[1.02] transition-all duration-500 relative">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Erros de Integração</p>
+                    <h3 className="text-4xl font-black text-rose-600 tracking-tighter">
+                        {(data?.vk11?.error || 0) + (data?.zaju?.error || 0) + (data?.zver?.error || 0)}
+                    </h3>
+                    <p className="text-[10px] font-bold text-rose-400 mt-2 flex items-center gap-1 uppercase tracking-widest">
+                       <AlertCircle size={10} /> Erros SAP
+                    </p>
+                  </div>
+                  <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl group-hover:bg-rose-600 group-hover:text-white transition-all duration-300">
+                    <AlertCircle size={20} />
                   </div>
                 </div>
               </div>
@@ -934,16 +927,16 @@ export default function Dashboard() {
               <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 group hover:scale-[1.02] transition-all duration-500 relative ring-2 ring-transparent hover:ring-rose-100">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Ação Requerida</p>
-                    <h3 className="text-4xl font-black text-rose-500 tracking-tighter">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Inconsistências (Cadastro)</p>
+                    <h3 className="text-4xl font-black text-slate-800 tracking-tighter">
                        {totalErrors}
                     </h3>
-                    <p className="text-[10px] font-bold text-rose-400 mt-2 flex items-center gap-1 uppercase tracking-widest">
-                       <AlertCircle size={10} /> Inconsistências
+                    <p className="text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1 uppercase tracking-widest">
+                       <AlertCircle size={10} /> Cadastro TL
                     </p>
                   </div>
                   <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 shadow-lg shadow-rose-100 group-hover:shadow-rose-300">
-                    <Target size={20} />
+                    <AlertCircle size={20} />
                   </div>
                 </div>
               </div>
@@ -979,7 +972,7 @@ export default function Dashboard() {
                   {/* Category Group 1: Integração Financeira */}
                   <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50">
                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                       <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]"></div> SAP Gateway
+                       <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]"></div> Inconsistencias Integração
                     </h4>
                     <div className="space-y-3">
                       {['pagamentos', 'vk11', 'zaju'].map((key) => {
@@ -992,12 +985,12 @@ export default function Dashboard() {
                             className="w-full flex items-center justify-between p-5 rounded-3xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-100 hover:shadow-xl hover:shadow-slate-200/40 transition-all group disabled:opacity-40"
                           >
                             <span className="font-black text-slate-700 text-[11px] uppercase tracking-wider group-hover:text-blue-600 transition-colors">
-                               {key === 'pagamentos' ? 'Pagamento (ZVER)' : key === 'vk11' ? 'Faturamento (Sell-In)' : 'Ajustes (ZAJU)'}
+                               {key === 'pagamentos' ? 'Pagamento (ZVER)' : key === 'vk11' ? 'Provisão (VK11)' : 'Ajustes (ZAJU)'}
                             </span>
                             <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all ${
                                val === 0 ? 'bg-emerald-50 text-emerald-600 shadow-sm shadow-emerald-100' : 'bg-rose-600 text-white shadow-xl shadow-rose-200 group-hover:scale-105'
                             }`}>
-                               {val} {val === 1 ? 'ERR' : 'ERRS'}
+                               {val} {val === 1 ? 'erro' : 'erros'}
                             </span>
                           </button>
                         );
@@ -1008,7 +1001,7 @@ export default function Dashboard() {
                   {/* Category Group 2: Cadeia de Suprimentos */}
                   <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50">
                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                       <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div> Master Data & Logistics
+                       <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div> Inconsistências de Cadastro
                     </h4>
                     <div className="space-y-3">
                       {['sellin', 'clientes', 'produtos', 'cutoff', 'usuarios'].map((key) => {
@@ -1026,7 +1019,7 @@ export default function Dashboard() {
                             <span className={`px-5 py-2 rounded-2xl text-[10px] font-black transition-all ${
                                val === 0 ? 'bg-emerald-50 text-emerald-600 shadow-sm shadow-emerald-100' : 'bg-rose-600 text-white shadow-xl shadow-rose-200 group-hover:scale-105'
                             }`}>
-                               {val} {val === 1 ? 'ERR' : 'ERRS'}
+                               {val} {val === 1 ? 'erro' : 'erros'}
                             </span>
                           </button>
                         );
