@@ -44,7 +44,8 @@ import {
   ReceiptText,
   CalendarClock,
   HandCoins,
-  ArrowDownUp
+  ArrowDownUp,
+  Zap
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
@@ -881,10 +882,9 @@ export default function Dashboard() {
                       <Activity size={20} />
                     </div>
                   </div>
-                  <div className="flex items-baseline gap-2">
                     <h3 className="text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-                      {((data.vk11.success + data.zaju.success + data.zver.success) / 
-                        ((data.vk11.total || 1) + (data.zaju.total || 1) + (data.zver.total || 1)) * 100).toFixed(1)}<span className="text-xl text-emerald-500">%</span>
+                      {(((data?.vk11?.success || 0) + (data?.zaju?.success || 0) + (data?.zver?.success || 0)) / 
+                        ((data?.vk11?.total || 1) + (data?.zaju?.total || 1) + (data?.zver?.total || 1)) * 100).toFixed(1)}<span className="text-xl text-emerald-500">%</span>
                     </h3>
                   </div>
                   <div className="mt-4 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
@@ -901,7 +901,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Sucesso</p>
                     <h3 className="text-4xl font-black text-slate-800 tracking-tighter">
-                        {data.vk11.success + data.zaju.success + data.zver.success}
+                        {(data?.vk11?.success || 0) + (data?.zaju?.success || 0) + (data?.zver?.success || 0)}
                     </h3>
                     <p className="text-[10px] font-bold text-emerald-600 mt-2 flex items-center gap-1 uppercase tracking-widest">
                        <CheckCircle2 size={10} /> Registros OK
@@ -918,7 +918,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Em Processamento</p>
                     <h3 className="text-4xl font-black text-slate-800 tracking-tighter">
-                        {data.vk11.pending + data.zaju.pending + data.zver.pending}
+                        {(data?.vk11?.pending || 0) + (data?.zaju?.pending || 0) + (data?.zver?.pending || 0)}
                     </h3>
                     <p className="text-[10px] font-bold text-amber-600 mt-2 flex items-center gap-1 uppercase tracking-widest">
                        <Clock size={10} /> Aguardando SAP
@@ -958,9 +958,9 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  <IntegrationHealthCard title="ZAJU" success={data.zaju.success} pending={data.zaju.pending} error={data.zaju.error} pendingReturn={data.zaju.pending_return} />
-                  <IntegrationHealthCard title="VK11" success={data.vk11.success} pending={data.vk11.pending} error={data.vk11.error} />
-                  <IntegrationHealthCard title="ZVER" success={data.zver.success} pending={data.zver.pending} error={data.zver.error} pendingReturn={data.zver.pending_return} />
+                  <IntegrationHealthCard title="ZAJU" success={data?.zaju?.success || 0} pending={data?.zaju?.pending || 0} error={data?.zaju?.error || 0} pendingReturn={data?.zaju?.pending_return || 0} />
+                  <IntegrationHealthCard title="VK11" success={data?.vk11?.success || 0} pending={data?.vk11?.pending || 0} error={data?.vk11?.error || 0} />
+                  <IntegrationHealthCard title="ZVER" success={data?.zver?.success || 0} pending={data?.zver?.pending || 0} error={data?.zver?.error || 0} pendingReturn={data?.zver?.pending_return || 0} />
                 </div>
 
                 <IntegrationLog updates={data.last_updates} />

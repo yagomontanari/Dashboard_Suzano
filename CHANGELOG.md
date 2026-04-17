@@ -4,6 +4,17 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.2.1] - 2026-04-17
+### Adicionado
+- **Resiliência de Interface (Hardenning)**:
+    - Implementação do componente **ErrorBoundary** nas rotas protegidas para capturar erros de renderização e evitar a "tela branca" total.
+    - Adição de proteções defensivas (*Optional Chaining* e *Default Values*) em todos os cálculos de KPI do Cockpit para lidar com respostas parciais do backend.
+
+### Corrigido
+- **Bug Crítico de Renderização**: Resolvida a falha de referência ao ícone `Zap` que causava travamento do Dashboard imediatamente após o carregamento.
+
+---
+
 ## [2.2.0] - 2026-04-16
 ### Adicionado
 - **Reestruturação de Inconsistências (Cadastro)**:
@@ -381,4 +392,4 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Componentização visual com Lucide React.
 
 ---
-*Atualizado em: 16 de Abril de 2026 por Antigravity AI.*
+*Atualizado em: 17 de Abril de 2026 por Antigravity AI.*

@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Relatorios from './pages/Relatorios';
 import UserManagement from './pages/UserManagement';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Protected Route com suporte a RBAC
 const ProtectedRoute = ({ children, adminOnly = false }) => {
@@ -41,7 +42,9 @@ function App() {
           path="/dashboard" 
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <ErrorBoundary>
+                <Dashboard />
+              </ErrorBoundary>
             </ProtectedRoute>
           } 
         />

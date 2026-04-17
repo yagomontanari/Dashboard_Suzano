@@ -3,9 +3,17 @@
 Este arquivo registra todos os bugs identificados e tratados, servindo como histórico técnico e base de conhecimento.
 
 ## Resumo de Status
-- **Bugs Resolvidos:** 7
+- **Bugs Resolvidos:** 8
 - **Bugs Críticos Atuais:** 0
 - **Monitoramento:** Ativo
+
+---
+
+### [BUG-008] ReferenceError: Zap is not defined no Dashboard
+- **Sintoma:** Após acessar a rota `/dashboard`, o carregamento começava (skeleton) mas a tela ficava totalmente branca (com exceção do menu lateral).
+- **Causa:** O componente `<Zap />` foi utilizado no KPI de "Em Processamento" sem o respectivo import da biblioteca `lucide-react`.
+- **Solução:** Adicionado o import ausente, aplicadas proteções de renderização (*Optional Chaining*) nos cálculos de KPI e implementado um **ErrorBoundary** no nível de página.
+- **Status:** ✅ Resolvido
 
 ---
 
