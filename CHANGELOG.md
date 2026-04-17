@@ -10,7 +10,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
     - **Produtos**: Modernização do modal com layout otimizado (ID, Nome, Status e Hierarquia 1). Implementada Exportação Detalhada com 20 colunas e consolidação de hierarquias.
     - **Cutoff**: Novo layout de modal incluindo campos de **Lote** e **Nº Doc. Faturamento** para maior rastreabilidade.
     - **Usuários**: Reestruturação completa do pré-cadastro com humanização de dados (Sim/Não para booleanos) e rastreio por Lote.
-    - **Geral**: Reestruturação completa UI/UX para o padrão **Global Cockpit**. Implementado Hero de Integridade com cálculo de sucesso mestre, layout distribuído em grade de widgets e Hub de Resolução categorizado.
+    - **Geral**: Evolução para o padrão **Global Cockpit Premium**. Implementada arquitetura 60/40 (Saúde vs Resolução) com design de alta fidelidade, KPIs dinâmicos e Hubs de inconsistência categorizados.
     - **Pagamento (ZVER)**: Reestruturação completa UI/UX para o padrão **Command Hub**. Adicionada paleta Emerald/Green, KPI de Taxa de Eficiência, Hero Section com gradientes premium e ranking de performance modernizado.
     - **Integrações (VK11, ZAJU)**: Refatoração completa dos modais com centralização de dados, priorização da coluna de Erros e exportação técnica de alta fidelidade. Implementada funcionalidade de **tooltip inteligente** para visualização de mensagens de erro longas.
 - **Nomenclatura Executiva**: Evolução do título dos modais de detalhamento para **"Log de Inconsistências: [Categoria]"**, eliminando termos genéricos e elevando o tom corporativo da plataforma (ex: **Faturamento (Sell-In)**).
