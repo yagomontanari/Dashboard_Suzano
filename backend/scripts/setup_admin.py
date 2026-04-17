@@ -11,8 +11,10 @@ from core.models_app import User, UserRole, UserStatus
 from core.security import get_password_hash
 
 async def setup_admin():
-    email = "admin@suzano.com" # O usuário pode alterar depois
-    password = "admin123"
+    email = os.environ.get("ADMIN_INITIAL_EMAIL", "admin@suzano.com") 
+    password = os.environ.get("ADMIN_INITIAL_PASSWORD")
+    if not password:
+        raise ValueError("ERRO CRÍTICO (Segurança): ADMIN_INITIAL_PASSWORD não foi definido nas variáveis de ambiente.")
     
     async with AppSessionLocal() as session:
         # Verifica se já existe

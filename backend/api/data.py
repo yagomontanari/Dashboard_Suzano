@@ -233,17 +233,14 @@ async def get_inconsistencies(
         from sqlalchemy import text
         
         if sort_by:
-            # Simple sanitization/validation for sort_by and order
+            import re
+            # Validação rigorosa contra SQL Injection
+            if not re.match(r"^[a-zA-Z0-9_]+$", sort_by):
+                raise HTTPException(status_code=400, detail="Parâmetro de ordenação inválido")
+                
             valid_order = "ASC" if order.upper() == "ASC" else "DESC"
             
-            # Base text without the final ORDER BY or LIMIT/OFFSET if we are going to wrap it
-            # But wait, some base queries have ORDER BY inside. 
-            # It's safer to wrap the base query (without trailing semicolon)
             base_sql = count_query.text.strip().rstrip(';')
-            
-            # Clean up: remove the default ORDER BY from base_sql to avoid conflicts if possible, 
-            # but wrapping works too: "SELECT * FROM (base) as t ORDER BY col"
-            # However, if 'sort_by' is passed, we should use it.
             
             wrapped_sql = f"SELECT * FROM ({base_sql}) AS sorted_subquery ORDER BY {sort_by} {valid_order} LIMIT :limit OFFSET :offset;"
             final_query = text(wrapped_sql)
