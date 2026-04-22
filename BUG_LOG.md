@@ -3,9 +3,17 @@
 Este arquivo registra todos os bugs identificados e tratados, servindo como histórico técnico e base de conhecimento.
 
 ## Resumo de Status
-- **Bugs Resolvidos:** 8
+- **Bugs Resolvidos:** 9
 - **Bugs Críticos Atuais:** 0
 - **Monitoramento:** Ativo
+
+---
+
+### [BUG-009] ImportError: cannot import name 'limiter' from 'main'
+- **Sintoma:** O backend falhava ao iniciar na Vercel ou localmente com erro de importação circular.
+- **Causa:** `main.py` e `api/data.py` dependiam mutuamente do objeto `limiter`. O `main.py` tentava importar as rotas antes de inicializar o `limiter`, que por sua vez era exigido pelas rotas.
+- **Solução:** O objeto `limiter` foi movido para um módulo centralizador (`backend/core/limiter.py`), desacoplando a inicialização do ponto de entrada da aplicação e permitindo importações seguras em cascata.
+- **Status:** ✅ Resolvido
 
 ---
 

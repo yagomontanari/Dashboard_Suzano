@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.2.2] - 2026-04-22
+### Corrigido
+- **Infraestrutura (Circular Import)**: Resolvida falha crítica de inicialização (`ImportError`) que impedia o boot da aplicação na Vercel. A lógica de `Slowapi` (Rate Limiting) foi movida para um módulo centralizador (`core/limiter.py`), garantindo a ordem correta de carregamento das rotas e do objeto de estado da aplicação.
+
+---
+
 ## [2.2.1] - 2026-04-17
 ### Adicionado
 - **Resiliência de Interface (Hardenning)**:
@@ -404,4 +410,4 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Componentização visual com Lucide React.
 
 ---
-*Atualizado em: 17 de Abril de 2026 por Antigravity AI.*
+*Atualizado em: 22 de Abril de 2026 por Antigravity AI.*
