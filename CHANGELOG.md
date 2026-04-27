@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.7] - 2026-04-27
+### Corrigido
+- **Estabilidade Analítica (Hook Order Fix)**: Correção de erro crítico de referência (`ReferenceError`) causado pela inicialização incorreta de hooks. O estado `dateRange` agora precede o cálculo de lógica temporal, garantindo a carga do dashboard.
+- **Robustez de UI**: Refinamento da lógica de detecção de datas para evitar falhas durante estados de carregamento assíncrono.
+
+---
+
 ## [2.3.6] - 2026-04-27
 ### Corrigido
 - **Estabilidade Global (Exhaustive Hotfix)**: Varredura completa e implementação de proteções contra dados nulos em todos os módulos do dashboard (Gráficos, Modais, KPIs de ZVER, ZAJU e VK11). Garantia de resiliência total da interface durante o carregamento assíncrono de dados.

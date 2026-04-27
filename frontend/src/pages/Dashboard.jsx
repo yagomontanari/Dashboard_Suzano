@@ -246,16 +246,22 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  // Date Range State (Início do mês atual até hoje como padrão)
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
+    endDate: new Date().toISOString().split('T')[0]
+  });
+
   const referenceMonth = useMemo(() => {
     try {
-      const date = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
+      const date = dateRange?.startDate ? new Date(dateRange.startDate) : new Date();
       if (isNaN(date.getTime())) return '...';
       const monthStr = date.toLocaleString('pt-BR', { month: 'long' });
       return monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
     } catch (e) {
       return '...';
     }
-  }, [dateRange.startDate]);
+  }, [dateRange?.startDate]);
 
   const getEfficiencyColor = useCallback((rate) => {
     if (rate >= 99.5) return 'text-emerald-600';
@@ -273,11 +279,6 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('geral');
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
-  // Date Range State (Início do mês atual até hoje como padrão)
-  const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
-    endDate: new Date().toISOString().split('T')[0]
-  });
 
   const formatDateTime = (date) => {
     const d = new Date(date);
