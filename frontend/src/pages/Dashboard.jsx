@@ -1457,13 +1457,7 @@ export default function Dashboard() {
                     </tbody>
                  </table>
                </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'zaju' && (
-          <div className="space-y-8 animate-in fade-in duration-500 pb-12">
-            {/* Top Summaries */}
+             {/* Top Summaries */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800">
                 <p className="text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Volume Total</p>
@@ -1491,7 +1485,14 @@ export default function Dashboard() {
               </div>
 
               {(() => {
-                const efficiency = data?.zaju?.total > 0 ? (data.zaju.success / data.zaju.total) * 100 : 0;
+                const eligibleItems = data?.zaju?.by_type?.filter(item => 
+                  !['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type)
+                ) || [];
+                
+                const totalEligible = eligibleItems.reduce((acc, curr) => acc + (curr.total || 0), 0);
+                const successEligible = eligibleItems.reduce((acc, curr) => acc + (curr.success || 0), 0);
+                const efficiency = totalEligible > 0 ? (successEligible / totalEligible) * 100 : 100;
+                
                 let bgColor = 'bg-slate-900';
                 let textColor = 'text-white';
                 let labelColor = 'text-slate-400';
@@ -1511,11 +1512,32 @@ export default function Dashboard() {
                 }
 
                 return (
-                  <div className={`${bgColor} p-5 rounded-xl shadow-lg border border-slate-800 flex flex-col justify-between h-full transition-colors duration-500`}>
-                    <p className={`text-[10px] font-bold ${labelColor} mb-1 uppercase tracking-wider`}>Taxa Eficiência</p>
-                    <h3 className={`text-2xl font-black ${textColor}`}>
-                      {efficiency.toFixed(1)}%
-                    </h3>
+                  <div className={`${bgColor} p-4 rounded-xl shadow-lg border border-slate-800 flex flex-col justify-between h-full transition-all duration-500 group relative overflow-hidden`}>
+                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Zap size={40} className={textColor} />
+                    </div>
+                    
+                    <div className="flex justify-between items-start relative z-10">
+                      <p className={`text-[9px] font-black ${labelColor} uppercase tracking-widest`}>Taxa Eficiência (Integráveis)</p>
+                      <span className={`text-[10px] font-bold ${labelColor} px-2 py-0.5 rounded-full border border-current opacity-50`}>Meta: 100%</span>
+                    </div>
+
+                    <div className="flex items-baseline gap-2 mt-2 relative z-10">
+                      <h3 className={`text-3xl font-black ${textColor} tracking-tighter`}>
+                        {efficiency.toFixed(1)}%
+                      </h3>
+                    </div>
+
+                    <div className="mt-3 relative z-10">
+                        <div className="flex justify-between text-[9px] font-bold mb-1 uppercase tracking-tighter">
+                            <span className={labelColor}>Real vs Ideal</span>
+                            <span className={textColor}>{efficiency.toFixed(0)}/100%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden flex shadow-inner border border-white/5">
+                            <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 98 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : efficiency >= 90 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}`} 
+                                 style={{ width: `${efficiency}%` }}></div>
+                        </div>
+                    </div>
                   </div>
                 );
               })()}
@@ -1595,11 +1617,27 @@ export default function Dashboard() {
                                           </span>
                                         )}
                                       </div>
-                                      <p className="text-xs text-slate-500 font-bold mt-1.5 flex flex-col gap-1">
+                                      <p className="text-[11px] font-bold mt-2 flex flex-col gap-1.5">
                                         <span className="flex items-center gap-1.5">
-                                          Monitoramento Estratégico 
-                                          {isBlocked && <span className="text-rose-400 font-black ml-1">• Não Integrável</span>}
-                                          {!isBlocked && <span className="text-emerald-500 font-black ml-1">• Fluxo Normal</span>}
+                                          {isBlocked ? (
+                                            <span className="text-rose-500 font-black">• Fluxo Bloqueado</span>
+                                          ) : item.error > item.success && item.total > 10 ? (
+                                            <span className="text-rose-600 font-black flex items-center gap-1 animate-pulse">
+                                               <XCircle size={10} /> Processamento Crítico
+                                            </span>
+                                          ) : item.pending_return > 0 ? (
+                                            <span className="text-indigo-500 font-black flex items-center gap-1">
+                                               <ArrowDownUp size={10} /> Aguardando Retorno
+                                            </span>
+                                          ) : item.pending > 0 ? (
+                                            <span className="text-amber-600 font-black flex items-center gap-1">
+                                               <Zap size={10} /> Em Processamento
+                                            </span>
+                                          ) : (
+                                            <span className="text-emerald-500 font-black flex items-center gap-1">
+                                               <CheckCircle2 size={10} /> Fluxo Saudável
+                                            </span>
+                                          )}
                                         </span>
                                         {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && (
                                           <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-100 mt-1 max-w-[280px] leading-tight">
