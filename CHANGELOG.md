@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.29] - 2026-04-27
+### Adicionado
+- **Clarificação Temporal ZAJU Cutoff**: Foram introduzidas sub-leggings visuais dinâmicas diretamente nas linhas de detalhamento. Para o "Fechamento Anterior (Cutoff)", os pendentes recebem um label explícito "(Ref. Mês Atual)" indicando que estão no escopo da janela ativa, e os items com sucesso são demarcados como "(Ref. Fechamento Anterior)". Notas explicativas detalhando o calendário oficial do ciclo de fechamento foram ancoradas acima do título da rotina.
+
+---
+
 ## [2.3.28] - 2026-04-27
 ### Alterado
 - **Sincronização UI ZAJU vs Pagamentos**: Réplica exata (1:1) do design de cards da tela 'Pagamentos' para a aba ZAJU, introduzindo o card de "Meta do Período" e padronizando o background da "Taxa de Eficiência".
