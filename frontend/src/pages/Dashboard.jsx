@@ -1476,26 +1476,49 @@ export default function Dashboard() {
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-amber-500">
-                <p className="text-[10px] font-bold text-amber-600 mb-1 uppercase tracking-wider">Pendente</p>
+                <p className="text-[10px] font-bold text-amber-600 mb-1 uppercase tracking-wider">Em Processamento</p>
                 <h3 className="text-2xl font-black text-amber-600">{data?.zaju?.pending || 0}</h3>
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-indigo-500">
-                <p className="text-[10px] font-bold text-indigo-600 mb-1 uppercase tracking-wider">Retorno</p>
+                <p className="text-[10px] font-bold text-indigo-600 mb-1 uppercase tracking-wider">Aguardando Retorno</p>
                 <h3 className="text-2xl font-black text-indigo-600">{data?.zaju?.pending_return || 0}</h3>
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500">
-                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Erros</p>
+                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Financeiro Bloqueado</p>
                 <h3 className="text-2xl font-black text-rose-600">{data?.zaju?.error || 0}</h3>
               </div>
 
-              <div className="bg-slate-900 p-5 rounded-xl shadow-lg border border-slate-800 flex flex-col justify-between h-full">
-                <p className="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Taxa Eficiência</p>
-                <h3 className="text-2xl font-black text-white">
-                  {data?.zaju?.total > 0 ? ((data.zaju.success / data.zaju.total) * 100).toFixed(1) : 0}%
-                </h3>
-              </div>
+              {(() => {
+                const efficiency = data?.zaju?.total > 0 ? (data.zaju.success / data.zaju.total) * 100 : 0;
+                let bgColor = 'bg-slate-900';
+                let textColor = 'text-white';
+                let labelColor = 'text-slate-400';
+                
+                if (efficiency >= 98) {
+                    bgColor = 'bg-emerald-900';
+                    textColor = 'text-emerald-400';
+                    labelColor = 'text-emerald-500';
+                } else if (efficiency >= 90) {
+                    bgColor = 'bg-amber-900';
+                    textColor = 'text-amber-400';
+                    labelColor = 'text-amber-500';
+                } else if (efficiency > 0) {
+                    bgColor = 'bg-rose-900';
+                    textColor = 'text-rose-400';
+                    labelColor = 'text-rose-500';
+                }
+
+                return (
+                  <div className={`${bgColor} p-5 rounded-xl shadow-lg border border-slate-800 flex flex-col justify-between h-full transition-colors duration-500`}>
+                    <p className={`text-[10px] font-bold ${labelColor} mb-1 uppercase tracking-wider`}>Taxa Eficiência</p>
+                    <h3 className={`text-2xl font-black ${textColor}`}>
+                      {efficiency.toFixed(1)}%
+                    </h3>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Sub-Tabs Navigation */}
@@ -1558,52 +1581,53 @@ export default function Dashboard() {
                             const isBlocked = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type);
                             return (
                               <tr key={`${item.type}-${item.category}`} className="hover:bg-slate-50/50 transition-all group">
-                                <td className="py-6 px-8">
-                                  <div className="flex items-center gap-4">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-sm ${isBlocked ? 'bg-slate-100 text-slate-400 opacity-60' : 'bg-blue-50 text-blue-600 group-hover:scale-110'}`}>
-                                      <ArrowDownUp size={18} />
+                                <td className="py-8 px-8">
+                                  <div className="flex items-center gap-6">
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-sm ${isBlocked ? 'bg-slate-100 text-slate-300 opacity-60' : 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white group-hover:rotate-12'}`}>
+                                      <ArrowDownUp size={24} />
                                     </div>
                                     <div>
-                                      <div className="flex items-center gap-2">
-                                        <span className={`font-black text-base block ${isBlocked ? 'text-slate-400' : 'text-slate-800'}`}>{item.type}</span>
+                                      <div className="flex items-center gap-3">
+                                        <span className={`font-black text-lg block tracking-tight ${isBlocked ? 'text-slate-400' : 'text-slate-900 group-hover:text-blue-600 transition-colors'}`}>{item.type}</span>
                                         {isBlocked && (
-                                          <span className="px-2 py-0.5 bg-rose-50 text-rose-600 rounded-md text-[10px] font-black uppercase tracking-tighter border border-rose-100 flex items-center gap-1">
-                                            <AlertCircle size={10} /> BLOQUEADO
+                                          <span className="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[11px] font-black uppercase tracking-tighter border border-rose-100 flex items-center gap-1">
+                                            <AlertCircle size={12} /> FINANCEIRO BLOQUEADO
                                           </span>
                                         )}
                                       </div>
-                                      <p className="text-xs text-slate-400 font-medium mt-1 flex items-center gap-1">
+                                      <p className="text-xs text-slate-500 font-bold mt-1.5 flex items-center gap-1.5">
                                         Monitoramento Estratégico 
-                                        {isBlocked && <span className="text-rose-400 font-bold ml-1">• Item não integrado</span>}
+                                        {isBlocked && <span className="text-rose-400 font-black ml-1">• Não Integrável</span>}
+                                        {!isBlocked && <span className="text-emerald-500 font-black ml-1">• Fluxo Normal</span>}
                                       </p>
                                     </div>
                                   </div>
                                 </td>
-                                <td className="py-6 px-8">
-                                  <div className="flex flex-col gap-2 min-w-[320px]">
-                                    <div className="flex justify-between text-[11px] font-bold uppercase tracking-tight">
-                                      <span className="text-emerald-600 flex items-center gap-1">
-                                        <CheckCircle2 size={11} /> {item.success} Integrados
+                                <td className="py-8 px-8">
+                                  <div className="flex flex-col gap-3 min-w-[380px]">
+                                    <div className="flex justify-between text-[11px] font-black uppercase tracking-widest mb-1">
+                                      <span className="text-emerald-600 flex items-center gap-1.5">
+                                        <CheckCircle2 size={14} /> {item.success} Integrados
                                       </span>
-                                      <span className={`flex items-center gap-1 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
-                                        <XCircle size={11} /> {item.error} Erros
+                                      <span className={`flex items-center gap-1.5 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
+                                        <XCircle size={14} /> {item.error} Bloqueado
                                       </span>
                                     </div>
-                                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
-                                      <div className="bg-emerald-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.success/(item.total || 1))*100}%` }}></div>
-                                      <div className="bg-amber-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending/(item.total || 1))*100}%` }}></div>
-                                      <div className="bg-indigo-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
-                                      <div className="bg-rose-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
+                                    <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner border border-slate-200">
+                                      <div className="bg-emerald-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(16,185,129,0.3)]" style={{ width: `${(item.success/(item.total || 1))*100}%` }}></div>
+                                      <div className="bg-amber-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(245,158,11,0.3)]" style={{ width: `${(item.pending/(item.total || 1))*100}%` }}></div>
+                                      <div className="bg-indigo-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(99,102,241,0.3)]" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
+                                      <div className="bg-rose-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(244,63,94,0.3)]" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
                                     </div>
-                                    <div className="flex justify-between text-[10px] text-slate-500 font-bold">
-                                      <span className="flex items-center gap-1 opacity-80"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pendente: {item.pending}</span>
-                                      <span className="flex items-center gap-1 opacity-80"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Retorno: {item.pending_return}</span>
-                                      <span className="text-slate-500">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
+                                    <div className="flex justify-between text-[11px] text-slate-500 font-black tracking-normal mt-1">
+                                      <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-amber-400 shadow-sm" /> Em Processamento: {item.pending}</span>
+                                      <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm" /> Aguardando Retorno: {item.pending_return}</span>
+                                      <span className="text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
                                     </div>
                                   </div>
                                 </td>
-                                <td className="py-6 px-8 text-right">
-                                  <span className={`text-xl font-black tracking-tight ${isBlocked ? 'text-slate-300' : 'text-slate-800'}`}>{item.total}</span>
+                                <td className="py-8 px-8 text-right">
+                                  <span className={`text-3xl font-black tracking-tighter ${isBlocked ? 'text-slate-300' : 'text-slate-900 group-hover:text-blue-600 transition-colors'}`}>{item.total}</span>
                                 </td>
                               </tr>
                             );

@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.16] - 2026-04-27
+### Adicionado
+- **Cockpit Financeiro (ZAJU)**: Padronização total de terminologia com a aba de Pagamentos ("Financeiro Bloqueado", "Em Processamento", "Aguardando Retorno").
+- **Telemetria Cromática de Eficiência**: Implementação de escala de cores dinâmica no card de eficiência (Esmeralda/Âmbar/Rosa) baseada na proximidade com a meta ideal.
+- **Upgrade Dimensional de Fontes**: Aumento significativo na escala tipográfica: nomes de ajustes (text-lg), volumes (text-3xl) e labels de telemetria com peso font-black.
+- **UX de Alta Visibilidade**: Adição de efeitos de brilho (shadows) coloridos nas barras de progresso e ícones expansivos (w-14) para identificação instantânea de status.
+
+---
+
 ## [2.3.15] - 2026-04-27
 ### Adicionado
 - **Otimização de Espaço (Sub-Abas ZAJU)**: Implementado sistema de sub-navegação interno na aba ZAJU, consolidando as seções Promo, Contrato e Acordos em uma única "página" dinâmica.
