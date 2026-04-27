@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.33] - 2026-04-27
+### Alterado
+- **Readequação Semântica de Falsos Positivos**: 
+  - Faturas com fluxo bloqueado (propositalmente suspensas) como `ZAJU_AJUSTE_PGTO` e fluxos de reprovação que disparavam visualmente erros alarmantes vermelhos (`ERROS DE INTEGRAÇÃO`) foram neutralizadas. Passam a exibir apenas `INTEGRAÇÃO SUSPENSA` e eficiência com status neutro de `Fluxo Suspenso`.
+  - Rotinas transacionais que processam Volume igual a 0 no mês não computarão mais o equívoco `0%` vermelho. Categoria de saúde das mesmas foi substituída pela indicação neutra informacional `Sem Volume`.
+
+---
+
 ## [2.3.32] - 2026-04-27
 ### Adicionado
 - **Regras de Informativo Estendido**: Expandido o *badge* de aviso ("Ciclo de Integração: Ocorre somente no último dia do mês corrente") para também cobrir faturas de Acordo Comercial atreladas a Verba Nominais (`ZAJU_AJUSTE_VERBA_CONTRATO_NOMI` e `ZAJU_AJUSTE_VERBA_NOMI`).

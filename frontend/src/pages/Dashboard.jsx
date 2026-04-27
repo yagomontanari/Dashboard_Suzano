@@ -1651,8 +1651,8 @@ export default function Dashboard() {
                                       <div className="flex items-center gap-3">
                                         <span className={`font-black text-lg block tracking-tight ${isBlocked ? 'text-slate-400' : 'text-slate-900 group-hover:text-blue-600 transition-colors'}`}>{item.type}</span>
                                         {isBlocked && (
-                                          <span className="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[11px] font-black uppercase tracking-tighter border border-rose-100 flex items-center gap-1">
-                                            <AlertCircle size={12} /> ERROS DE INTEGRAÇÃO
+                                          <span className="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[11px] font-black uppercase tracking-tighter border border-slate-200 flex items-center gap-1">
+                                            <AlertCircle size={12} /> INTEGRAÇÃO SUSPENSA
                                           </span>
                                         )}
                                       </div>
@@ -1733,12 +1733,14 @@ export default function Dashboard() {
                                         </span>
                                       </div>
                                       <span className={`px-2.5 py-1 rounded-md font-black tracking-widest uppercase text-[10px] ${
+                                        isBlocked ? 'text-slate-400 bg-slate-50 border border-slate-200' :
+                                        !item.total || item.total === 0 ? 'text-slate-400 bg-slate-50 border border-slate-200' :
                                         isScheduled ? 'text-slate-500 bg-slate-100 border border-slate-200' :
                                         (item.success/item.total)*100 >= 98 ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' :
                                         (item.success/item.total)*100 >= 90 ? 'text-amber-700 bg-amber-50 border border-amber-100' :
                                         'text-rose-700 bg-rose-50 border border-rose-100'
                                       }`}>
-                                        {isScheduled ? 'Ciclo Agendado' : `Eficiência: ${item.total > 0 ? ((item.success/item.total)*100).toFixed(1) : 0}%`}
+                                        {isBlocked ? 'Fluxo Suspenso' : !item.total || item.total === 0 ? 'Sem Volume' : isScheduled ? 'Ciclo Agendado' : `Eficiência: ${item.total > 0 ? ((item.success/item.total)*100).toFixed(1) : 0}%`}
                                       </span>
                                     </div>
                                   </div>
