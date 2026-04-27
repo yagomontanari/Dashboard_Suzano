@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.13] - 2026-04-27
+### Adicionado
+- **Categorização Estrutural (ZAJU)**: Implementada a separação dos ajustes em 3 macro-categorias: "Verba Promo & Ações", "Verba de Contrato" e "Acordos (Planejamento/Apuração/Pagamento)".
+- **Inteligência de Verba**: Adicionada lógica de JOIN no backend para discriminar volumes de **Cutoff** conforme o tipo de verba (Contrato vs Promo), fornecendo quantidades específicas por categoria.
+- **Sinalização de Bloqueio**: Implementados badges de status "BLOQUEADO" e avisos informativos para tipos de ajuste não integráveis (ZAJU_AJUSTE_PGTO, ZAJU_APUR_REPROVADA, ZAJU_PGTO_REPROVADO).
+- **Refinamento de UX**: Reorganização da interface em seções colapsáveis/distintas com ícones específicos por tipo de verba.
+
+---
+
 ## [2.3.12] - 2026-04-27
 ### Corrigido
 - **Hotfix de Estabilidade (Tab ZAJU)**: Resolução de erro crítico de tela branca (`ReferenceError`) através da correção de importações de ícones e implementação de blindagem exaustiva contra dados nulos via `optional chaining`.

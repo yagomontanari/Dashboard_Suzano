@@ -47,19 +47,22 @@ QUERY_ZAJU_TOTAL = text("""
 
 QUERY_ZAJU_BY_TYPE = text("""
     SELECT 
-        purch_no_c as type,
-        COALESCE(COUNT(1) FILTER (WHERE status = 'INTEGRADO'), 0) AS success,
-        COALESCE(COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO'), 0) AS pending,
-        COALESCE(COUNT(1) FILTER (WHERE status = 'ERRO'), 0) AS error,
-        COALESCE(COUNT(1) FILTER (WHERE status = 'PENDENTE_RETORNO'), 0) AS pending_return,
+        sapmc.purch_no_c as type,
+        otv.descricao as category,
+        COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'INTEGRADO'), 0) AS success,
+        COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_INTEGRACAO'), 0) AS pending,
+        COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'ERRO'), 0) AS error,
+        COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_RETORNO'), 0) AS pending_return,
         COALESCE(COUNT(1), 0) AS total
-    FROM suzano_ajuste_provisao_memoria_calculo
-    WHERE cond_value != 0
-      AND dta_alteracao >= :start_date AND dta_alteracao < :end_date
-      AND status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
-      AND purch_no_c IS NOT NULL
-    GROUP BY purch_no_c
-    ORDER BY total DESC;
+    FROM suzano_ajuste_provisao_memoria_calculo sapmc
+    INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
+    INNER JOIN orcamento_tipo_verba otv ON o.id_tipo_verba = otv.id
+    WHERE sapmc.cond_value != 0
+      AND sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao < :end_date
+      AND sapmc.status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
+      AND sapmc.purch_no_c IS NOT NULL
+    GROUP BY sapmc.purch_no_c, otv.descricao
+    ORDER BY category, total DESC;
 """)
 
 QUERY_PAGAMENTOS_TOTAL = text("""

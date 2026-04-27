@@ -46,7 +46,8 @@ import {
   HandCoins,
   ArrowDownUp,
   Zap,
-  XCircle
+  XCircle,
+  Grip
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
@@ -280,6 +281,38 @@ export default function Dashboard() {
   const [vk11Error, setVk11Error] = useState(null);
 
   const [activeTab, setActiveTab] = useState('geral');
+
+  const groupedZaju = useMemo(() => {
+    if (!data?.zaju?.by_type) return { promo: [], contrato: [], acordos: [] };
+    
+    const promo = [];
+    const contrato = [];
+    const acordos = [];
+    
+    const acordosTypes = [
+      'ZAJU_AJUSTE_PGTO', 
+      'ZAJU_APUR_REPROVADA', 
+      'ZAJU_PGTO_REPROVADO', 
+      'ZAJU_AJUSTE_DEV_OFF'
+    ];
+    
+    data.zaju.by_type.forEach(item => {
+      const type = item.type || '';
+      const category = item.category?.toUpperCase() || '';
+      
+      if (acordosTypes.includes(type)) {
+        acordos.push(item);
+      } else if (category.includes('PROMO')) {
+        promo.push(item);
+      } else if (category.includes('CONTRA')) {
+        contrato.push(item);
+      } else {
+        acordos.push(item); // Fallback
+      }
+    });
+    
+    return { promo, contrato, acordos };
+  }, [data?.zaju?.by_type]);
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
 
@@ -1445,95 +1478,103 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Main Content: Categories Table */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-              <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <ArrowDownUp size={20} className="text-blue-600" />
-                    Monitoramento por Tipo de Ajuste
-                  </h3>
-                  <p className="text-sm text-slate-500">Detalhamento discriminado das categorias ZAJU</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                    {data?.zaju?.by_type?.length || 0} Categorias Registradas
-                  </span>
-                  <button 
-                    onClick={() => {
-                        setSelectedInconsistency('zaju');
-                        setModalOpen(true);
-                        fetchInconsistencyDetails('zaju', 1);
-                    }}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-sm"
-                  >
-                    <Search size={14} /> Detalhar Erros
-                  </button>
-                </div>
-              </div>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[800px]">
-                  <thead>
-                    <tr className="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-100">
-                      <th className="py-4 px-8 font-bold">Tipo de Ajuste (Purch_No_C)</th>
-                      <th className="py-4 px-8 font-bold text-center">Status de Integração e Saúde</th>
-                      <th className="py-4 px-8 font-bold text-right">Volume Total</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {data?.zaju?.by_type?.length > 0 ? (
-                      data.zaju.by_type.map((item) => (
-                        <tr key={item.type} className="hover:bg-slate-50/80 transition-colors group">
-                          <td className="py-5 px-8">
-                            <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-blue-100 group-hover:text-blue-600 transition-all shadow-sm">
-                                <ArrowDownUp size={18} />
-                              </div>
-                              <div>
-                                <span className="font-bold text-slate-700 text-sm block">{item.type}</span>
-                                <span className="text-[10px] text-slate-400 font-medium">{item.total} registros identificados</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-5 px-8">
-                            <div className="flex flex-col gap-2 min-w-[320px]">
-                              <div className="flex justify-between text-[10px] font-bold uppercase tracking-tight">
-                                <span className="text-emerald-600 flex items-center gap-1">
-                                  <CheckCircle2 size={10} /> {item.success} Integrados
-                                </span>
-                                <span className={`flex items-center gap-1 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
-                                  <XCircle size={10} /> {item.error} Erros
-                                </span>
-                              </div>
-                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
-                                <div className="bg-emerald-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.success/(item.total || 1))*100}%` }}></div>
-                                <div className="bg-amber-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending/(item.total || 1))*100}%` }}></div>
-                                <div className="bg-indigo-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
-                                <div className="bg-rose-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
-                              </div>
-                              <div className="flex justify-between text-[9px] text-slate-500 font-medium">
-                                <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pendente: {item.pending}</span>
-                                <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Retorno: {item.pending_return}</span>
-                                <span className="text-slate-400">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-5 px-8 text-right">
-                            <span className="text-xl font-black text-slate-800 tracking-tight">{item.total}</span>
-                          </td>
+            {/* Main Content: Categorized Sections */}
+            <div className="space-y-12">
+              {[
+                { title: 'Verba Promo & Ações', data: groupedZaju.promo, icon: <HandCoins className="text-pink-500" size={20} /> },
+                { title: 'Verba de Contrato', data: groupedZaju.contrato, icon: <FileText className="text-blue-500" size={20} /> },
+                { title: 'Acordos (Planejamento / Apuração / Pagamento)', data: groupedZaju.acordos, icon: <Grip size={20} className="text-indigo-500" /> }
+              ].map((section, sIdx) => (
+                <div key={sIdx} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                  <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-slate-800 flex items-center gap-3">
+                        <div className="p-2 bg-white rounded-lg shadow-sm border border-slate-100">
+                          {section.icon}
+                        </div>
+                        {section.title}
+                      </h3>
+                      <p className="text-sm text-slate-500 ml-12">Detalhamento operacional da seção {section.title}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[800px]">
+                      <thead>
+                        <tr className="bg-white text-slate-400 text-[10px] uppercase tracking-[0.15em] border-b border-slate-100">
+                          <th className="py-4 px-8 font-black">Tipo de Ajuste</th>
+                          <th className="py-4 px-8 font-black text-center">Status de Integração e Saúde</th>
+                          <th className="py-4 px-8 font-black text-right">Volume</th>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="3" className="py-12 text-center text-slate-400 italic">
-                          Nenhum dado de ajuste encontrado para o período.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {section.data?.length > 0 ? (
+                          section.data.map((item) => {
+                            const isBlocked = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type);
+                            return (
+                              <tr key={`${item.type}-${item.category}`} className="hover:bg-slate-50/50 transition-all group">
+                                <td className="py-6 px-8">
+                                  <div className="flex items-center gap-4">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-sm ${isBlocked ? 'bg-slate-100 text-slate-400 opacity-60' : 'bg-blue-50 text-blue-600 group-hover:scale-110'}`}>
+                                      <ArrowDownUp size={18} />
+                                    </div>
+                                    <div>
+                                      <div className="flex items-center gap-2">
+                                        <span className={`font-bold text-sm block ${isBlocked ? 'text-slate-400' : 'text-slate-700'}`}>{item.type}</span>
+                                        {isBlocked && (
+                                          <span className="px-2 py-0.5 bg-rose-50 text-rose-600 rounded-md text-[9px] font-black uppercase tracking-tighter border border-rose-100 flex items-center gap-1">
+                                            <AlertCircle size={10} /> BLOQUEADO
+                                          </span>
+                                        )}
+                                      </div>
+                                      <p className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1">
+                                        {item.category || 'Sem Categoria'} 
+                                        {isBlocked && <span className="text-rose-400 font-bold ml-1">• Item não integrável devido ao status</span>}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="py-6 px-8">
+                                  <div className="flex flex-col gap-2 min-w-[320px]">
+                                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-tight">
+                                      <span className="text-emerald-600 flex items-center gap-1">
+                                        <CheckCircle2 size={10} /> {item.success} Integrados
+                                      </span>
+                                      <span className={`flex items-center gap-1 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
+                                        <XCircle size={10} /> {item.error} Erros
+                                      </span>
+                                    </div>
+                                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+                                      <div className="bg-emerald-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.success/(item.total || 1))*100}%` }}></div>
+                                      <div className="bg-amber-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending/(item.total || 1))*100}%` }}></div>
+                                      <div className="bg-indigo-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
+                                      <div className="bg-rose-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
+                                    </div>
+                                    <div className="flex justify-between text-[9px] text-slate-500 font-medium">
+                                      <span className="flex items-center gap-1 opacity-70"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pendente: {item.pending}</span>
+                                      <span className="flex items-center gap-1 opacity-70"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Retorno: {item.pending_return}</span>
+                                      <span className="text-slate-400">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="py-6 px-8 text-right">
+                                  <span className={`text-xl font-black tracking-tight ${isBlocked ? 'text-slate-300' : 'text-slate-800'}`}>{item.total}</span>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td colSpan="3" className="py-12 text-center text-slate-400 italic text-sm">
+                              Nenhum dado encontrado para esta seção no período.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
