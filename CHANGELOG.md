@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.23] - 2026-04-27
+### Corrigido
+- **Hotfix de Compilação (Vite/Esbuild)**: Removida tag `</div>` redundante que causava erro de interpretação de expressão regular no parser do Vite durante o build de produção.
+
+---
+
 ## [2.3.22] - 2026-04-27
 ### Corrigido
 - **Restauração de Arquitetura JSX**: Corrigida a quebra estrutural entre as abas VK11 e ZAJU. Restaurada a lógica de renderização condicional e o aninhamento correto de blocos, resolvendo definitivamente o erro de build em produção.
