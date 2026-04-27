@@ -159,6 +159,12 @@ async def get_dashboard_metrics(
             "pending": zver_totals_raw["pending"],
             "pending_return": zver_totals_raw["pending_return"],
             "error": zver_totals_raw["error"],
+            "total": (
+                zver_totals_raw["success"]
+                + zver_totals_raw["pending"]
+                + zver_totals_raw["pending_return"]
+                + zver_totals_raw["error"]
+            ),
             "value_success": float(zver_totals_raw["value_success"]),
             "value_pending": float(zver_totals_raw["value_pending"]),
             "value_pending_return": float(zver_totals_raw["value_pending_return"]),

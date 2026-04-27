@@ -4,6 +4,18 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.1] - 2026-04-27
+### Adicionado
+- **Detalhamento de Fluxo Financeiro (ZVER)**:
+    - Expansão do Cockpit de Pagamentos para 6 colunas, permitindo a visualização isolada de **"Pendente Retorno SAP"** e **"Aguardando Integração"**.
+    - Inclusão do campo `total` no payload de métricas do backend para maior precisão em cálculos estatísticos de saúde de integração.
+
+### Corrigido
+- **Cálculo de Eficiência Operational**: Resolução do bug que exibia "0.0%" no card de eficiência de pagamentos devido a falta de parâmetro de soma total. A fórmula agora considera dinamicamente todos os estados de processamento.
+- **Build de Produção (Vercel)**: Removida redundância de importação do hook `useMemo` em `Dashboard.jsx`, corrigindo falhas de compilação no ambiente de deploy.
+
+---
+
 ## [2.3.0] - 2026-04-27
 ### Adicionado
 - **Otimização de Performance (Consolidação de Queries)**:

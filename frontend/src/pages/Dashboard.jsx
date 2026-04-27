@@ -1058,7 +1058,7 @@ export default function Dashboard() {
         {activeTab === 'pagamentos' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Health & Efficiency Header */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               <div className="bg-emerald-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-sm hover:shadow-md transition-all group">
                  <div className="absolute top-0 right-0 p-4 opacity-20 transition-transform group-hover:scale-110 group-hover:rotate-12">
                     <Target size={60} />
@@ -1082,7 +1082,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
                     <h3 className="text-4xl font-black text-emerald-600 tracking-tighter">
-                      {(data.zver.total > 0 ? (data.zver.success / data.zver.total * 100) : 0).toFixed(1)}%
+                      {(((data.zver.success || 0) / ((data.zver.total || ((data.zver.success || 0) + (data.zver.pending || 0) + (data.zver.pending_return || 0) + (data.zver.error || 0))) || 1)) * 100).toFixed(1)}%
                     </h3>
                     <div className="flex items-center gap-1 mt-2 text-emerald-500 font-bold text-[10px] uppercase">
                       <TrendingUp size={12} /> Desempenho Operacional
@@ -1111,12 +1111,24 @@ export default function Dashboard() {
                   <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={20} /></div>
                   <div className="text-right">
                     <p className="text-[10px] font-black text-slate-400 uppercase">Processando</p>
-                    <p className="text-lg font-black text-slate-800 tracking-tight">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</p>
+                    <p className="text-lg font-black text-slate-800 tracking-tight">{formatCurrency(data.zver.value_pending)}</p>
                   </div>
                 </div>
-                <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data.zver.pending + data.zver.pending_return}</h4>
+                <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data.zver.pending}</h4>
                 <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Aguardando Integração</p>
               </div>
+
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group uppercase tracking-widest">
+                 <div className="flex justify-between items-start mb-4">
+                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
+                   <div className="text-right">
+                     <p className="text-[10px] font-black text-slate-400 uppercase">Aguardando Retorno</p>
+                     <p className="text-lg font-black text-slate-800 tracking-tight">{formatCurrency(data.zver.value_pending_return)}</p>
+                   </div>
+                 </div>
+                 <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data.zver.pending_return}</h4>
+                 <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Pendente Retorno SAP</p>
+               </div>
 
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group">
                 <div className="flex justify-between items-start mb-4">
