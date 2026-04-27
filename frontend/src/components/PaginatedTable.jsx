@@ -24,10 +24,30 @@ const formatDate = (value, includeTime = true) => {
 
 const DATE_ONLY_KEYS = new Set(['data_emissao', 'valid_from']);
 const DATE_TIME_KEYS = new Set(['dta_criacao', 'dta_envio_integracao', 'dta_alteracao']);
+const CURRENCY_KEYS = new Set(['valor_pagamento', 'valor_provisao', 'valor_total', 'valor_liquido']);
+
+const formatCurrency = (value) => {
+  if (value === null || value === undefined || value === '') return '-';
+  
+  // Se for string, tentamos converter (ex: "1.234,56" -> 1234.56)
+  let val = value;
+  if (typeof value === 'string') {
+    // Remove pontos de milhar e troca vírgula decimal por ponto
+    val = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+  }
+  
+  if (isNaN(val)) return value;
+  
+  return new Intl.NumberFormat('pt-BR', { 
+    style: 'currency', 
+    currency: 'BRL' 
+  }).format(val);
+};
 
 const formatCellValue = (key, value) => {
   if (DATE_ONLY_KEYS.has(key)) return formatDate(value, false);
   if (DATE_TIME_KEYS.has(key)) return formatDate(value, true);
+  if (CURRENCY_KEYS.has(key)) return formatCurrency(value);
   return value || '-';
 };
 

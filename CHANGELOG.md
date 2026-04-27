@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.9] - 2026-04-27
+### Adicionado
+- **UI/UX (Formatação de Dados)**: Implementação de formatação monetária (R$) automática nas tabelas de logs de inconsistência (Pagamentos, Provisões e Sell-In).
+- **Correção de Parser**: Suporte a strings brutas de moeda vindas do banco, garantindo que valores como "1.234,56" sejam exibidos corretamente como R$ 1.234,56.
+
+---
+
 ## [2.3.8] - 2026-04-27
 ### Alterado
 - **Alinhamento de KPIs (Foco em Excelência)**: Atualização da Meta do Período de 99.5% para **100%**, refletindo o compromisso com o cenário ideal de integração total e erro zero.
