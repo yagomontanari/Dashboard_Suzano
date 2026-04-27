@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.4] - 2026-04-27
+### Adicionado
+- **Dinamismo e Identidade Visual (Pagamentos)**:
+    - **Escala de Cor Inteligente**: A Taxa de Eficiência agora altera sua cor dinamicamente (Verde/Amarelo/Vermelho) conforme a proximidade da Meta Ideal (100%).
+    - **Referência Temporal**: Inclusão automática do nome do mês de referência no cabeçalho do Fluxo Financeiro.
+    - **Nomenclatura Executiva**: Labels renomeadas para melhor identificação de negócio: "Financeiro Bloqueado" (Erro) e "Em Processamento" (Pendente).
+
+---
+
 ## [2.3.3] - 2026-04-27
 ### Alterado
 - **UX/UI (Padronização de Headers)**: 

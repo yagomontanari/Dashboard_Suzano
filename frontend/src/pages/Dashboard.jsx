@@ -245,6 +245,17 @@ export default function Dashboard() {
   const [inconsistencyError, setInconsistencyError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const referenceMonth = useMemo(() => {
+    const date = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
+    return date.toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + date.toLocaleString('pt-BR', { month: 'long' }).slice(1);
+  }, [dateRange.startDate]);
+
+  const getEfficiencyColor = useCallback((rate) => {
+    if (rate >= 99.5) return 'text-emerald-600';
+    if (rate >= 95) return 'text-amber-500';
+    return 'text-rose-500';
+  }, []);
   const [totalCount, setTotalCount] = useState(0);
   const [sortConfig, setSortConfig] = useState(null);
 
@@ -1068,7 +1079,7 @@ export default function Dashboard() {
                      <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Meta do Período</h5>
                      <p className="text-4xl font-black tracking-tighter text-white">99.5%</p>
                      <p className="text-emerald-300 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
-                        <Target size={12} /> Integração
+                        <Target size={12} /> Meta Ideal: 100%
                      </p>
                    </div>
                    <div className="mt-4 p-2 bg-emerald-800/50 rounded-lg">
@@ -1081,7 +1092,7 @@ export default function Dashboard() {
                 <div className="relative z-10 flex items-start justify-between mb-4">
                   <div>
                     <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
-                    <h3 className="text-4xl font-black text-emerald-600 tracking-tighter">
+                    <h3 className={`text-4xl font-black tracking-tighter ${getEfficiencyColor(((data.zver.success || 0) / ((data.zver.total || ((data.zver.success || 0) + (data.zver.pending || 0) + (data.zver.pending_return || 0) + (data.zver.error || 0))) || 1)) * 100)}`}>
                       {(((data.zver.success || 0) / ((data.zver.total || ((data.zver.success || 0) + (data.zver.pending || 0) + (data.zver.pending_return || 0) + (data.zver.error || 0))) || 1)) * 100).toFixed(1)}%
                     </h3>
                   </div>
@@ -1163,7 +1174,7 @@ export default function Dashboard() {
                 <div>
                   <h2 className="text-emerald-100 font-bold text-sm uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
                      <span className="w-8 h-1 bg-emerald-300 rounded-full"></span> 
-                     Fluxo Financeiro Integrado
+                     Fluxo Financeiro de {referenceMonth}
                   </h2>
                   <div className="flex items-baseline gap-4">
                     <span className="text-emerald-200 text-3xl font-medium">R$</span>
@@ -1182,7 +1193,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2 flex flex-col justify-center">
-                  <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Impacto em Erro</p>
+                  <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Financeiro Bloqueado</p>
                   <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_error)}</p>
                   <div className="w-full h-1 bg-white/10 rounded-full mt-2">
                      <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(data.zver.value_error / Math.max(1, data.zver.value_success)) * 100}%` }}></div>
@@ -1190,7 +1201,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2 flex flex-col justify-center">
-                  <p className="text-amber-400 font-black text-[10px] uppercase tracking-widest">Previsão Pendente</p>
+                  <p className="text-amber-400 font-black text-[10px] uppercase tracking-widest">Em Processamento</p>
                   <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</p>
                   <div className="w-full h-1 bg-white/10 rounded-full mt-2">
                      <div className="h-full bg-amber-400 rounded-full" style={{ width: '40%' }}></div>
