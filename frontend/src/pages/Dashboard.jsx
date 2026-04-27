@@ -1595,16 +1595,23 @@ export default function Dashboard() {
                                           </span>
                                         )}
                                       </div>
-                                      <p className="text-xs text-slate-500 font-bold mt-1.5 flex items-center gap-1.5">
-                                        Monitoramento Estratégico 
-                                        {isBlocked && <span className="text-rose-400 font-black ml-1">• Não Integrável</span>}
-                                        {!isBlocked && <span className="text-emerald-500 font-black ml-1">• Fluxo Normal</span>}
+                                      <p className="text-xs text-slate-500 font-bold mt-1.5 flex flex-col gap-1">
+                                        <span className="flex items-center gap-1.5">
+                                          Monitoramento Estratégico 
+                                          {isBlocked && <span className="text-rose-400 font-black ml-1">• Não Integrável</span>}
+                                          {!isBlocked && <span className="text-emerald-500 font-black ml-1">• Fluxo Normal</span>}
+                                        </span>
+                                        {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && (
+                                          <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-100 mt-1 max-w-[280px] leading-tight">
+                                            ℹ️ Integrado somente a partir do dia 01 do mês seguinte ao período
+                                          </span>
+                                        )}
                                       </p>
                                     </div>
                                   </div>
                                 </td>
                                 <td className="py-8 px-8">
-                                  <div className="flex flex-col gap-3 min-w-[380px]">
+                                  <div className="flex flex-col gap-3 min-w-[260px]">
                                     <div className="flex justify-between text-[11px] font-black uppercase tracking-widest mb-1">
                                       <span className="text-emerald-600 flex items-center gap-1.5">
                                         <CheckCircle2 size={14} /> {item.success} Integrados

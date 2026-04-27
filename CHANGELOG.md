@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.18] - 2026-04-27
+### Adicionado
+- **Informativo de Regra ZAJU**: Adicionada nota instrutiva para o item `ZAJU_CUTOFF_MES_ANTERIOR` referente ao ciclo de integração (somente após dia 01 do mês seguinte).
+- **Otimização de Escala de Gráficos**: Redução da largura mínima dos gráficos de barra (380px para 260px) para melhorar a percepção visual de variações e desvios de integração.
+- **Refinamento de UX**: Ajuste no layout dos itens de monitoramento para suportar mensagens de sistema e avisos regulatórios sem comprometer o alinhamento.
+
+---
+
 ## [2.3.17] - 2026-04-27
 ### Alterado
 - **Ajuste de Terminologia**: Substituição global do termo "Financeiro Bloqueado" por "Erros de Integração" em todos os módulos e seções do dashboard para maior precisão técnica.
