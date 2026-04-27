@@ -1464,7 +1464,8 @@ export default function Dashboard() {
         {activeTab === 'zaju' && (
           <div className="space-y-8 animate-in fade-in duration-500 pb-12">
             {/* Top Summaries */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Row 1: Command Tier (Strategic Metrics) */}
               {(() => {
                 const eligibleItems = data?.zaju?.by_type?.filter(item => 
                   !['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type)
@@ -1493,29 +1494,32 @@ export default function Dashboard() {
                 }
 
                 return (
-                  <div className={`${bgColor} p-5 rounded-xl shadow-xl border border-slate-800 flex flex-col justify-between h-full transition-all duration-500 group relative overflow-hidden lg:col-span-2 scale-[1.02] ring-1 ring-white/10`}>
-                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <Zap size={40} className={textColor} />
+                  <div className={`${bgColor} p-6 rounded-2xl shadow-2xl border border-slate-800 flex flex-col justify-between h-full transition-all duration-500 group relative overflow-hidden lg:col-span-2 min-h-[160px] ring-1 ring-white/5`}>
+                    <div className="absolute top-0 right-0 p-5 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Zap size={60} className={textColor} />
                     </div>
                     
                     <div className="flex justify-between items-start relative z-10">
-                      <p className={`text-[10px] font-black ${labelColor} uppercase tracking-widest`}>Taxa Eficiência (Integráveis)</p>
-                      <span className={`text-[10px] font-bold ${labelColor} px-2 py-0.5 rounded-full border border-current opacity-50`}>Meta: 100%</span>
+                      <div className="flex flex-col gap-1">
+                        <p className={`text-xs font-black ${labelColor} uppercase tracking-widest`}>Taxa Eficiência Estratégica</p>
+                        <span className={`text-[10px] font-medium ${labelColor} opacity-70 italic`}>(Somente itens integráveis)</span>
+                      </div>
+                      <span className={`text-[11px] font-black ${labelColor} px-3 py-1 rounded-full border border-current opacity-40`}>Meta 100%</span>
                     </div>
 
-                    <div className="flex items-baseline gap-2 mt-4 relative z-10">
-                      <h3 className={`text-4xl font-black ${textColor} tracking-tighter`}>
+                    <div className="flex items-baseline gap-2 mt-6 relative z-10">
+                      <h3 className={`text-5xl font-black ${textColor} tracking-tight group-hover:scale-105 transition-transform origin-left duration-500`}>
                         {efficiency.toFixed(1)}%
                       </h3>
                     </div>
 
-                    <div className="mt-4 relative z-10">
-                        <div className="flex justify-between text-[10px] font-bold mb-1.5 uppercase tracking-tighter">
+                    <div className="mt-6 relative z-10">
+                        <div className="flex justify-between text-[11px] font-bold mb-2 uppercase tracking-tighter">
                             <span className={labelColor}>Real vs Ideal</span>
-                            <span className={textColor}>{efficiency.toFixed(0)}/100%</span>
+                            <span className={textColor}>{efficiency.toFixed(0)} / 100%</span>
                         </div>
-                        <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex shadow-inner border border-white/5">
-                            <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 98 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : efficiency >= 90 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}`} 
+                        <div className="h-2.5 w-full bg-white/10 rounded-full overflow-hidden flex shadow-inner border border-white/5">
+                            <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 98 ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.6)]' : efficiency >= 90 ? 'bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.6)]' : 'bg-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.6)]'}`} 
                                  style={{ width: `${efficiency}%` }}></div>
                         </div>
                     </div>
@@ -1523,29 +1527,61 @@ export default function Dashboard() {
                 );
               })()}
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800">
-                <p className="text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Volume Total</p>
-                <h3 className="text-2xl font-black text-slate-800">{data?.zaju?.total || 0}</h3>
-              </div>
-              
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-emerald-500">
-                <p className="text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Integrados</p>
-                <h3 className="text-2xl font-black text-emerald-600">{data?.zaju?.success || 0}</h3>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-amber-500">
-                <p className="text-[10px] font-bold text-amber-600 mb-1 uppercase tracking-wider">Em Processamento</p>
-                <h3 className="text-2xl font-black text-amber-600">{data?.zaju?.pending || 0}</h3>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between h-full border-l-8 border-l-slate-800 min-h-[160px] group">
+                <div className="flex justify-between items-start">
+                  <p className="text-xs font-black text-slate-500 uppercase tracking-wider group-hover:text-slate-800 transition-colors">Volume Total</p>
+                  <div className="p-2 bg-slate-50 rounded-lg text-slate-300 group-hover:text-slate-800 transition-colors"><ChartBar size={20} /></div>
+                </div>
+                <h3 className="text-4xl font-black text-slate-800 mt-4 tracking-tighter">{data?.zaju?.total?.toLocaleString() || 0}</h3>
+                <p className="text-[11px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Registros Capturados</p>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-indigo-500">
-                <p className="text-[10px] font-bold text-indigo-600 mb-1 uppercase tracking-wider">Aguardando Retorno</p>
-                <h3 className="text-2xl font-black text-indigo-600">{data?.zaju?.pending_return || 0}</h3>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between h-full border-l-8 border-l-rose-500 min-h-[160px] group">
+                <div className="flex justify-between items-start">
+                  <p className="text-xs font-black text-rose-600 uppercase tracking-wider group-hover:scale-105 transition-transform origin-left">Erros de Integração</p>
+                  <div className="p-2 bg-rose-50 rounded-lg text-rose-300 group-hover:text-rose-600 transition-colors"><XCircle size={20} /></div>
+                </div>
+                <h3 className="text-4xl font-black text-rose-600 mt-4 tracking-tighter">{data?.zaju?.error || 0}</h3>
+                <p className="text-[11px] text-rose-400 font-bold mt-2 uppercase tracking-widest">Ação Corretiva Necessária</p>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500">
-                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Erros de Integração</p>
-                <h3 className="text-2xl font-black text-rose-600">{data?.zaju?.error || 0}</h3>
+              {/* Row 2: Pipeline Tier (Operational Metrics) */}
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between h-full border-l-8 border-l-emerald-500 min-h-[140px] group">
+                <div className="flex justify-between items-start">
+                  <p className="text-xs font-black text-emerald-600 uppercase tracking-wider">Integrados</p>
+                  <div className="p-2 bg-emerald-50 rounded-lg text-emerald-300 transition-colors"><CheckCircle2 size={20} /></div>
+                </div>
+                <h3 className="text-3xl font-black text-emerald-600 mt-2 tracking-tighter">{data?.zaju?.success || 0}</h3>
+                <div className="w-full h-1 bg-emerald-100 rounded-full mt-2 overflow-hidden">
+                    <div className="h-full bg-emerald-500" style={{ width: `${(data?.zaju?.success / (data?.zaju?.total || 1)) * 100}%` }}></div>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between h-full border-l-8 border-l-amber-500 min-h-[140px] group">
+                <div className="flex justify-between items-start">
+                  <p className="text-xs font-black text-amber-600 uppercase tracking-wider">Em Processamento</p>
+                  <div className="p-2 bg-amber-50 rounded-lg text-amber-300 transition-colors"><Zap size={20} /></div>
+                </div>
+                <h3 className="text-3xl font-black text-amber-600 mt-2 tracking-tighter">{data?.zaju?.pending || 0}</h3>
+                <div className="w-full h-1 bg-amber-100 rounded-full mt-2 overflow-hidden">
+                    <div className="h-full bg-amber-500 animate-pulse" style={{ width: `${(data?.zaju?.pending / (data?.zaju?.total || 1)) * 100}%` }}></div>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between h-full border-l-8 border-l-indigo-500 min-h-[140px] group">
+                <div className="flex justify-between items-start">
+                  <p className="text-xs font-black text-indigo-600 uppercase tracking-wider">Retorno SAP</p>
+                  <div className="p-2 bg-indigo-50 rounded-lg text-indigo-300 transition-colors"><RefreshCw size={20} /></div>
+                </div>
+                <h3 className="text-3xl font-black text-indigo-600 mt-2 tracking-tighter">{data?.zaju?.pending_return || 0}</h3>
+                <div className="w-full h-1 bg-indigo-100 rounded-full mt-2 overflow-hidden">
+                    <div className="h-full bg-indigo-500" style={{ width: `${(data?.zaju?.pending_return / (data?.zaju?.total || 1)) * 100}%` }}></div>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-300 flex flex-col justify-center items-center opacity-60">
+                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Suzano Dashboard</p>
+                 <span className="text-[9px] text-slate-400 font-bold">Monitoramento ZAJU v{data.version || '2.3.24'}</span>
               </div>
             </div>
 

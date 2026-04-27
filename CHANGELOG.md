@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.25] - 2026-04-27
+### Alterado
+- **Reengenharia de Layout ZAJU**: Implementada hierarquia de informação em dois níveis (Estratégico vs Operacional) usando uma grade robusta de 4 colunas.
+- **Maximização de Legibilidade**: Aumentada a escala dos cards (`min-h-160px`) e tipografia para KPIs principais, otimizando o monitoramento em centros de comando (War Rooms).
+- **Grouping Visual de Pipeline**: Métricas de fluxo agora possuem indicadores de progresso proporcionais ao volume total.
+
+---
+
 ## [2.3.24] - 2026-04-27
 ### Alterado
 - ** cockpit ZAJU Reestruturado**: Card de Taxa de Eficiência global movido para a primeira posição e ampliado para destaque executivo.
