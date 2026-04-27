@@ -254,7 +254,9 @@ export default function Dashboard() {
 
   const referenceMonth = useMemo(() => {
     try {
-      const date = dateRange?.startDate ? new Date(dateRange.startDate) : new Date();
+      if (!dateRange?.startDate) return '...';
+      const [year, month, day] = dateRange.startDate.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
       if (isNaN(date.getTime())) return '...';
       const monthStr = date.toLocaleString('pt-BR', { month: 'long' });
       return monthStr.charAt(0).toUpperCase() + monthStr.slice(1);

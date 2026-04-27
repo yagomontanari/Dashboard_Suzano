@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.10] - 2026-04-27
+### Corrigido
+- **Correção Temporal (Fator Fuso Horário)**: Ajuste na lógica de extração do mês de referência para evitar o recuo de data causado pelo fuso horário UTC, garantindo que o dashboard exiba "Abril" corretamente conforme o período selecionado.
+
+---
+
 ## [2.3.9] - 2026-04-27
 ### Adicionado
 - **UI/UX (Formatação de Dados)**: Implementação de formatação monetária (R$) automática nas tabelas de logs de inconsistência (Pagamentos, Provisões e Sell-In).
