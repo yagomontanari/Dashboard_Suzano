@@ -1530,7 +1530,7 @@ export default function Dashboard() {
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between h-full border-l-8 border-l-slate-800 min-h-[160px] group">
                 <div className="flex justify-between items-start">
                   <p className="text-xs font-black text-slate-500 uppercase tracking-wider group-hover:text-slate-800 transition-colors">Volume Total</p>
-                  <div className="p-2 bg-slate-50 rounded-lg text-slate-300 group-hover:text-slate-800 transition-colors"><ChartBar size={20} /></div>
+                  <div className="p-2 bg-slate-50 rounded-lg text-slate-300 group-hover:text-slate-800 transition-colors"><BarChart3 size={20} /></div>
                 </div>
                 <h3 className="text-4xl font-black text-slate-800 mt-4 tracking-tighter">{data?.zaju?.total?.toLocaleString() || 0}</h3>
                 <p className="text-[11px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Registros Capturados</p>
@@ -1581,7 +1581,7 @@ export default function Dashboard() {
 
               <div className="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-300 flex flex-col justify-center items-center opacity-60">
                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Suzano Dashboard</p>
-                 <span className="text-[9px] text-slate-400 font-bold">Monitoramento ZAJU v{data.version || '2.3.24'}</span>
+                 <span className="text-[9px] text-slate-400 font-bold">Monitoramento ZAJU v{data?.version || '2.3.25'}</span>
               </div>
             </div>
 

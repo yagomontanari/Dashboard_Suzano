@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.26] - 2026-04-27
+### Corrigido
+- **Hotfix de Renderização**: Resolvido erro crítico (White Screen / Error Boundary) na aba ZAJU causado pela chamada de um componente de ícone não importado (`ChartBar`). Substituído pelo `BarChart3` validado.
+
+---
+
 ## [2.3.25] - 2026-04-27
 ### Alterado
 - **Reengenharia de Layout ZAJU**: Implementada hierarquia de informação em dois níveis (Estratégico vs Operacional) usando uma grade robusta de 4 colunas.
