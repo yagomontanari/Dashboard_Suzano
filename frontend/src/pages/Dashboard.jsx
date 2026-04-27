@@ -281,6 +281,7 @@ export default function Dashboard() {
   const [vk11Error, setVk11Error] = useState(null);
 
   const [activeTab, setActiveTab] = useState('geral');
+  const [zajuSubTab, setZajuSubTab] = useState('promo');
 
   const groupedZaju = useMemo(() => {
     // Listas estáticas para garantir que todos os itens apareçam
@@ -1497,13 +1498,38 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Main Content: Categorized Sections */}
-            <div className="space-y-12">
+            {/* Sub-Tabs Navigation */}
+            <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-xl w-fit border border-slate-200 shadow-inner">
               {[
-                { title: 'Verba Promo & Ações', data: groupedZaju.promo, icon: <HandCoins className="text-pink-500" size={20} /> },
-                { title: 'Verba de Contrato', data: groupedZaju.contrato, icon: <FileText className="text-blue-500" size={20} /> },
-                { title: 'Acordos (Planejamento / Apuração / Pagamento)', data: groupedZaju.acordos, icon: <Grip size={20} className="text-indigo-500" /> }
-              ].map((section, sIdx) => (
+                { id: 'promo', label: 'Verba Promo & Ações', icon: <HandCoins size={14} /> },
+                { id: 'contrato', label: 'Verba de Contrato', icon: <FileText size={14} /> },
+                { id: 'acordos', label: 'Acordos (Plan/Apur/Pgto)', icon: <Grip size={14} /> }
+              ].map((sub) => (
+                <button
+                  key={sub.id}
+                  onClick={() => setZajuSubTab(sub.id)}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-black transition-all duration-300 ${
+                    zajuSubTab === sub.id 
+                      ? 'bg-white text-blue-600 shadow-md scale-105' 
+                      : 'text-slate-500 hover:bg-white/50'
+                  }`}
+                >
+                  {sub.icon}
+                  {sub.label}
+                  {zajuSubTab === sub.id && (
+                    <span className="ml-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Main Content: Categorized Sections with Switch Logic */}
+            <div className="animate-in slide-in-from-bottom-4 duration-500">
+              {[
+                { id: 'promo', title: 'Verba Promo & Ações', data: groupedZaju.promo, icon: <HandCoins className="text-pink-500" size={20} /> },
+                { id: 'contrato', title: 'Verba de Contrato', data: groupedZaju.contrato, icon: <FileText className="text-blue-500" size={20} /> },
+                { id: 'acordos', title: 'Acordos (Planejamento / Apuração / Pagamento)', data: groupedZaju.acordos, icon: <Grip size={20} className="text-indigo-500" /> }
+              ].filter(section => section.id === zajuSubTab).map((section, sIdx) => (
                 <div key={sIdx} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
                   <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
@@ -1513,7 +1539,7 @@ export default function Dashboard() {
                         </div>
                         {section.title}
                       </h3>
-                      <p className="text-sm text-slate-500 ml-12">Detalhamento operacional da seção {section.title}</p>
+                      <p className="text-sm text-slate-500 ml-12">Monitoramento exclusivo: {section.title}</p>
                     </div>
                   </div>
                   

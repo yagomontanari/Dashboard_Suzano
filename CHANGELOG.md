@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.15] - 2026-04-27
+### Adicionado
+- **Otimização de Espaço (Sub-Abas ZAJU)**: Implementado sistema de sub-navegação interno na aba ZAJU, consolidando as seções Promo, Contrato e Acordos em uma única "página" dinâmica.
+- **Navegação de Alta Fidelidade**: Adicionada barra de menu secundária com estilo executivo (pill-shape e shadow-inner), eliminando a necessidade de rolagem excessiva.
+- **Performance de Visualização**: Renderização condicional por sub-aba, garantindo que o usuário mantenha o foco na categoria selecionada enquanto preserva a visão dos KPIs globais no topo.
+
+---
+
 ## [2.3.14] - 2026-04-27
 ### Adicionado
 - **Visibilidade Total (Zero State ZAJU)**: Implementada lógica para exibir todos os 12 tipos de ajuste nas categorias correspondentes, mesmo quando não há registros no banco, garantindo visibilidade operacional completa.
