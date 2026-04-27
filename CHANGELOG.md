@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.30] - 2026-04-27
+### Adicionado
+- **Destaque de SLA Crítico ZAJU**: Incluído cálculo na extração do banco (`pending_return_critical`) para identificar itens "Pendente Retorno" travados no SAP por mais de 2 dias. No frontend, estes itens disparam um alerta visual dinâmico em vermelho pulsante listando a quantidade de faturas atrasadas (Ex: `X Atrasados (>2 dias)`).
+
+---
+
 ## [2.3.29] - 2026-04-27
 ### Adicionado
 - **Clarificação Temporal ZAJU Cutoff**: Foram introduzidas sub-leggings visuais dinâmicas diretamente nas linhas de detalhamento. Para o "Fechamento Anterior (Cutoff)", os pendentes recebem um label explícito "(Ref. Mês Atual)" indicando que estão no escopo da janela ativa, e os items com sucesso são demarcados como "(Ref. Fechamento Anterior)". Notas explicativas detalhando o calendário oficial do ciclo de fechamento foram ancoradas acima do título da rotina.

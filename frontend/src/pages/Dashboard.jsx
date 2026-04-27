@@ -1718,7 +1718,13 @@ export default function Dashboard() {
                                           )}
                                         </span>
                                         <span className="flex items-center gap-1.5 opacity-90">
-                                          <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm" /> Aguardando Retorno: {item.pending_return}
+                                          <div className={`w-2 h-2 rounded-full shadow-sm ${item.pending_return_critical > 0 ? 'bg-rose-500 animate-pulse' : 'bg-indigo-500'}`} /> 
+                                          <span className={item.pending_return_critical > 0 ? 'text-rose-600 font-bold' : ''}>Aguardando Retorno: {item.pending_return}</span>
+                                          {item.pending_return_critical > 0 && (
+                                             <span className="text-[8px] font-black px-1.5 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 rounded-md tracking-normal flex items-center gap-0.5 uppercase">
+                                                <AlertCircle size={10} /> {item.pending_return_critical} Atrasados (&gt;2 dias)
+                                             </span>
+                                          )}
                                           {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && item.pending_return > 0 && (
                                              <span className="text-[8px] font-bold px-1.5 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-md tracking-normal">(Ref. Mês Atual)</span>
                                           )}

@@ -53,6 +53,7 @@ QUERY_ZAJU_BY_TYPE = text("""
         COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_INTEGRACAO'), 0) AS pending,
         COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'ERRO'), 0) AS error,
         COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_RETORNO'), 0) AS pending_return,
+        COALESCE(COUNT(1) FILTER (WHERE sapmc.status = 'PENDENTE_RETORNO' AND sapmc.dta_alteracao <= CURRENT_DATE - INTERVAL '2 days'), 0) AS pending_return_critical,
         COALESCE(COUNT(1), 0) AS total
     FROM suzano_ajuste_provisao_memoria_calculo sapmc
     INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
