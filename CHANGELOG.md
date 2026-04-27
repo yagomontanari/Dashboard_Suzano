@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.32] - 2026-04-27
+### Adicionado
+- **Regras de Informativo Estendido**: Expandido o *badge* de aviso ("Ciclo de Integração: Ocorre somente no último dia do mês corrente") para também cobrir faturas de Acordo Comercial atreladas a Verba Nominais (`ZAJU_AJUSTE_VERBA_CONTRATO_NOMI` e `ZAJU_AJUSTE_VERBA_NOMI`).
+
+### Alterado
+- **Neutralização de Eficiência (Scheduled Tasks)**: Ajustada a lógica de "Status de Eficiência" para que rotinas do ZAJU com disparos agendados no fechamento do mês (CUTOFF e NOMINAIS) não fiquem em coloração vermelha (crítica) durante a acúmulação em mês ativo. Em vez do balão de `%` com erro alertando eficiência ruim, eles adotam a semântica neutra acinzentada dizendo **"Ciclo Agendado"**.
+
+---
+
 ## [2.3.31] - 2026-04-27
 ### Alterado
 - **Navegação ZAJU em Abas Nativas**: A arquitetura de navegação por *pills* flutuantes foi totalmente reestruturada para um modelo de "Folder Tabs" integradas nativamente ao cabeçalho do container principal de dados. 

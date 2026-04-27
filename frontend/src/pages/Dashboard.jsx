@@ -1639,6 +1639,7 @@ export default function Dashboard() {
                         {section.data?.length > 0 ? (
                           section.data.map((item) => {
                             const isBlocked = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type);
+                            const isScheduled = ['ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE', 'ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_NOMI'].includes(item.type);
                             return (
                               <tr key={`${item.type}-${item.category}`} className="hover:bg-slate-50/50 transition-all group">
                                 <td className="py-8 px-8">
@@ -1682,7 +1683,7 @@ export default function Dashboard() {
                                             <span className="font-bold">Ciclo de Integração:</span> Ocorre a partir do dia 01 do mês seguinte ao período.
                                           </span>
                                         )}
-                                        {item.type === 'ZAJU_CUTOFF_MES_CORRENTE' && (
+                                        {['ZAJU_CUTOFF_MES_CORRENTE', 'ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_NOMI'].includes(item.type) && (
                                           <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-1.5 rounded border border-indigo-100 mt-2 max-w-[280px] leading-tight font-medium">
                                             <span className="font-bold">Ciclo de Integração:</span> Ocorre somente no último dia do mês corrente.
                                           </span>
@@ -1732,11 +1733,12 @@ export default function Dashboard() {
                                         </span>
                                       </div>
                                       <span className={`px-2.5 py-1 rounded-md font-black tracking-widest uppercase text-[10px] ${
+                                        isScheduled ? 'text-slate-500 bg-slate-100 border border-slate-200' :
                                         (item.success/item.total)*100 >= 98 ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' :
                                         (item.success/item.total)*100 >= 90 ? 'text-amber-700 bg-amber-50 border border-amber-100' :
                                         'text-rose-700 bg-rose-50 border border-rose-100'
                                       }`}>
-                                        Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(1) : 0}%
+                                        {isScheduled ? 'Ciclo Agendado' : `Eficiência: ${item.total > 0 ? ((item.success/item.total)*100).toFixed(1) : 0}%`}
                                       </span>
                                     </div>
                                   </div>
