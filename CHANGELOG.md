@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.12] - 2026-04-27
+### Corrigido
+- **Hotfix de Estabilidade (Tab ZAJU)**: Resolução de erro crítico de tela branca (`ReferenceError`) através da correção de importações de ícones e implementação de blindagem exaustiva contra dados nulos via `optional chaining`.
+
+---
+
 ## [2.3.11] - 2026-04-27
 ### Adicionado
 - **Reestruturação Premium (Tab ZAJU)**: Reformulação completa da interface de Ajustes de Provisão, seguindo o padrão visual de alta fidelidade do dashboard.

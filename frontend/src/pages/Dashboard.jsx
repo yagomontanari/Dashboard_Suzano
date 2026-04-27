@@ -45,7 +45,8 @@ import {
   CalendarClock,
   HandCoins,
   ArrowDownUp,
-  Zap
+  Zap,
+  XCircle
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
@@ -1413,17 +1414,17 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800">
                 <p className="text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Volume Total</p>
-                <h3 className="text-2xl font-black text-slate-800">{data.zaju.total}</h3>
+                <h3 className="text-2xl font-black text-slate-800">{data?.zaju?.total || 0}</h3>
               </div>
               
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-emerald-500">
                 <p className="text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Integrados</p>
-                <h3 className="text-2xl font-black text-emerald-600">{data.zaju.success}</h3>
+                <h3 className="text-2xl font-black text-emerald-600">{data?.zaju?.success || 0}</h3>
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-amber-500">
                 <p className="text-[10px] font-bold text-amber-600 mb-1 uppercase tracking-wider">Pendente</p>
-                <h3 className="text-2xl font-black text-amber-600">{data.zaju.pending}</h3>
+                <h3 className="text-2xl font-black text-amber-600">{data?.zaju?.pending || 0}</h3>
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-indigo-500">
@@ -1433,13 +1434,13 @@ export default function Dashboard() {
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500">
                 <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Erros</p>
-                <h3 className="text-2xl font-black text-rose-600">{data.zaju.error}</h3>
+                <h3 className="text-2xl font-black text-rose-600">{data?.zaju?.error || 0}</h3>
               </div>
 
               <div className="bg-slate-900 p-5 rounded-xl shadow-lg border border-slate-800 flex flex-col justify-between h-full">
                 <p className="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Taxa Eficiência</p>
                 <h3 className="text-2xl font-black text-white">
-                  {data.zaju.total > 0 ? ((data.zaju.success / data.zaju.total) * 100).toFixed(1) : 0}%
+                  {data?.zaju?.total > 0 ? ((data.zaju.success / data.zaju.total) * 100).toFixed(1) : 0}%
                 </h3>
               </div>
             </div>
@@ -1499,22 +1500,22 @@ export default function Dashboard() {
                             <div className="flex flex-col gap-2 min-w-[320px]">
                               <div className="flex justify-between text-[10px] font-bold uppercase tracking-tight">
                                 <span className="text-emerald-600 flex items-center gap-1">
-                                  <CheckCircle size={10} /> {item.success} Integrados
+                                  <CheckCircle2 size={10} /> {item.success} Integrados
                                 </span>
                                 <span className={`flex items-center gap-1 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
                                   <XCircle size={10} /> {item.error} Erros
                                 </span>
                               </div>
                               <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
-                                <div className="bg-emerald-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.success/item.total)*100}%` }}></div>
-                                <div className="bg-amber-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending/item.total)*100}%` }}></div>
-                                <div className="bg-indigo-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending_return/item.total)*100}%` }}></div>
-                                <div className="bg-rose-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.error/item.total)*100}%` }}></div>
+                                <div className="bg-emerald-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.success/(item.total || 1))*100}%` }}></div>
+                                <div className="bg-amber-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending/(item.total || 1))*100}%` }}></div>
+                                <div className="bg-indigo-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
+                                <div className="bg-rose-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
                               </div>
                               <div className="flex justify-between text-[9px] text-slate-500 font-medium">
                                 <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pendente: {item.pending}</span>
                                 <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Retorno: {item.pending_return}</span>
-                                <span className="text-slate-400">Eficiência: {((item.success/item.total)*100).toFixed(0)}%</span>
+                                <span className="text-slate-400">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
                               </div>
                             </div>
                           </td>
