@@ -1464,32 +1464,7 @@ export default function Dashboard() {
         {activeTab === 'zaju' && (
           <div className="space-y-8 animate-in fade-in duration-500 pb-12">
             {/* Top Summaries */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800">
-                <p className="text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Volume Total</p>
-                <h3 className="text-2xl font-black text-slate-800">{data?.zaju?.total || 0}</h3>
-              </div>
-              
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-emerald-500">
-                <p className="text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Integrados</p>
-                <h3 className="text-2xl font-black text-emerald-600">{data?.zaju?.success || 0}</h3>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-amber-500">
-                <p className="text-[10px] font-bold text-amber-600 mb-1 uppercase tracking-wider">Em Processamento</p>
-                <h3 className="text-2xl font-black text-amber-600">{data?.zaju?.pending || 0}</h3>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-indigo-500">
-                <p className="text-[10px] font-bold text-indigo-600 mb-1 uppercase tracking-wider">Aguardando Retorno</p>
-                <h3 className="text-2xl font-black text-indigo-600">{data?.zaju?.pending_return || 0}</h3>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500">
-                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Erros de Integração</p>
-                <h3 className="text-2xl font-black text-rose-600">{data?.zaju?.error || 0}</h3>
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
               {(() => {
                 const eligibleItems = data?.zaju?.by_type?.filter(item => 
                   !['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type)
@@ -1518,28 +1493,28 @@ export default function Dashboard() {
                 }
 
                 return (
-                  <div className={`${bgColor} p-4 rounded-xl shadow-lg border border-slate-800 flex flex-col justify-between h-full transition-all duration-500 group relative overflow-hidden`}>
+                  <div className={`${bgColor} p-5 rounded-xl shadow-xl border border-slate-800 flex flex-col justify-between h-full transition-all duration-500 group relative overflow-hidden lg:col-span-2 scale-[1.02] ring-1 ring-white/10`}>
                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                       <Zap size={40} className={textColor} />
                     </div>
                     
                     <div className="flex justify-between items-start relative z-10">
-                      <p className={`text-[9px] font-black ${labelColor} uppercase tracking-widest`}>Taxa Eficiência (Integráveis)</p>
+                      <p className={`text-[10px] font-black ${labelColor} uppercase tracking-widest`}>Taxa Eficiência (Integráveis)</p>
                       <span className={`text-[10px] font-bold ${labelColor} px-2 py-0.5 rounded-full border border-current opacity-50`}>Meta: 100%</span>
                     </div>
 
-                    <div className="flex items-baseline gap-2 mt-2 relative z-10">
-                      <h3 className={`text-3xl font-black ${textColor} tracking-tighter`}>
+                    <div className="flex items-baseline gap-2 mt-4 relative z-10">
+                      <h3 className={`text-4xl font-black ${textColor} tracking-tighter`}>
                         {efficiency.toFixed(1)}%
                       </h3>
                     </div>
 
-                    <div className="mt-3 relative z-10">
-                        <div className="flex justify-between text-[9px] font-bold mb-1 uppercase tracking-tighter">
+                    <div className="mt-4 relative z-10">
+                        <div className="flex justify-between text-[10px] font-bold mb-1.5 uppercase tracking-tighter">
                             <span className={labelColor}>Real vs Ideal</span>
                             <span className={textColor}>{efficiency.toFixed(0)}/100%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden flex shadow-inner border border-white/5">
+                        <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex shadow-inner border border-white/5">
                             <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 98 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : efficiency >= 90 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}`} 
                                  style={{ width: `${efficiency}%` }}></div>
                         </div>
@@ -1547,6 +1522,31 @@ export default function Dashboard() {
                   </div>
                 );
               })()}
+
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800">
+                <p className="text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Volume Total</p>
+                <h3 className="text-2xl font-black text-slate-800">{data?.zaju?.total || 0}</h3>
+              </div>
+              
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-emerald-500">
+                <p className="text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Integrados</p>
+                <h3 className="text-2xl font-black text-emerald-600">{data?.zaju?.success || 0}</h3>
+              </div>
+
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-amber-500">
+                <p className="text-[10px] font-bold text-amber-600 mb-1 uppercase tracking-wider">Em Processamento</p>
+                <h3 className="text-2xl font-black text-amber-600">{data?.zaju?.pending || 0}</h3>
+              </div>
+
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-indigo-500">
+                <p className="text-[10px] font-bold text-indigo-600 mb-1 uppercase tracking-wider">Aguardando Retorno</p>
+                <h3 className="text-2xl font-black text-indigo-600">{data?.zaju?.pending_return || 0}</h3>
+              </div>
+
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500">
+                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Erros de Integração</p>
+                <h3 className="text-2xl font-black text-rose-600">{data?.zaju?.error || 0}</h3>
+              </div>
             </div>
 
             {/* Sub-Tabs Navigation */}
@@ -1673,7 +1673,13 @@ export default function Dashboard() {
                                     <div className="flex justify-between text-[11px] text-slate-500 font-black tracking-normal mt-1">
                                       <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-amber-400 shadow-sm" /> Em Processamento: {item.pending}</span>
                                       <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm" /> Aguardando Retorno: {item.pending_return}</span>
-                                      <span className="text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(1) : 0}%</span>
+                                      <span className={`px-2 py-0.5 rounded-md font-bold ${
+                                        (item.success/item.total)*100 >= 98 ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' :
+                                        (item.success/item.total)*100 >= 90 ? 'text-amber-700 bg-amber-50 border border-amber-100' :
+                                        'text-rose-700 bg-rose-50 border border-rose-100'
+                                      }`}>
+                                        Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(1) : 0}%
+                                      </span>
                                     </div>
                                   </div>
                                 </td>

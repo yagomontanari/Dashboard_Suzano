@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.24] - 2026-04-27
+### Alterado
+- ** cockpit ZAJU Reestruturado**: Card de Taxa de Eficiência global movido para a primeira posição e ampliado para destaque executivo.
+- **Cromatismo de Diagnóstico**: Badges de eficiência de cada item agora possuem cores dinâmicas (Verde/Amarelo/Vermelho) baseadas no percentual de sucesso, permitindo diagnóstico visual instantâneo.
+
+---
+
 ## [2.3.23] - 2026-04-27
 ### Corrigido
 - **Hotfix de Compilação (Vite/Esbuild)**: Removida tag `</div>` redundante que causava erro de interpretação de expressão regular no parser do Vite durante o build de produção.
