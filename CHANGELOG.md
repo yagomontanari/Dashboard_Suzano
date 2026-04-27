@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.21] - 2026-04-27
+### Corrigido
+- **Hotfix de Estabilidade (JSX Syntax)**: Removido fechamento de bloco duplicado que estava impedindo o build no ambiente de produção (Vercel).
+
+---
+
 ## [2.3.20] - 2026-04-27
 ### Adicionado
 - **Telemetria de Eficiência Seletiva (ZAJU)**: Upgrade no cálculo da taxa global para desconsiderar itens não integráveis (bloqueados), fornecendo um KPI real de performance.

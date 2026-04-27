@@ -1692,7 +1692,6 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-        )}
       </main>
 
       {/* Inconsistency Details Modal */}
