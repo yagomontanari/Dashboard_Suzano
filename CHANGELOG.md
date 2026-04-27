@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.19] - 2026-04-27
+### Alterado
+- **Precisão de Eficiência (ZAJU)**: Upgrade no cálculo de eficiência para exibir uma casa decimal (ex: 99.6%), garantindo transparência absoluta quando há itens ainda em processamento ou retorno.
+- **Simplificação de Labels**: Alterado o termo "Bloqueado" para "Erros" na coluna de saúde dos ajustes para uma comunicação mais direta.
+
+---
+
 ## [2.3.18] - 2026-04-27
 ### Adicionado
 - **Informativo de Regra ZAJU**: Adicionada nota instrutiva para o item `ZAJU_CUTOFF_MES_ANTERIOR` referente ao ciclo de integração (somente após dia 01 do mês seguinte).

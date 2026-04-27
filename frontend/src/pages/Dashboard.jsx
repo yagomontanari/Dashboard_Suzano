@@ -1617,7 +1617,7 @@ export default function Dashboard() {
                                         <CheckCircle2 size={14} /> {item.success} Integrados
                                       </span>
                                       <span className={`flex items-center gap-1.5 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
-                                        <XCircle size={14} /> {item.error} Bloqueado
+                                        <XCircle size={14} /> {item.error} Erros
                                       </span>
                                     </div>
                                     <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner border border-slate-200">
@@ -1629,7 +1629,7 @@ export default function Dashboard() {
                                     <div className="flex justify-between text-[11px] text-slate-500 font-black tracking-normal mt-1">
                                       <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-amber-400 shadow-sm" /> Em Processamento: {item.pending}</span>
                                       <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm" /> Aguardando Retorno: {item.pending_return}</span>
-                                      <span className="text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
+                                      <span className="text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(1) : 0}%</span>
                                     </div>
                                   </div>
                                 </td>
