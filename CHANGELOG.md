@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.27] - 2026-04-27
+### Alterado
+- **Padronização Visual ZAJU**: Reversão da quebra de linha das métricas, alinhando todos os 6 cards horizontais no mesmo eixo (`grid-cols-7`).
+- **Resizing de Cartões**: Redução das dimensões mínimas e ajuste tipográfico (`text-5xl` para `text-3xl`/`4xl`) para adequar-se à padronização das outras abas (ex: Pagamentos), mantendo a ênfase visual de espaço duplo (`col-span-2`) para a Taxa de Eficiência.
+
+---
+
 ## [2.3.26] - 2026-04-27
 ### Corrigido
 - **Hotfix de Renderização**: Resolvido erro crítico (White Screen / Error Boundary) na aba ZAJU causado pela chamada de um componente de ícone não importado (`ChartBar`). Substituído pelo `BarChart3` validado.
