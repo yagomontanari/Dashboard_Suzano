@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.28] - 2026-04-27
+### Alterado
+- **Sincronização UI ZAJU vs Pagamentos**: Réplica exata (1:1) do design de cards da tela 'Pagamentos' para a aba ZAJU, introduzindo o card de "Meta do Período" e padronizando o background da "Taxa de Eficiência".
+- **ZAJU Concept Integrado**: Tradução das variáveis financeiras (`R$`) do design original para uma proporção de volume (`% vol.`), honrando a natureza contábil de registros da ZAJU enquanto preserva o requinte estético referencial.
+
+---
+
 ## [2.3.27] - 2026-04-27
 ### Alterado
 - **Padronização Visual ZAJU**: Reversão da quebra de linha das métricas, alinhando todos os 6 cards horizontais no mesmo eixo (`grid-cols-7`).

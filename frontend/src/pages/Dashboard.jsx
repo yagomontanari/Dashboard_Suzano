@@ -1464,7 +1464,7 @@ export default function Dashboard() {
         {activeTab === 'zaju' && (
           <div className="space-y-8 animate-in fade-in duration-500 pb-12">
             {/* Top Summaries */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {(() => {
                 const eligibleItems = data?.zaju?.by_type?.filter(item => 
                   !['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type)
@@ -1474,118 +1474,110 @@ export default function Dashboard() {
                 const successEligible = eligibleItems.reduce((acc, curr) => acc + (curr.success || 0), 0);
                 const efficiency = totalEligible > 0 ? (successEligible / totalEligible) * 100 : 100;
                 
-                let bgColor = 'bg-slate-900';
-                let textColor = 'text-white';
-                let labelColor = 'text-slate-400';
-                
-                if (efficiency >= 98) {
-                    bgColor = 'bg-emerald-900';
-                    textColor = 'text-emerald-400';
-                    labelColor = 'text-emerald-500';
-                } else if (efficiency >= 90) {
-                    bgColor = 'bg-amber-900';
-                    textColor = 'text-amber-400';
-                    labelColor = 'text-amber-500';
-                } else if (efficiency > 0) {
-                    bgColor = 'bg-rose-900';
-                    textColor = 'text-rose-400';
-                    labelColor = 'text-rose-500';
-                }
+                const totalStats = data?.zaju?.total || 1; 
+                const successPct = ((data?.zaju?.success || 0) / totalStats * 100).toFixed(1);
+                const pendingPct = ((data?.zaju?.pending || 0) / totalStats * 100).toFixed(1);
+                const returnPct = ((data?.zaju?.pending_return || 0) / totalStats * 100).toFixed(1);
+                const errorPct = ((data?.zaju?.error || 0) / totalStats * 100).toFixed(1);
 
                 return (
-                  <div className={`${bgColor} p-5 rounded-2xl shadow-xl border border-slate-800 flex flex-col justify-between h-full transition-all duration-500 group relative overflow-hidden lg:col-span-2 scale-[1.02] ring-1 ring-white/10`}>
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <Zap size={48} className={textColor} />
+                  <>
+                    <div className="bg-emerald-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-sm hover:shadow-md transition-all group">
+                       <div className="absolute top-0 right-0 p-4 opacity-20 transition-transform group-hover:scale-110 group-hover:rotate-12">
+                          <Target size={60} />
+                       </div>
+                       <div className="relative z-10 flex flex-col justify-between h-full">
+                         <div>
+                           <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Meta do Período</h5>
+                           <p className="text-4xl font-black tracking-tighter text-white">100%</p>
+                           <p className="text-emerald-300 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
+                              <Target size={12} /> Objetivo de Excelência
+                           </p>
+                         </div>
+                         <div className="mt-4 p-2 bg-emerald-800/50 rounded-lg">
+                            <p className="text-emerald-100 text-[9px] uppercase font-bold text-center tracking-wider">Objetivo Corporativo</p>
+                         </div>
+                       </div>
                     </div>
-                    
-                    <div className="flex justify-between items-start relative z-10">
-                      <div className="flex flex-col gap-1">
-                        <p className={`text-[10px] font-black ${labelColor} uppercase tracking-widest`}>Taxa Eficiência Estratégica</p>
-                        <span className={`text-[9px] font-medium ${labelColor} opacity-70 italic`}>(Somente itens integráveis)</span>
+
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative flex flex-col justify-between h-full">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                      <div className="relative z-10 flex items-start justify-between mb-4">
+                        <div>
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
+                          <h3 className={`text-4xl font-black tracking-tighter ${getEfficiencyColor(efficiency)}`}>
+                            {efficiency.toFixed(1)}%
+                          </h3>
+                        </div>
+                        <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner flex-shrink-0">
+                          <Activity size={24} />
+                        </div>
                       </div>
-                      <span className={`text-[10px] font-black ${labelColor} px-2 py-0.5 rounded-full border border-current opacity-40`}>Meta 100%</span>
+                      <div className="mt-auto relative z-10">
+                         <div className="flex items-center gap-1 text-emerald-500 font-bold text-[10px] uppercase">
+                           <TrendingUp size={12} /> Desempenho Operacional
+                         </div>
+                      </div>
                     </div>
 
-                    <div className="flex items-baseline gap-2 mt-4 relative z-10">
-                      <h3 className={`text-4xl font-black ${textColor} tracking-tight group-hover:scale-105 transition-transform origin-left duration-500`}>
-                        {efficiency.toFixed(1)}%
-                      </h3>
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
+                        <div className="text-right flex-grow pl-3">
+                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Integrados</p>
+                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{successPct}% vol.</p>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-3xl font-black text-emerald-600 tracking-tighter">{data?.zaju?.success || 0}</h4>
+                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Registros Aprovados</p>
+                      </div>
                     </div>
 
-                    <div className="mt-4 relative z-10">
-                        <div className="flex justify-between text-[10px] font-bold mb-1.5 uppercase tracking-tighter">
-                            <span className={labelColor}>Real vs Ideal</span>
-                            <span className={textColor}>{efficiency.toFixed(0)} / 100%</span>
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={20} /></div>
+                        <div className="text-right flex-grow pl-3">
+                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Processando</p>
+                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{pendingPct}% vol.</p>
                         </div>
-                        <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex shadow-inner border border-white/5">
-                            <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 98 ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)]' : efficiency >= 90 ? 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5)]' : 'bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.5)]'}`} 
-                                 style={{ width: `${efficiency}%` }}></div>
-                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data?.zaju?.pending || 0}</h4>
+                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Aguard. Integração</p>
+                      </div>
                     </div>
-                  </div>
+
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest">
+                       <div className="flex justify-between items-start mb-4">
+                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
+                         <div className="text-right flex-grow pl-3">
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Ag. Retorno</p>
+                           <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{returnPct}% vol.</p>
+                         </div>
+                       </div>
+                       <div>
+                         <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h4>
+                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Pendente SAP</p>
+                       </div>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest">
+                       <div className="flex justify-between items-start mb-4">
+                         <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={20} /></div>
+                         <div className="text-right flex-grow pl-3">
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Bloqueados</p>
+                           <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{errorPct}% vol.</p>
+                         </div>
+                       </div>
+                       <div>
+                         <h4 className="text-3xl font-black text-rose-600 tracking-tighter">{data?.zaju?.error || 0}</h4>
+                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Falhas Detectadas</p>
+                       </div>
+                    </div>
+                  </>
                 );
               })()}
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800 group">
-                <div className="flex justify-between items-start">
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-slate-800 transition-colors">Volume Total</p>
-                  <div className="p-1.5 bg-slate-50 rounded-lg text-slate-300 group-hover:text-slate-800 transition-colors"><BarChart3 size={16} /></div>
-                </div>
-                <div className="mt-2 text-right">
-                  <h3 className="text-3xl font-black text-slate-800 tracking-tighter">{data?.zaju?.total?.toLocaleString() || 0}</h3>
-                  <p className="text-[9px] text-slate-400 font-bold mt-1 uppercase tracking-widest">Registros Capturados</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-emerald-500 group">
-                <div className="flex justify-between items-start">
-                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Integrados</p>
-                  <div className="p-1.5 bg-emerald-50 rounded-lg text-emerald-300 transition-colors"><CheckCircle2 size={16} /></div>
-                </div>
-                <div className="mt-2 text-right">
-                  <h3 className="text-3xl font-black text-emerald-600 tracking-tighter">{data?.zaju?.success || 0}</h3>
-                  <div className="w-full h-1 bg-emerald-50 rounded-full mt-2 overflow-hidden flex justify-end">
-                      <div className="h-full bg-emerald-500" style={{ width: `${(data?.zaju?.success / (data?.zaju?.total || 1)) * 100}%` }}></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-amber-500 group">
-                <div className="flex justify-between items-start">
-                  <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Em Processamento</p>
-                  <div className="p-1.5 bg-amber-50 rounded-lg text-amber-300 transition-colors"><Zap size={16} /></div>
-                </div>
-                <div className="mt-2 text-right">
-                  <h3 className="text-3xl font-black text-amber-600 tracking-tighter">{data?.zaju?.pending || 0}</h3>
-                  <div className="w-full h-1 bg-amber-50 rounded-full mt-2 overflow-hidden flex justify-end">
-                      <div className="h-full bg-amber-500 animate-pulse" style={{ width: `${(data?.zaju?.pending / (data?.zaju?.total || 1)) * 100}%` }}></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-indigo-500 group">
-                <div className="flex justify-between items-start">
-                  <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Retorno SAP</p>
-                  <div className="p-1.5 bg-indigo-50 rounded-lg text-indigo-300 transition-colors"><RefreshCw size={16} /></div>
-                </div>
-                <div className="mt-2 text-right">
-                  <h3 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h3>
-                  <div className="w-full h-1 bg-indigo-50 rounded-full mt-2 overflow-hidden flex justify-end">
-                      <div className="h-full bg-indigo-500" style={{ width: `${(data?.zaju?.pending_return / (data?.zaju?.total || 1)) * 100}%` }}></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500 group">
-                <div className="flex justify-between items-start">
-                  <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest group-hover:scale-105 transition-transform origin-left">Erros</p>
-                  <div className="p-1.5 bg-rose-50 rounded-lg text-rose-300 group-hover:text-rose-600 transition-colors"><XCircle size={16} /></div>
-                </div>
-                <div className="mt-2 text-right">
-                  <h3 className="text-3xl font-black text-rose-600 tracking-tighter">{data?.zaju?.error || 0}</h3>
-                  <p className="text-[9px] text-rose-400 font-bold mt-1 uppercase tracking-widest">Ação Corretiva</p>
-                </div>
-              </div>
             </div>
 
             {/* Sub-Tabs Navigation */}
