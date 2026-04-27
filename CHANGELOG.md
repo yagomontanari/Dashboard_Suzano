@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.20] - 2026-04-27
+### Adicionado
+- **Telemetria de Eficiência Seletiva (ZAJU)**: Upgrade no cálculo da taxa global para desconsiderar itens não integráveis (bloqueados), fornecendo um KPI real de performance.
+- **Esquema de Meta Real vs Ideal**: Implementação do design de comparação (Real/Ideal) com meta de 100% no cockpit de ZAJU.
+- **Status Dinâmico Inteligente**: Substituição de legendas estáticas por indicadores de saúde em tempo real ("Processamento Crítico", "Aguardando Retorno", "Fluxo Saudável").
+- **Design de Alta Densidade**: Remoção de textos redundantes e otimização do layout para uma visualização executiva mais limpa.
+
+---
+
 ## [2.3.19] - 2026-04-27
 ### Alterado
 - **Precisão de Eficiência (ZAJU)**: Upgrade no cálculo de eficiência para exibir uma casa decimal (ex: 99.6%), garantindo transparência absoluta quando há itens ainda em processamento ou retorno.
