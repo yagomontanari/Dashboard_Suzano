@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.14] - 2026-04-27
+### Adicionado
+- **Visibilidade Total (Zero State ZAJU)**: Implementada lógica para exibir todos os 12 tipos de ajuste nas categorias correspondentes, mesmo quando não há registros no banco, garantindo visibilidade operacional completa.
+- **Redistribuição de Destaques**: Movimentação dos itens `ZAJU_AJUSTE_VERBA_PERC` e `CUTOFF` explicitamente para a seção "Verba Promo & Ações".
+- **Upgrade Tipográfico**: Aumento do tamanho da fonte dos nomes dos ajustes (font-black text-base) e dos labels de status para facilitar a leitura rápida em monitores operacionais.
+- **Hierarquia Visual Primium**: Ajuste de padding e distribuição dos itens para uma visualização mais equilibrada e profissional.
+
+---
+
 ## [2.3.13] - 2026-04-27
 ### Adicionado
 - **Categorização Estrutural (ZAJU)**: Implementada a separação dos ajustes em 3 macro-categorias: "Verba Promo & Ações", "Verba de Contrato" e "Acordos (Planejamento/Apuração/Pagamento)".

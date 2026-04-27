@@ -283,33 +283,52 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('geral');
 
   const groupedZaju = useMemo(() => {
-    if (!data?.zaju?.by_type) return { promo: [], contrato: [], acordos: [] };
+    // Listas estáticas para garantir que todos os itens apareçam
+    const promoTypes = ['ZAJU_AJUSTE_VERBA_PERC', 'ZAJU_AJUSTE_VERBA_NOMI', 'ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE'];
+    const contratoTypes = ['ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_CT_PERC_CRE', 'ZAJU_AJUSTE_VERBA_CT_PERC_COM', 'ZAJU_AJUSTE_VERBA_CT_PERC_LOG', 'ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE'];
+    const acordosTypes = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO', 'ZAJU_AJUSTE_DEV_OFF'];
+
+    const createEmpty = (type) => ({ type, success: 0, pending: 0, error: 0, pending_return: 0, total: 0 });
     
-    const promo = [];
-    const contrato = [];
-    const acordos = [];
-    
-    const acordosTypes = [
-      'ZAJU_AJUSTE_PGTO', 
-      'ZAJU_APUR_REPROVADA', 
-      'ZAJU_PGTO_REPROVADO', 
-      'ZAJU_AJUSTE_DEV_OFF'
-    ];
-    
-    data.zaju.by_type.forEach(item => {
-      const type = item.type || '';
-      const category = item.category?.toUpperCase() || '';
-      
-      if (acordosTypes.includes(type)) {
-        acordos.push(item);
-      } else if (category.includes('PROMO')) {
-        promo.push(item);
-      } else if (category.includes('CONTRA')) {
-        contrato.push(item);
-      } else {
-        acordos.push(item); // Fallback
-      }
-    });
+    const promo = promoTypes.map(t => createEmpty(t));
+    const contrato = contratoTypes.map(t => createEmpty(t));
+    const acordos = acordosTypes.map(t => createEmpty(t));
+
+    if (data?.zaju?.by_type) {
+      data.zaju.by_type.forEach(item => {
+        const type = item.type || '';
+        const category = item.category?.toUpperCase() || '';
+        
+        // Função auxiliar para atualizar se existir na lista
+        const updateList = (list) => {
+          const idx = list.findIndex(l => l.type === type);
+          if (idx !== -1) {
+             list[idx] = { ...list[idx], ...item };
+             return true;
+          }
+          return false;
+        };
+
+        // Prioridade de Categorização
+        if (acordosTypes.includes(type)) {
+          updateList(acordos);
+        } else if (category.includes('PROMO')) {
+          updateList(promo);
+        } else if (category.includes('CONTRA')) {
+          updateList(contrato);
+        } else {
+          // Se não houver categoria no banco mas o tipo coincidir com as listas estáticas
+          if (!updateList(promo)) {
+            if (!updateList(contrato)) {
+              if (!updateList(acordos)) {
+                // Caso não esteja em nenhuma lista, joga em acordos (segurança)
+                acordos.push(item);
+              }
+            }
+          }
+        }
+      });
+    }
     
     return { promo, contrato, acordos };
   }, [data?.zaju?.by_type]);
@@ -1520,40 +1539,40 @@ export default function Dashboard() {
                                     </div>
                                     <div>
                                       <div className="flex items-center gap-2">
-                                        <span className={`font-bold text-sm block ${isBlocked ? 'text-slate-400' : 'text-slate-700'}`}>{item.type}</span>
+                                        <span className={`font-black text-base block ${isBlocked ? 'text-slate-400' : 'text-slate-800'}`}>{item.type}</span>
                                         {isBlocked && (
-                                          <span className="px-2 py-0.5 bg-rose-50 text-rose-600 rounded-md text-[9px] font-black uppercase tracking-tighter border border-rose-100 flex items-center gap-1">
+                                          <span className="px-2 py-0.5 bg-rose-50 text-rose-600 rounded-md text-[10px] font-black uppercase tracking-tighter border border-rose-100 flex items-center gap-1">
                                             <AlertCircle size={10} /> BLOQUEADO
                                           </span>
                                         )}
                                       </div>
-                                      <p className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1">
-                                        {item.category || 'Sem Categoria'} 
-                                        {isBlocked && <span className="text-rose-400 font-bold ml-1">• Item não integrável devido ao status</span>}
+                                      <p className="text-xs text-slate-400 font-medium mt-1 flex items-center gap-1">
+                                        Monitoramento Estratégico 
+                                        {isBlocked && <span className="text-rose-400 font-bold ml-1">• Item não integrado</span>}
                                       </p>
                                     </div>
                                   </div>
                                 </td>
                                 <td className="py-6 px-8">
                                   <div className="flex flex-col gap-2 min-w-[320px]">
-                                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-tight">
+                                    <div className="flex justify-between text-[11px] font-bold uppercase tracking-tight">
                                       <span className="text-emerald-600 flex items-center gap-1">
-                                        <CheckCircle2 size={10} /> {item.success} Integrados
+                                        <CheckCircle2 size={11} /> {item.success} Integrados
                                       </span>
                                       <span className={`flex items-center gap-1 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
-                                        <XCircle size={10} /> {item.error} Erros
+                                        <XCircle size={11} /> {item.error} Erros
                                       </span>
                                     </div>
-                                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+                                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
                                       <div className="bg-emerald-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.success/(item.total || 1))*100}%` }}></div>
                                       <div className="bg-amber-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending/(item.total || 1))*100}%` }}></div>
                                       <div className="bg-indigo-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
                                       <div className="bg-rose-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
                                     </div>
-                                    <div className="flex justify-between text-[9px] text-slate-500 font-medium">
-                                      <span className="flex items-center gap-1 opacity-70"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pendente: {item.pending}</span>
-                                      <span className="flex items-center gap-1 opacity-70"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Retorno: {item.pending_return}</span>
-                                      <span className="text-slate-400">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
+                                    <div className="flex justify-between text-[10px] text-slate-500 font-bold">
+                                      <span className="flex items-center gap-1 opacity-80"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pendente: {item.pending}</span>
+                                      <span className="flex items-center gap-1 opacity-80"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Retorno: {item.pending_return}</span>
+                                      <span className="text-slate-500">Eficiência: {item.total > 0 ? ((item.success/item.total)*100).toFixed(0) : 0}%</span>
                                     </div>
                                   </div>
                                 </td>
