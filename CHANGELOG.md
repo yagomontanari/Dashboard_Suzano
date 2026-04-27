@@ -4,6 +4,15 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.11] - 2026-04-27
+### Adicionado
+- **Reestruturação Premium (Tab ZAJU)**: Reformulação completa da interface de Ajustes de Provisão, seguindo o padrão visual de alta fidelidade do dashboard.
+- **Detalhamento por Categoria (Telemetry)**: Implementação de monitoramento discriminado para as 12 categorias de ZAJU (Ajustes de Verba, Cutoff, Ajustes de Pagamento, etc.).
+- **Visual Health Bars**: Adicionados indicadores visuais de progresso e saúde por categoria, facilitando a identificação imediata de Integrados, Erros, Pendentes e Retornos.
+- **Padronização Técnica**: Refatoração interna do identificador de aba de `zaku` para `zaju` para consistência com o domínio de negócio.
+
+---
+
 ## [2.3.10] - 2026-04-27
 ### Corrigido
 - **Correção Temporal (Fator Fuso Horário)**: Ajuste na lógica de extração do mês de referência para evitar o recuo de data causado pelo fuso horário UTC, garantindo que o dashboard exiba "Abril" corretamente conforme o período selecionado.

@@ -97,6 +97,7 @@ async def get_dashboard_metrics(
         results = await asyncio.gather(
             fetch_data(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str),
             fetch_data(QUERY_ZAJU_TOTAL, params),
+            fetch_data(QUERY_ZAJU_BY_TYPE, params),
             fetch_data(QUERY_PAGAMENTOS_TOTAL, params),
             fetch_data(QUERY_TOP_CLIENTES, params),
             fetch_data(QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params), # 7 contagens em 1 única conexão
@@ -106,6 +107,7 @@ async def get_dashboard_metrics(
         (
             vk11_res,
             zaju_res,
+            zaju_by_type_res,
             zver_res,
             top_clients_res,
             counts_res,
@@ -137,6 +139,7 @@ async def get_dashboard_metrics(
                 "total": 0,
             }
         )
+        zaju_totals["by_type"] = zaju_by_type_res or []
         zver_totals_raw = (
             zver_res[0]
             if zver_res

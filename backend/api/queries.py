@@ -45,6 +45,23 @@ QUERY_ZAJU_TOTAL = text("""
     ) as sub;
 """)
 
+QUERY_ZAJU_BY_TYPE = text("""
+    SELECT 
+        purch_no_c as type,
+        COALESCE(COUNT(1) FILTER (WHERE status = 'INTEGRADO'), 0) AS success,
+        COALESCE(COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO'), 0) AS pending,
+        COALESCE(COUNT(1) FILTER (WHERE status = 'ERRO'), 0) AS error,
+        COALESCE(COUNT(1) FILTER (WHERE status = 'PENDENTE_RETORNO'), 0) AS pending_return,
+        COALESCE(COUNT(1), 0) AS total
+    FROM suzano_ajuste_provisao_memoria_calculo
+    WHERE cond_value != 0
+      AND dta_alteracao >= :start_date AND dta_alteracao < :end_date
+      AND status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
+      AND purch_no_c IS NOT NULL
+    GROUP BY purch_no_c
+    ORDER BY total DESC;
+""")
+
 QUERY_PAGAMENTOS_TOTAL = text("""
     SELECT 
         COALESCE(SUM(integrado), 0) as success,

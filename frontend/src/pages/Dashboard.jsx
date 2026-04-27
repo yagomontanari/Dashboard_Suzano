@@ -847,7 +847,7 @@ export default function Dashboard() {
     { id: 'geral', label: 'Geral' },
     { id: 'pagamentos', label: 'Pagamento (ZVER)' },
     { id: 'vk11', label: 'Provisão (VK11)' },
-    { id: 'zaku', label: 'Ajuste de Provisão (ZAJU)' }
+    { id: 'zaju', label: 'Ajuste de Provisão (ZAJU)' }
   ];
 
   return (
@@ -1407,62 +1407,135 @@ export default function Dashboard() {
           </div>
         )}
 
-        {activeTab === 'zaku' && (
-          <div className="space-y-8 animate-in fade-in duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integrados</p>
-                <h3 className="text-3xl font-bold text-blue-600 text-center">{data.zaju.success}</h3>
+        {activeTab === 'zaju' && (
+          <div className="space-y-8 animate-in fade-in duration-500 pb-12">
+            {/* Top Summaries */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800">
+                <p className="text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Volume Total</p>
+                <h3 className="text-2xl font-black text-slate-800">{data.zaju.total}</h3>
+              </div>
+              
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-emerald-500">
+                <p className="text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Integrados</p>
+                <h3 className="text-2xl font-black text-emerald-600">{data.zaju.success}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Integração Pendente</p>
-                <h3 className="text-3xl font-bold text-amber-600 text-center">{data.zaju.pending}</h3>
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-amber-500">
+                <p className="text-[10px] font-bold text-amber-600 mb-1 uppercase tracking-wider">Pendente</p>
+                <h3 className="text-2xl font-black text-amber-600">{data.zaju.pending}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Pendente Retorno</p>
-                <h3 className="text-3xl font-bold text-indigo-600 text-center">{data?.zaju?.pending_return || 0}</h3>
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-indigo-500">
+                <p className="text-[10px] font-bold text-indigo-600 mb-1 uppercase tracking-wider">Retorno</p>
+                <h3 className="text-2xl font-black text-indigo-600">{data?.zaju?.pending_return || 0}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Erros</p>
-                <h3 className="text-3xl font-bold text-rose-600 text-center">{data.zaju.error}</h3>
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500">
+                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Erros</p>
+                <h3 className="text-2xl font-black text-rose-600">{data.zaju.error}</h3>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Total de Zajus</p>
-                <h3 className="text-3xl font-bold text-slate-800 text-center">{data.zaju.total}</h3>
-              </div>
-            </div>
-
-            {/* Total Highlight */}
-            <div className="bg-slate-900 p-10 rounded-xl shadow-[8px_8px_0px_#94a3b8] border border-slate-800 flex flex-col md:flex-row items-center justify-around gap-8">
-              <div className="text-center">
-                <p className="text-blue-400 font-black text-xs uppercase tracking-[0.2em] mb-2">Processamento de Zajus</p>
-                <h2 className="text-6xl font-black text-white tracking-tighter">
-                  {data.zaju.success}
-                </h2>
-                <p className="text-slate-400 font-bold text-sm mt-2">Integrados com Sucesso</p>
-              </div>
-
-              <div className="h-20 w-px bg-slate-800 hidden md:block"></div>
-
-              <div className="text-center">
-                <p className="text-rose-500 font-black text-xs uppercase tracking-[0.2em] mb-2">Volume Total de Registros</p>
-                <h2 className="text-6xl font-black text-white tracking-tighter">
-                  {data.zaju.total}
-                </h2>
-                <p className="text-slate-400 font-bold text-sm mt-2">Total na Base de Dados</p>
+              <div className="bg-slate-900 p-5 rounded-xl shadow-lg border border-slate-800 flex flex-col justify-between h-full">
+                <p className="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Taxa Eficiência</p>
+                <h3 className="text-2xl font-black text-white">
+                  {data.zaju.total > 0 ? ((data.zaju.success / data.zaju.total) * 100).toFixed(1) : 0}%
+                </h3>
               </div>
             </div>
 
-            {/* Inconsistencies Link Placeholder (if ZAJU has specific errors) */}
-            <div className="bg-white p-8 rounded-xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400">
-               <Search size={32} className="mb-2" />
-               <p className="font-medium">O detalhamento individual de cada ZAJU pode ser consultado via exportação ou na aba Geral.</p>
+            {/* Main Content: Categories Table */}
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <ArrowDownUp size={20} className="text-blue-600" />
+                    Monitoramento por Tipo de Ajuste
+                  </h3>
+                  <p className="text-sm text-slate-500">Detalhamento discriminado das categorias ZAJU</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    {data?.zaju?.by_type?.length || 0} Categorias Registradas
+                  </span>
+                  <button 
+                    onClick={() => {
+                        setSelectedInconsistency('zaju');
+                        setModalOpen(true);
+                        fetchInconsistencyDetails('zaju', 1);
+                    }}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-sm"
+                  >
+                    <Search size={14} /> Detalhar Erros
+                  </button>
+                </div>
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-100">
+                      <th className="py-4 px-8 font-bold">Tipo de Ajuste (Purch_No_C)</th>
+                      <th className="py-4 px-8 font-bold text-center">Status de Integração e Saúde</th>
+                      <th className="py-4 px-8 font-bold text-right">Volume Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {data?.zaju?.by_type?.length > 0 ? (
+                      data.zaju.by_type.map((item) => (
+                        <tr key={item.type} className="hover:bg-slate-50/80 transition-colors group">
+                          <td className="py-5 px-8">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-blue-100 group-hover:text-blue-600 transition-all shadow-sm">
+                                <ArrowDownUp size={18} />
+                              </div>
+                              <div>
+                                <span className="font-bold text-slate-700 text-sm block">{item.type}</span>
+                                <span className="text-[10px] text-slate-400 font-medium">{item.total} registros identificados</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-5 px-8">
+                            <div className="flex flex-col gap-2 min-w-[320px]">
+                              <div className="flex justify-between text-[10px] font-bold uppercase tracking-tight">
+                                <span className="text-emerald-600 flex items-center gap-1">
+                                  <CheckCircle size={10} /> {item.success} Integrados
+                                </span>
+                                <span className={`flex items-center gap-1 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
+                                  <XCircle size={10} /> {item.error} Erros
+                                </span>
+                              </div>
+                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+                                <div className="bg-emerald-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.success/item.total)*100}%` }}></div>
+                                <div className="bg-amber-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending/item.total)*100}%` }}></div>
+                                <div className="bg-indigo-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.pending_return/item.total)*100}%` }}></div>
+                                <div className="bg-rose-500 h-full transition-all duration-700 ease-out" style={{ width: `${(item.error/item.total)*100}%` }}></div>
+                              </div>
+                              <div className="flex justify-between text-[9px] text-slate-500 font-medium">
+                                <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pendente: {item.pending}</span>
+                                <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Retorno: {item.pending_return}</span>
+                                <span className="text-slate-400">Eficiência: {((item.success/item.total)*100).toFixed(0)}%</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-5 px-8 text-right">
+                            <span className="text-xl font-black text-slate-800 tracking-tight">{item.total}</span>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="py-12 text-center text-slate-400 italic">
+                          Nenhum dado de ajuste encontrado para o período.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
+        )}
         )}
       </main>
 
