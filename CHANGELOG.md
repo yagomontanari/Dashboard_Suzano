@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.8] - 2026-04-27
+### Alterado
+- **Alinhamento de KPIs (Foco em Excelência)**: Atualização da Meta do Período de 99.5% para **100%**, refletindo o compromisso com o cenário ideal de integração total e erro zero.
+
+---
+
 ## [2.3.7] - 2026-04-27
 ### Corrigido
 - **Estabilidade Analítica (Hook Order Fix)**: Correção de erro crítico de referência (`ReferenceError`) causado pela inicialização incorreta de hooks. O estado `dateRange` agora precede o cálculo de lógica temporal, garantindo a carga do dashboard.

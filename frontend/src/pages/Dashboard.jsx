@@ -1084,9 +1084,9 @@ export default function Dashboard() {
                  <div className="relative z-10 flex flex-col justify-between h-full">
                    <div>
                      <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Meta do Período</h5>
-                     <p className="text-4xl font-black tracking-tighter text-white">99.5%</p>
+                     <p className="text-4xl font-black tracking-tighter text-white">100%</p>
                      <p className="text-emerald-300 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
-                        <Target size={12} /> Meta Ideal: 100%
+                        <Target size={12} /> Objetivo de Excelência
                      </p>
                    </div>
                    <div className="mt-4 p-2 bg-emerald-800/50 rounded-lg">
