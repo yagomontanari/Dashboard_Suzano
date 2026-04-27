@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.17] - 2026-04-27
+### Alterado
+- **Ajuste de Terminologia**: Substituição global do termo "Financeiro Bloqueado" por "Erros de Integração" em todos os módulos e seções do dashboard para maior precisão técnica.
+
+---
+
 ## [2.3.16] - 2026-04-27
 ### Adicionado
 - **Cockpit Financeiro (ZAJU)**: Padronização total de terminologia com a aba de Pagamentos ("Financeiro Bloqueado", "Em Processamento", "Aguardando Retorno").

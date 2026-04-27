@@ -1256,7 +1256,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2 flex flex-col justify-center">
-                  <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Financeiro Bloqueado</p>
+                  <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Erros de Integração</p>
                   <p className="text-white text-2xl font-black">{formatCurrency(data?.zver?.value_error || 0)}</p>
                   <div className="w-full h-1 bg-white/10 rounded-full mt-2">
                      <div className="h-full bg-rose-500 rounded-full" style={{ width: `${((data?.zver?.value_error || 0) / Math.max(1, data?.zver?.value_success || 0)) * 100}%` }}></div>
@@ -1486,7 +1486,7 @@ export default function Dashboard() {
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-rose-500">
-                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Financeiro Bloqueado</p>
+                <p className="text-[10px] font-bold text-rose-600 mb-1 uppercase tracking-wider">Erros de Integração</p>
                 <h3 className="text-2xl font-black text-rose-600">{data?.zaju?.error || 0}</h3>
               </div>
 
@@ -1591,7 +1591,7 @@ export default function Dashboard() {
                                         <span className={`font-black text-lg block tracking-tight ${isBlocked ? 'text-slate-400' : 'text-slate-900 group-hover:text-blue-600 transition-colors'}`}>{item.type}</span>
                                         {isBlocked && (
                                           <span className="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[11px] font-black uppercase tracking-tighter border border-rose-100 flex items-center gap-1">
-                                            <AlertCircle size={12} /> FINANCEIRO BLOQUEADO
+                                            <AlertCircle size={12} /> ERROS DE INTEGRAÇÃO
                                           </span>
                                         )}
                                       </div>
