@@ -91,16 +91,69 @@ QUERY_TOP_CLIENTES = text("""
     LIMIT 5;
 """)
 
-# Query unificada para evitar múltiplas chamadas simultâneas (Resolvendo erro de concorrência SQLAlchemy)
-QUERY_DASHBOARD_COUNTS = text("""
+# Query unificada para evitar múltiplas chamadas simultâneas (Resolvendo excesso de conexões abertas)
+QUERY_DASHBOARD_COUNTS_CONSOLIDATED = text("""
     SELECT
-        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_SELLIN) as s) as sellin,
-        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_CLIENTES) as c) as clientes,
-        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_PRODUTOS) as p) as produtos,
-        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_CUTOFF) as cu) as cutoff,
-        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_USUARIOS) as u) as usuarios,
-        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_PAGAMENTOS) as pa) as pagamentos,
-        (SELECT COUNT(1) FROM (QUERY_PLACEHOLDER_VK11) as v) as vk11
+        (
+            WITH de AS (
+                SELECT ife.registro ->> 'numeroDocFiscal' as nro_documento, ife.registro ->> 'produtoId' as id_produto, ife.registro ->> 'clienteId' as id_cliente, ife.registro ->> 'tipoDocFat' as tipo_doc_fat,
+                ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'numeroDocFiscal', ife.registro ->> 'produtoId' ORDER BY ife.dta_criacao DESC) as rn
+                FROM integracao_fila_erros ife WHERE tipo = 'SELLIN' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
+            )
+            SELECT COUNT(DISTINCT de.nro_documento) FROM de 
+            WHERE de.rn = 1 AND NOT EXISTS (
+                SELECT 1 FROM sellin se 
+                WHERE de.nro_documento ~ '^[0-9]+$' AND se.nro_documento = CAST(de.nro_documento AS BIGINT)
+            )
+        ) as sellin,
+        
+        (
+            WITH de AS (
+                SELECT ife.registro ->> 'codCliente' as cod_cliente, 
+                ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'codCliente' ORDER BY ife.dta_criacao DESC) as rn
+                FROM integracao_fila_erros ife WHERE ife.tipo = 'CLIENTE' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
+            )
+            SELECT COUNT(1) FROM de WHERE de.rn = 1 AND NOT EXISTS (SELECT 1 FROM cliente c WHERE c.id_externo = de.cod_cliente)
+        ) as clientes,
+
+        (
+            WITH de AS (
+                SELECT ife.registro ->> 'idExterno' as id_produto,
+                ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'idExterno' ORDER BY ife.dta_criacao DESC) as rn
+                FROM integracao_fila_erros ife WHERE tipo = 'PRODUTO' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
+            )
+            SELECT COUNT(1) FROM de WHERE de.rn = 1 AND NOT EXISTS (SELECT 1 FROM produto p WHERE p.id_externo = de.id_produto)
+        ) as produtos,
+
+        (
+            WITH de AS (
+                SELECT ife.registro ->> 'numeroDocFat' as nro_documento, ife.registro ->> 'cutoff' as cutoff,
+                ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'numeroDocFat', ife.registro ->> 'cutoff' ORDER BY ife.dta_criacao DESC) as rn
+                FROM integracao_fila_erros ife WHERE ife.tipo = 'CUTOFF' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
+            )
+            SELECT COUNT(1) FROM de WHERE de.rn = 1 AND NOT EXISTS (SELECT 1 FROM sellin s WHERE s.nro_documento = CAST(de.nro_documento AS INTEGER) AND s.cutoff = de.cutoff)
+        ) as cutoff,
+
+        (
+            WITH de AS (
+                SELECT ife.registro ->> 'matricula' as matricula,
+                ROW_NUMBER() OVER(PARTITION BY ife.registro ->> 'matricula' ORDER BY ife.dta_criacao DESC) as rn
+                FROM integracao_fila_erros ife WHERE ife.tipo = 'PRE_CADASTRO_USUARIO' AND ife.dta_alteracao >= :start_date AND ife.dta_alteracao < :end_date
+            )
+            SELECT COUNT(1) FROM de WHERE de.rn = 1 AND NOT EXISTS (SELECT 1 FROM usuario u WHERE u.matricula = de.matricula)
+        ) as usuarios,
+
+        (
+            SELECT COUNT(DISTINCT spi.id_pagamento)
+            FROM suzano_pagamento_integracao spi
+            WHERE spi.status = 'ERRO' AND spi.dta_alteracao >= :start_date AND spi.dta_alteracao < :end_date
+        ) as pagamentos,
+
+        (
+            SELECT COUNT(DISTINCT soi.id_orcamento)
+            FROM suzano_orcamento_integracao soi
+            WHERE soi.status = 'ERRO' AND (TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') BETWEEN soi.valid_from AND soi.valid_to)
+        ) as vk11
 """)
 
 QUERY_LAST_SYNC = text("""

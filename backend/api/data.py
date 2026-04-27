@@ -99,13 +99,7 @@ async def get_dashboard_metrics(
             fetch_data(QUERY_ZAJU_TOTAL, params),
             fetch_data(QUERY_PAGAMENTOS_TOTAL, params),
             fetch_data(QUERY_TOP_CLIENTES, params),
-            fetch_data(QUERY_ERRO_SELLIN, params, is_count=True),
-            fetch_data(QUERY_ERRO_CLIENTES, params, is_count=True),
-            fetch_data(QUERY_ERRO_PRODUTOS, params, is_count=True),
-            fetch_data(QUERY_ERRO_CUTOFF, params, is_count=True),
-            fetch_data(QUERY_ERRO_USUARIOS, params, is_count=True),
-            fetch_data(QUERY_ERRO_PAGAMENTOS_LIST, params, is_count=True),
-            fetch_data(QUERY_ERRO_VK11_LIST, params_str, is_count=True),
+            fetch_data(QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params), # 7 contagens em 1 única conexão
             fetch_data(QUERY_LAST_SYNC, {}),
         )
 
@@ -114,15 +108,19 @@ async def get_dashboard_metrics(
             zaju_res,
             zver_res,
             top_clients_res,
-            sellin_count,
-            clientes_count,
-            produtos_count,
-            cutoff_count,
-            usuarios_count,
-            pagamentos_count,
-            vk11_count,
+            counts_res,
             last_sync_res,
         ) = results
+
+        # Extração das contagens consolidadas
+        counts = counts_res[0] if counts_res else {}
+        sellin_count = counts.get("sellin", 0)
+        clientes_count = counts.get("clientes", 0)
+        produtos_count = counts.get("produtos", 0)
+        cutoff_count = counts.get("cutoff", 0)
+        usuarios_count = counts.get("usuarios", 0)
+        pagamentos_count = counts.get("pagamentos", 0)
+        vk11_count = counts.get("vk11", 0)
 
         # Mapeando os resultados
         vk11_totals = (
