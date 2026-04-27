@@ -1076,21 +1076,23 @@ export default function Dashboard() {
                    </div>
                  </div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative flex flex-col justify-between h-full">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                <div className="relative z-10 flex items-start justify-between">
+                <div className="relative z-10 flex items-start justify-between mb-4">
                   <div>
                     <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
                     <h3 className="text-4xl font-black text-emerald-600 tracking-tighter">
                       {(((data.zver.success || 0) / ((data.zver.total || ((data.zver.success || 0) + (data.zver.pending || 0) + (data.zver.pending_return || 0) + (data.zver.error || 0))) || 1)) * 100).toFixed(1)}%
                     </h3>
-                    <div className="flex items-center gap-1 mt-2 text-emerald-500 font-bold text-[10px] uppercase">
-                      <TrendingUp size={12} /> Desempenho Operacional
-                    </div>
                   </div>
-                  <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner">
+                  <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner flex-shrink-0">
                     <Activity size={24} />
                   </div>
+                </div>
+                <div className="mt-auto">
+                   <div className="flex items-center gap-1 text-emerald-500 font-bold text-[10px] uppercase">
+                     <TrendingUp size={12} /> Desempenho Operacional
+                   </div>
                 </div>
               </div>
 

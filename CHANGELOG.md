@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.3] - 2026-04-27
+### Alterado
+- **UX/UI (Padronização de Headers)**: 
+    - Unificação da estrutura vertical dos cards de "Meta" e "Eficiência". 
+    - Garantia de paridade no grid de KPIs através da implementação de distribuição `flex-col` consistente em todos os indicadores da aba de pagamentos.
+
+---
+
 ## [2.3.2] - 2026-04-27
 ### Alterado
 - **UX/UI (Alinhamento de Cockpit)**: 
