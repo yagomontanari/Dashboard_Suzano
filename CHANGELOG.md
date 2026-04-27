@@ -4,7 +4,31 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.0] - 2026-04-27
+### Adicionado
+- **Otimização de Performance (Consolidação de Queries)**:
+    - Refatoração do endpoint de métricas do dashboard para utilizar consultas SQL consolidadas (`Bach Querying`). Sete contagens de erro independentes foram unificadas em uma única transação, reduzindo o consumo de conexões simultâneas e o overhead de latência por requisição.
+    - Implementação de um framework de auditoria de performance (`perf_audit.py`) para identificação proativa de gargalos de indexação e volume de dados.
+
+### Alterado
+- **UX/UI Resilience (Memoização)**:
+    - Implementação de `React.memo`, `useMemo` e `useCallback` nos componentes de alta frequência de atualização (`IntegrationHealthCard` e `IntegrationLog`), eliminando re-renderizações desnecessárias e garantindo suavidade visual durante os refreshes automáticos de 5 minutos.
+- **Processo de Manutenção**:
+    - Padronização da limpeza de artefatos de diagnóstico e scripts de teste temporários para manter a integridade do ambiente de desenvolvimento.
+
+### Recomendado (Infraestrutura)
+- **Documentação de Performance**: Publicação de recomendações técnicas com scripts SQL específicos para criação de índices concorrentes em tabelas de alto volume (142k+ registros).
+
+---
+
 ## [2.2.2] - 2026-04-22
+### Adicionado
+- **Infraestrutura de Homologação**:
+    - Criação da branch `staging` para deploys isolados no Vercel.
+    - Implementação de configuração **"Environment Aware"**: o sistema agora detecta automaticamente o ambiente (`VERCEL_ENV`) e prioriza variáveis com o prefixo **`STAGING_`** (ex: `STAGING_SUPABASE_DATABASE_URL`), facilitando a gestão de segredos no Vercel sem conflitos de nomes.
+    - Suporte a múltiplas origens dinâmicas no CORS através da variável de ambiente `ALLOWED_ORIGINS` (lista separada por vírgulas).
+    - Lançamento do arquivo `backend/.env.example` com guia de configuração multi-ambiente.
+
 ### Corrigido
 - **Infraestrutura (Circular Import)**: Resolvida falha crítica de inicialização (`ImportError`) que impedia o boot da aplicação na Vercel. A lógica de `Slowapi` (Rate Limiting) foi movida para um módulo centralizador (`core/limiter.py`), garantindo a ordem correta de carregamento das rotas e do objeto de estado da aplicação.
 
@@ -410,4 +434,4 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Componentização visual com Lucide React.
 
 ---
-*Atualizado em: 22 de Abril de 2026 por Antigravity AI.*
+*Atualizado em: 27 de Abril de 2026 por Antigravity AI.*

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   getDashboardData, 
@@ -52,15 +52,15 @@ import PaginatedTable from '../components/PaginatedTable';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 import { useMemo } from 'react';
 
-const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn = null }) => {
+const IntegrationHealthCard = React.memo(({ title, success, pending, error, pendingReturn = null }) => {
   const total = success + pending + error + (pendingReturn || 0);
   
-  const data = [
+  const data = useMemo(() => [
     { name: 'Sucesso', value: success, color: '#10b981' },
     { name: 'Pendente', value: pending, color: '#f59e0b' },
     { name: 'Erro', value: error, color: '#ef4444' },
     ...(pendingReturn !== null ? [{ name: 'Pendente Retorno', value: pendingReturn, color: '#4f46e5' }] : [])
-  ].filter(item => item.value > 0);
+  ].filter(item => item.value > 0), [success, pending, error, pendingReturn]);
 
   const displayData = data.length > 0 ? data : [{ name: 'Vazio', value: 1, color: '#f1f5f9' }];
   
@@ -103,7 +103,7 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
           </div>
         </div>
 
-        {/* High-Fidelity Legend */}
+        {/* Legend */}
         <div className="w-full space-y-4 pt-4 border-t border-slate-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -141,10 +141,10 @@ const IntegrationHealthCard = ({ title, success, pending, error, pendingReturn =
       </div>
     </div>
   );
-};
+});
 
-const IntegrationLog = ({ updates }) => {
-  const getIcon = (category) => {
+const IntegrationLog = React.memo(({ updates }) => {
+  const getIcon = useCallback((category) => {
     switch(category) {
       case 'Sell-In': return <HandCoins size={16} />;
       case 'Clientes': return <Contact size={16} />;
@@ -158,9 +158,9 @@ const IntegrationLog = ({ updates }) => {
       case 'Cutoff': return <CalendarClock size={16} />;
       default: return <History size={16} />;
     }
-  };
+  }, []);
 
-  const getIconBg = (category) => {
+  const getIconBg = useCallback((category) => {
     const colors = {
       'Sell-In': 'bg-blue-50 text-blue-600 ring-blue-100',
       'Clientes': 'bg-amber-50 text-amber-600 ring-amber-100',
@@ -174,16 +174,16 @@ const IntegrationLog = ({ updates }) => {
       'Cutoff': 'bg-slate-50 text-slate-600 ring-slate-100'
     };
     return colors[category] || 'bg-slate-50 text-slate-400 ring-slate-100';
-  };
+  }, []);
 
-  const formatTime = (isoDate) => {
+  const formatTime = useCallback((isoDate) => {
     if (!isoDate) return "--/--";
     const date = new Date(isoDate);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     return `${day}/${month} às ${time}`;
-  };
+  }, []);
 
   return (
     <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col max-h-[450px]">
@@ -230,7 +230,7 @@ const IntegrationLog = ({ updates }) => {
       </div>
     </div>
   );
-};
+});
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
