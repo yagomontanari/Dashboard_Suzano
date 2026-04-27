@@ -4,6 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.5] - 2026-04-27
+### Corrigido
+- **Estabilidade (Hotfix)**: Implementação de *Optional Chaining* (`?.`) e proteções contra valores `undefined` que causavam a quebra da interface (White Screen) durante o carregamento inicial dos dados ou transição entre abas.
+- **Resiliência de Datas**: Adicionada validação para o cálculo do mês de referência, evitando falhas de string em caso de datas nulas ou inválidas.
+
+---
+
 ## [2.3.4] - 2026-04-27
 ### Adicionado
 - **Dinamismo e Identidade Visual (Pagamentos)**:

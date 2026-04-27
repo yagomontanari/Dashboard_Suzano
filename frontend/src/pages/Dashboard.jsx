@@ -247,8 +247,14 @@ export default function Dashboard() {
   const [totalPages, setTotalPages] = useState(1);
 
   const referenceMonth = useMemo(() => {
-    const date = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
-    return date.toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + date.toLocaleString('pt-BR', { month: 'long' }).slice(1);
+    try {
+      const date = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
+      if (isNaN(date.getTime())) return '...';
+      const monthStr = date.toLocaleString('pt-BR', { month: 'long' });
+      return monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
+    } catch (e) {
+      return '...';
+    }
   }, [dateRange.startDate]);
 
   const getEfficiencyColor = useCallback((rate) => {
@@ -1092,8 +1098,8 @@ export default function Dashboard() {
                 <div className="relative z-10 flex items-start justify-between mb-4">
                   <div>
                     <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
-                    <h3 className={`text-4xl font-black tracking-tighter ${getEfficiencyColor(((data.zver.success || 0) / ((data.zver.total || ((data.zver.success || 0) + (data.zver.pending || 0) + (data.zver.pending_return || 0) + (data.zver.error || 0))) || 1)) * 100)}`}>
-                      {(((data.zver.success || 0) / ((data.zver.total || ((data.zver.success || 0) + (data.zver.pending || 0) + (data.zver.pending_return || 0) + (data.zver.error || 0))) || 1)) * 100).toFixed(1)}%
+                    <h3 className={`text-4xl font-black tracking-tighter ${getEfficiencyColor(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100)}`}>
+                      {(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100).toFixed(1)}%
                     </h3>
                   </div>
                   <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner flex-shrink-0">
@@ -1179,7 +1185,7 @@ export default function Dashboard() {
                   <div className="flex items-baseline gap-4">
                     <span className="text-emerald-200 text-3xl font-medium">R$</span>
                     <h3 className="text-7xl font-black text-white tracking-tighter drop-shadow-lg">
-                      {formatCurrency(data.zver.value_success).replace('R$', '').trim()}
+                      {data?.zver?.value_success ? formatCurrency(data.zver.value_success).replace('R$', '').trim() : '0,00'}
                     </h3>
                   </div>
                 </div>
@@ -1194,15 +1200,15 @@ export default function Dashboard() {
 
                 <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2 flex flex-col justify-center">
                   <p className="text-rose-400 font-black text-[10px] uppercase tracking-widest">Financeiro Bloqueado</p>
-                  <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_error)}</p>
+                  <p className="text-white text-2xl font-black">{formatCurrency(data?.zver?.value_error || 0)}</p>
                   <div className="w-full h-1 bg-white/10 rounded-full mt-2">
-                     <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(data.zver.value_error / Math.max(1, data.zver.value_success)) * 100}%` }}></div>
+                     <div className="h-full bg-rose-500 rounded-full" style={{ width: `${((data?.zver?.value_error || 0) / Math.max(1, data?.zver?.value_success || 0)) * 100}%` }}></div>
                   </div>
                 </div>
 
                 <div className="bg-black/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 space-y-2 flex flex-col justify-center">
                   <p className="text-amber-400 font-black text-[10px] uppercase tracking-widest">Em Processamento</p>
-                  <p className="text-white text-2xl font-black">{formatCurrency(data.zver.value_pending + data.zver.value_pending_return)}</p>
+                  <p className="text-white text-2xl font-black">{formatCurrency((data?.zver?.value_pending || 0) + (data?.zver?.value_pending_return || 0))}</p>
                   <div className="w-full h-1 bg-white/10 rounded-full mt-2">
                      <div className="h-full bg-amber-400 rounded-full" style={{ width: '40%' }}></div>
                   </div>
