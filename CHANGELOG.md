@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.6] - 2026-04-27
+### Corrigido
+- **Estabilidade Global (Exhaustive Hotfix)**: Varredura completa e implementação de proteções contra dados nulos em todos os módulos do dashboard (Gráficos, Modais, KPIs de ZVER, ZAJU e VK11). Garantia de resiliência total da interface durante o carregamento assíncrono de dados.
+
+---
+
 ## [2.3.5] - 2026-04-27
 ### Corrigido
 - **Estabilidade (Hotfix)**: Implementação de *Optional Chaining* (`?.`) e proteções contra valores `undefined` que causavam a quebra da interface (White Screen) durante o carregamento inicial dos dados ou transição entre abas.

@@ -680,9 +680,9 @@ export default function Dashboard() {
     setInconsistencyLoading(true);
     try {
       const integracoes = [
-        { Tipo: 'VK11 (Orçamento)', Sucesso: data.vk11.success, Pendente: data.vk11.pending, Erro: data.vk11.error, PendenteRetorno: 0, Total: data.vk11.success + data.vk11.pending + data.vk11.error },
-        { Tipo: 'ZAJUS (Ajustes)', Sucesso: data.zaju.success, Pendente: data.zaju.pending, Erro: data.zaju.error, PendenteRetorno: data.zaju.pending_return, Total: data.zaju.total },
-        { Tipo: 'ZVER (Pagamentos)', Sucesso: data.zver.success, Pendente: data.zver.pending, Erro: data.zver.error, PendenteRetorno: data.zver.pending_return, Total: data.zver.success + data.zver.pending + data.zver.error + data.zver.pending_return }
+        { Tipo: 'VK11 (Orçamento)', Sucesso: data?.vk11?.success || 0, Pendente: data?.vk11?.pending || 0, Erro: data?.vk11?.error || 0, PendenteRetorno: 0, Total: (data?.vk11?.success || 0) + (data?.vk11?.pending || 0) + (data?.vk11?.error || 0) },
+        { Tipo: 'ZAJUS (Ajustes)', Sucesso: data?.zaju?.success || 0, Pendente: data?.zaju?.pending || 0, Erro: data?.zaju?.error || 0, PendenteRetorno: data?.zaju?.pending_return || 0, Total: data?.zaju?.total || 0 },
+        { Tipo: 'ZVER (Pagamentos)', Sucesso: data?.zver?.success || 0, Pendente: data?.zver?.pending || 0, Erro: data?.zver?.error || 0, PendenteRetorno: data?.zver?.pending_return || 0, Total: (data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.error || 0) + (data?.zver?.pending_return || 0) }
       ];
       
       const inconsistencias = Object.entries(data.errors).map(([key, value]) => ({
@@ -1146,11 +1146,11 @@ export default function Dashboard() {
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
                    <div className="text-right flex-grow pl-3">
                      <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
-                     <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data.zver.value_pending_return)}</p>
+                     <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
                  </div>
                  <div>
-                   <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data.zver.pending_return}</h4>
+                   <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zver?.pending_return || 0}</h4>
                    <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Pendente Retorno SAP</p>
                  </div>
                </div>
@@ -1160,11 +1160,11 @@ export default function Dashboard() {
                   <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={20} /></div>
                   <div className="text-right flex-grow pl-3">
                     <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Bloqueados</p>
-                    <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data.zver.value_error)}</p>
+                    <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data?.zver?.value_error || 0)}</p>
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-3xl font-black text-rose-600 tracking-tighter">{data.zver.error}</h4>
+                  <h4 className="text-3xl font-black text-rose-600 tracking-tighter">{data?.zver?.error || 0}</h4>
                   <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Falhas Detectadas</p>
                 </div>
               </div>
@@ -1194,7 +1194,7 @@ export default function Dashboard() {
               <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                 <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 space-y-2 flex flex-col justify-center">
                   <p className="text-emerald-200 font-black text-[10px] uppercase tracking-widest">Volume Mensal</p>
-                  <p className="text-white font-black text-2xl">{data.zver.total}</p>
+                  <p className="text-white font-black text-2xl">{data?.zver?.total || 0}</p>
                   <p className="text-[10px] uppercase font-bold text-emerald-300 tracking-widest">Operações Realizadas</p>
                 </div>
 
@@ -1215,7 +1215,7 @@ export default function Dashboard() {
                 </div>
 
                 <button 
-                  onClick={() => exportCategory('pagamentos_sucesso', data.zver.success)}
+                  onClick={() => exportCategory('pagamentos_sucesso', data?.zver?.success || 0)}
                   className="bg-emerald-400 hover:bg-emerald-300 text-emerald-900 border border-emerald-300 p-6 rounded-3xl shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-1 active:translate-y-0 group flex flex-col items-center justify-center gap-3"
                 >
                   <Download size={24} className="opacity-80 group-hover:scale-110 transition-transform" />
@@ -1241,7 +1241,7 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="p-4 space-y-2">
-                  {data.zver.top_clients && data.zver.top_clients.length > 0 ? (
+                  {data?.zver?.top_clients && data.zver.top_clients.length > 0 ? (
                     data.zver.top_clients.map((client, index) => (
                       <div key={client.id} className="group p-4 flex items-center justify-between rounded-2xl hover:bg-emerald-50/50 transition-all border border-transparent hover:border-emerald-100">
                         <div className="flex items-center gap-5">
@@ -1419,7 +1419,7 @@ export default function Dashboard() {
 
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                 <p className="text-sm font-medium text-slate-500 mb-1 uppercase tracking-wider text-center">Pendente Retorno</p>
-                <h3 className="text-3xl font-bold text-indigo-600 text-center">{data.zaju.pending_return}</h3>
+                <h3 className="text-3xl font-bold text-indigo-600 text-center">{data?.zaju?.pending_return || 0}</h3>
               </div>
 
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
