@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.22] - 2026-04-27
+### Corrigido
+- **Restauração de Arquitetura JSX**: Corrigida a quebra estrutural entre as abas VK11 e ZAJU. Restaurada a lógica de renderização condicional e o aninhamento correto de blocos, resolvendo definitivamente o erro de build em produção.
+
+---
+
 ## [2.3.21] - 2026-04-27
 ### Corrigido
 - **Hotfix de Estabilidade (JSX Syntax)**: Removido fechamento de bloco duplicado que estava impedindo o build no ambiente de produção (Vercel).

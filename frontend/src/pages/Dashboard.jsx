@@ -1457,7 +1457,14 @@ export default function Dashboard() {
                     </tbody>
                  </table>
                </div>
-             {/* Top Summaries */}
+             </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'zaju' && (
+          <div className="space-y-8 animate-in fade-in duration-500 pb-12">
+            {/* Top Summaries */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full border-l-4 border-l-slate-800">
                 <p className="text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Volume Total</p>
