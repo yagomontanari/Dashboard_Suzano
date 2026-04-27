@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.2] - 2026-04-27
+### Alterado
+- **UX/UI (Alinhamento de Cockpit)**: 
+    - Implementação de alinhamento simétrico nos cards de KPI da aba de pagamentos. 
+    - Adição de alturas mínimas nos containers de etiquetas e uso de `flex-grow` para garantir paridade horizontal dos valores monetários e índices principais, mesmo em condições de quebra de texto (ex: "Aguardando Retorno").
+
+---
+
 ## [2.3.1] - 2026-04-27
 ### Adicionado
 - **Detalhamento de Fluxo Financeiro (ZVER)**:
