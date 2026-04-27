@@ -1580,50 +1580,51 @@ export default function Dashboard() {
               })()}
             </div>
 
-            {/* Sub-Tabs Navigation */}
-            <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-xl w-fit border border-slate-200 shadow-inner">
-              {[
-                { id: 'promo', label: 'Verba Promo & Ações', icon: <HandCoins size={14} /> },
-                { id: 'contrato', label: 'Verba de Contrato', icon: <FileText size={14} /> },
-                { id: 'acordos', label: 'Acordos (Plan/Apur/Pgto)', icon: <Grip size={14} /> }
-              ].map((sub) => (
-                <button
-                  key={sub.id}
-                  onClick={() => setZajuSubTab(sub.id)}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-black transition-all duration-300 ${
-                    zajuSubTab === sub.id 
-                      ? 'bg-white text-blue-600 shadow-md scale-105' 
-                      : 'text-slate-500 hover:bg-white/50'
-                  }`}
-                >
-                  {sub.icon}
-                  {sub.label}
-                  {zajuSubTab === sub.id && (
-                    <span className="ml-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                  )}
-                </button>
-              ))}
-            </div>
+            {/* Main Content: ZAJU Tables Card with Integrated Tabs Header */}
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-500">
+              
+              {/* Card Header: Integrated Navigation Tabs */}
+              <div className="flex flex-wrap border-b border-slate-200 bg-slate-50/50 px-4 pt-4 gap-2">
+                {[
+                  { id: 'promo', label: 'Verba Promo & Ações', icon: <HandCoins size={16} />, data: groupedZaju.promo, color: 'text-pink-500' },
+                  { id: 'contrato', label: 'Verba de Contrato', icon: <FileText size={16} />, data: groupedZaju.contrato, color: 'text-blue-500' },
+                  { id: 'acordos', label: 'Acordos (Plan/Apur/Pgto)', icon: <Grip size={16} />, data: groupedZaju.acordos, color: 'text-indigo-500' }
+                ].map((sub) => {
+                  const hasAlert = sub.data?.some(i => i.error > 0 || i.pending_return_critical > 0);
+                  const isActive = zajuSubTab === sub.id;
+                  return (
+                    <button
+                      key={sub.id}
+                      onClick={() => setZajuSubTab(sub.id)}
+                      className={`relative flex items-center gap-2 px-6 py-3 text-sm font-black transition-all border-b-2 rounded-t-lg -mb-[1px] ${
+                        isActive 
+                          ? 'border-blue-600 text-blue-700 bg-white shadow-[0_-4px_10px_-5px_rgba(0,0,0,0.05)]' 
+                          : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100/50'
+                      }`}
+                    >
+                      <span className={isActive ? sub.color : 'opacity-70'}>{sub.icon}</span>
+                      {sub.label}
+                      {hasAlert && (
+                        <span className="absolute top-2.5 right-2 flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                        </span>
+                      )}
+                      {isActive && !hasAlert && (
+                         <span className="ml-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-            {/* Main Content: Categorized Sections with Switch Logic */}
-            <div className="animate-in slide-in-from-bottom-4 duration-500">
+              {/* Sections Switch Logic */}
               {[
-                { id: 'promo', title: 'Verba Promo & Ações', data: groupedZaju.promo, icon: <HandCoins className="text-pink-500" size={20} /> },
-                { id: 'contrato', title: 'Verba de Contrato', data: groupedZaju.contrato, icon: <FileText className="text-blue-500" size={20} /> },
-                { id: 'acordos', title: 'Acordos (Planejamento / Apuração / Pagamento)', data: groupedZaju.acordos, icon: <Grip size={20} className="text-indigo-500" /> }
+                { id: 'promo', title: 'Verba Promo & Ações', data: groupedZaju.promo },
+                { id: 'contrato', title: 'Verba de Contrato', data: groupedZaju.contrato },
+                { id: 'acordos', title: 'Acordos (Planejamento / Apuração / Pagamento)', data: groupedZaju.acordos }
               ].filter(section => section.id === zajuSubTab).map((section, sIdx) => (
-                <div key={sIdx} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                  <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-800 flex items-center gap-3">
-                        <div className="p-2 bg-white rounded-lg shadow-sm border border-slate-100">
-                          {section.icon}
-                        </div>
-                        {section.title}
-                      </h3>
-                      <p className="text-sm text-slate-500 ml-12">Monitoramento exclusivo: {section.title}</p>
-                    </div>
-                  </div>
+                <div key={sIdx} className="flex flex-col">
                   
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[800px]">
@@ -1692,15 +1693,15 @@ export default function Dashboard() {
                                 </td>
                                 <td className="py-8 px-8">
                                   <div className="flex flex-col gap-3 min-w-[260px]">
-                                    <div className="flex justify-between text-[11px] font-black uppercase tracking-widest mb-1">
+                                    <div className="flex justify-between text-[13px] font-black uppercase tracking-widest mb-1.5">
                                       <span className="text-emerald-600 flex items-center gap-1.5 flex-wrap">
-                                        <CheckCircle2 size={14} /> {item.success} Integrados
+                                        <CheckCircle2 size={16} /> {item.success} Integrados
                                         {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && (
-                                           <span className="text-[8px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md tracking-normal">(Ref. Fechamento Anterior)</span>
+                                           <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md tracking-normal">(Ref. Fechamento Anterior)</span>
                                         )}
                                       </span>
                                       <span className={`flex items-center gap-1.5 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
-                                        <XCircle size={14} /> {item.error} Erros
+                                        <XCircle size={16} /> {item.error} Erros
                                       </span>
                                     </div>
                                     <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner border border-slate-200">
@@ -1709,28 +1710,28 @@ export default function Dashboard() {
                                       <div className="bg-indigo-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(99,102,241,0.3)]" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
                                       <div className="bg-rose-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(244,63,94,0.3)]" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
                                     </div>
-                                    <div className="flex justify-between text-[11px] text-slate-500 font-black tracking-normal mt-1 items-start">
-                                      <div className="flex flex-col gap-1">
+                                    <div className="flex justify-between text-xs text-slate-500 font-bold tracking-normal mt-1.5 items-start">
+                                      <div className="flex flex-col gap-1.5">
                                         <span className="flex items-center gap-1.5 opacity-90">
-                                          <div className="w-2 h-2 rounded-full bg-amber-400 shadow-sm" /> Em Processamento: {item.pending}
+                                          <div className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-sm" /> Em Processamento: <span className="font-black">{item.pending}</span>
                                           {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && item.pending > 0 && (
-                                             <span className="text-[8px] font-bold px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-md tracking-normal">(Ref. Mês Atual)</span>
+                                             <span className="text-[9px] font-bold px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-md tracking-normal">(Ref. Mês Atual)</span>
                                           )}
                                         </span>
                                         <span className="flex items-center gap-1.5 opacity-90">
-                                          <div className={`w-2 h-2 rounded-full shadow-sm ${item.pending_return_critical > 0 ? 'bg-rose-500 animate-pulse' : 'bg-indigo-500'}`} /> 
-                                          <span className={item.pending_return_critical > 0 ? 'text-rose-600 font-bold' : ''}>Aguardando Retorno: {item.pending_return}</span>
+                                          <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${item.pending_return_critical > 0 ? 'bg-rose-500 animate-pulse' : 'bg-indigo-500'}`} /> 
+                                          <span className={item.pending_return_critical > 0 ? 'text-rose-600 font-black' : 'font-black'}>Aguardando Retorno: {item.pending_return}</span>
                                           {item.pending_return_critical > 0 && (
-                                             <span className="text-[8px] font-black px-1.5 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 rounded-md tracking-normal flex items-center gap-0.5 uppercase">
-                                                <AlertCircle size={10} /> {item.pending_return_critical} Atrasados (&gt;2 dias)
+                                             <span className="text-[9px] font-black px-1.5 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 rounded-md tracking-normal flex items-center gap-0.5 uppercase">
+                                                <AlertCircle size={12} /> {item.pending_return_critical} Atrasados (&gt;2 dias)
                                              </span>
                                           )}
                                           {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && item.pending_return > 0 && (
-                                             <span className="text-[8px] font-bold px-1.5 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-md tracking-normal">(Ref. Mês Atual)</span>
+                                             <span className="text-[9px] font-bold px-1.5 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-md tracking-normal">(Ref. Mês Atual)</span>
                                           )}
                                         </span>
                                       </div>
-                                      <span className={`px-2 py-0.5 rounded-md font-bold ${
+                                      <span className={`px-2.5 py-1 rounded-md font-black tracking-widest uppercase text-[10px] ${
                                         (item.success/item.total)*100 >= 98 ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' :
                                         (item.success/item.total)*100 >= 90 ? 'text-amber-700 bg-amber-50 border border-amber-100' :
                                         'text-rose-700 bg-rose-50 border border-rose-100'

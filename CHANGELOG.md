@@ -4,6 +4,16 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.31] - 2026-04-27
+### Alterado
+- **Navegação ZAJU em Abas Nativas**: A arquitetura de navegação por *pills* flutuantes foi totalmente reestruturada para um modelo de "Folder Tabs" integradas nativamente ao cabeçalho do container principal de dados. 
+- **Typography Upscale**: As fontes das colunas de acompanhamento de status ('Status de Integração e Saúde') foram redimensionadas e fortalecidas para ampliar a legibilidade executiva do dashboard.
+
+### Adicionado
+- **Notificador Inteligente de Abas (Smart Badges)**: Cada aba da respectiva rotina ZAJU agora exibe um alert icon pulsante (`Ping`) caso identifique registros críticos (como SLAs atrasados ou bugs listados na aba) — permitindo uma triagem sem precisar abrir todas as tabelas cegas.
+
+---
+
 ## [2.3.30] - 2026-04-27
 ### Adicionado
 - **Destaque de SLA Crítico ZAJU**: Incluído cálculo na extração do banco (`pending_return_critical`) para identificar itens "Pendente Retorno" travados no SAP por mais de 2 dias. No frontend, estes itens disparam um alerta visual dinâmico em vermelho pulsante listando a quantidade de faturas atrasadas (Ex: `X Atrasados (>2 dias)`).
