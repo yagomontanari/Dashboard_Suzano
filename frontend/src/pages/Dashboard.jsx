@@ -1677,8 +1677,13 @@ export default function Dashboard() {
                                           )}
                                         </span>
                                         {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && (
-                                          <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-100 mt-1 max-w-[280px] leading-tight">
-                                            ℹ️ Integrado somente a partir do dia 01 do mês seguinte ao período
+                                          <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1.5 rounded border border-amber-100 mt-2 max-w-[280px] leading-tight font-medium">
+                                            <span className="font-bold">Ciclo de Integração:</span> Ocorre a partir do dia 01 do mês seguinte ao período.
+                                          </span>
+                                        )}
+                                        {item.type === 'ZAJU_CUTOFF_MES_CORRENTE' && (
+                                          <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-1.5 rounded border border-indigo-100 mt-2 max-w-[280px] leading-tight font-medium">
+                                            <span className="font-bold">Ciclo de Integração:</span> Ocorre somente no último dia do mês corrente.
                                           </span>
                                         )}
                                       </p>
@@ -1688,8 +1693,11 @@ export default function Dashboard() {
                                 <td className="py-8 px-8">
                                   <div className="flex flex-col gap-3 min-w-[260px]">
                                     <div className="flex justify-between text-[11px] font-black uppercase tracking-widest mb-1">
-                                      <span className="text-emerald-600 flex items-center gap-1.5">
+                                      <span className="text-emerald-600 flex items-center gap-1.5 flex-wrap">
                                         <CheckCircle2 size={14} /> {item.success} Integrados
+                                        {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && (
+                                           <span className="text-[8px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md tracking-normal">(Ref. Fechamento Anterior)</span>
+                                        )}
                                       </span>
                                       <span className={`flex items-center gap-1.5 ${item.error > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
                                         <XCircle size={14} /> {item.error} Erros
@@ -1701,9 +1709,21 @@ export default function Dashboard() {
                                       <div className="bg-indigo-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(99,102,241,0.3)]" style={{ width: `${(item.pending_return/(item.total || 1))*100}%` }}></div>
                                       <div className="bg-rose-500 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(244,63,94,0.3)]" style={{ width: `${(item.error/(item.total || 1))*100}%` }}></div>
                                     </div>
-                                    <div className="flex justify-between text-[11px] text-slate-500 font-black tracking-normal mt-1">
-                                      <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-amber-400 shadow-sm" /> Em Processamento: {item.pending}</span>
-                                      <span className="flex items-center gap-1.5 opacity-90"><div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm" /> Aguardando Retorno: {item.pending_return}</span>
+                                    <div className="flex justify-between text-[11px] text-slate-500 font-black tracking-normal mt-1 items-start">
+                                      <div className="flex flex-col gap-1">
+                                        <span className="flex items-center gap-1.5 opacity-90">
+                                          <div className="w-2 h-2 rounded-full bg-amber-400 shadow-sm" /> Em Processamento: {item.pending}
+                                          {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && item.pending > 0 && (
+                                             <span className="text-[8px] font-bold px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-md tracking-normal">(Ref. Mês Atual)</span>
+                                          )}
+                                        </span>
+                                        <span className="flex items-center gap-1.5 opacity-90">
+                                          <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm" /> Aguardando Retorno: {item.pending_return}
+                                          {item.type === 'ZAJU_CUTOFF_MES_ANTERIOR' && item.pending_return > 0 && (
+                                             <span className="text-[8px] font-bold px-1.5 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-md tracking-normal">(Ref. Mês Atual)</span>
+                                          )}
+                                        </span>
+                                      </div>
                                       <span className={`px-2 py-0.5 rounded-md font-bold ${
                                         (item.success/item.total)*100 >= 98 ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' :
                                         (item.success/item.total)*100 >= 90 ? 'text-amber-700 bg-amber-50 border border-amber-100' :
