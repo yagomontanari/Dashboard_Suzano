@@ -1689,7 +1689,7 @@ export default function Dashboard() {
                              onClick={() => handleOpenModal('zaju')}
                              className="w-full mt-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-[0.15em] rounded-xl shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0"
                            >
-                             Resolver Log
+                             Acessar Log
                            </button>
                          )}
                        </div>
