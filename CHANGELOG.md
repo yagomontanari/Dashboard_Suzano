@@ -4,12 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.46] - 2026-04-28
-### Corrigido
-- **Backend**: Corrigida extração de campos em branco no relatório ZAJU através da sincronização de aliases SQL com os nomes técnicos do banco de dados (`numfat_integracao`, `numov_integracao`, `tipo_doc`, `unidade_medida`).
-- **Backend**: Refatorada a divisão de abas do Excel ZAJU para garantir que registros sem ID de verba específico sejam incluídos na aba "Promo & Ações" (catch-all), evitando perda de dados.
+## [2.3.47] - 2026-04-28
+### Alterado
+- **Relatórios**: Padronização total do layout de exportação ZAJU com 23 colunas, seguindo rigorosamente os labels e fontes de dados solicitados (Erros de Integração, Orçamento, Linha Investimento, etc.).
+- **Backend**: Corrigidos vínculos de colunas técnicas (`numfat`, `numov`) e labels de moeda/provisão no Excel.
 
-## [2.3.45] - 2026-04-28
+## [2.3.46] - 2026-04-28
 
 ---
 

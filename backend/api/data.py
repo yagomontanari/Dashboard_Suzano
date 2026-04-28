@@ -401,7 +401,7 @@ async def bg_generate_zaju_report(
             df = pd.DataFrame([dict(r) for r in rows])
 
             # Ajuste de pontuacao para o Padrao BRL
-            colunas_numericas = ["Valor Bruto", "Valor Liquido", "Provisão"]
+            colunas_numericas = ["Valor Bruto", "Valor Líquido", "Valor Provisão"]
             for col in colunas_numericas:
                 if col in df.columns:
                     df[col] = pd.to_numeric(df[col], errors="coerce").apply(
@@ -424,29 +424,29 @@ async def bg_generate_zaju_report(
                 df_promo = df.copy() # Se nao tiver a coluna, joga tudo no promo
 
             ordem_colunas = [
-                "Orcamento",
-                "Linha de Investimento",
-                "Tipo",
-                "Cliente",
-                "Nota Fiscal",
-                "VKORG",
-                "Nº Doc Fat",
+                "Erros de Integração",
+                "Orçamento",
+                "Linha Investimento",
+                "Tipo Linha Investimento",
+                "Cód. Cliente",
+                "Nome Cliente",
+                "Nº Nota Fiscal",
+                "Nº Documento",
                 "Valor Bruto",
-                "Valor Liquido",
-                "Provisão",
-                "Data Criação",
-                "Tipo Integração",
+                "Valor Líquido",
+                "VKORG",
+                "Valor Provisão",
+                "Criação Integração",
                 "Tipo Documento",
                 "Sequencial",
                 "Material",
-                "Unidade de Medida",
-                "Condition Type",
-                "Moeda",
+                "Unidade Medida",
+                "Tipo Condição",
                 "Status",
-                "Numfat Integração",
-                "Numov Integração",
-                "Data Integração",
-                "Erros"
+                "NUMOV Integracao",
+                "NUMFAT Integração",
+                "Data Integração SAP",
+                "Última Alteração"
             ]
 
             # Reordenar colunas existentes
