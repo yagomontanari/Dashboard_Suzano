@@ -114,7 +114,7 @@ class MailService:
         return f"""
         <html>
             <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #334155; margin: 0; padding: 0; background-color: #f1f5f9;">
-                <div style="max-width: 700px; margin: 40px auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);">
+                <div style="max-width: 850px; margin: 40px auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);">
                     <!-- Header -->
                     <div style="background-color: #0f172a; padding: 40px 20px; text-align: center;">
                         <img src="{logo_suzano}" alt="Suzano" style="height: 45px; margin-bottom: 12px; display: inline-block;">
@@ -248,79 +248,76 @@ class MailService:
         <div style="margin-bottom: 30px;">
             
             <!-- VK11 -->
-            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #22c55e; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 800; color: #166534; text-transform: uppercase;">📊 VK11 (Orçamento)</h3>
+            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 5px solid #22c55e; border-radius: 8px; padding: 25px; margin-bottom: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <h3 style="margin: 0 0 18px 0; font-size: 15px; font-weight: 800; color: #166534; text-transform: uppercase;">📊 VK11 (Orçamento)</h3>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #166534;">✅ Integrados</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #15803d; text-align: right;">{data['vk11']['success']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #166534;">✅ Integrados</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #15803d; text-align: right;">{data['vk11']['success']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #166534;">⏳ Pendentes</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #15803d; text-align: right;">{data['vk11']['pending']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #166534;">⏳ Pendentes</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #15803d; text-align: right;">{data['vk11']['pending']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #dc2626;">❌ Com Erro</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #dc2626; text-align: right;">{data['vk11']['error']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #dc2626;">❌ Com Erro</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #dc2626; text-align: right;">{data['vk11']['error']}</td>
                     </tr>
                 </table>
             </div>
 
             <!-- ZAJU -->
-            <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid #0ea5e9; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 800; color: #075985; text-transform: uppercase;">🔄 ZAJU (Ajuste de Provisão)</h3>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+            <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-left: 5px solid #0ea5e9; border-radius: 8px; padding: 25px; margin-bottom: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <h3 style="margin: 0 0 18px 0; font-size: 15px; font-weight: 800; color: #075985; text-transform: uppercase;">🔄 ZAJU (Ajuste de Provisão)</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #075985;">✅ Integrados</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #0369a1; text-align: right;">{data['zaju']['total_integrado']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #075985;">✅ Integrados</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #0369a1; text-align: right;">{data['zaju']['total_integrado']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #075985;">⏳ Pendentes</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #0369a1; text-align: right;">{data['zaju']['total_pendente']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #075985;">⏳ Pendentes</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #0369a1; text-align: right;">{data['zaju']['total_pendente']}</td>
                     </tr>
                 </table>
-                <div style="background-color: #ffffff; border: 1px dashed #bae6fd; border-radius: 6px; padding: 10px; margin-bottom: 10px;">
-                    <p style="margin: 0 0 5px 0; font-size: 11px; font-weight: 700; color: #0284c7; text-transform: uppercase;">Detalhamento Pendentes</p>
+                <div style="background-color: #ffffff; border: 1px dashed #bae6fd; border-radius: 6px; padding: 15px; margin-bottom: 12px;">
+                    <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">Detalhamento Pendentes</p>
                     <table style="width: 100%; border-collapse: collapse;">
-                        <tr><td style="font-size: 11px; color: #475569;">Verba Nominal/Fixa</td><td style="font-size: 11px; font-weight: 700; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['Verba Nominal/Fixa']}</td></tr>
-                        <tr><td style="font-size: 11px; color: #475569;">Verba Off</td><td style="font-size: 11px; font-weight: 700; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['Verba Off']}</td></tr>
-                        <tr><td style="font-size: 11px; color: #475569;">CutOff Mês Corrente</td><td style="font-size: 11px; font-weight: 700; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['CutOff Mes_Corrente']}</td></tr>
-                        <tr><td style="font-size: 11px; color: #475569;">CutOff Mês Anterior</td><td style="font-size: 11px; font-weight: 700; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['CutOff Mes_Anterior']}</td></tr>
-                        <tr><td style="font-size: 11px; color: #475569;">ZAJU Pgto</td><td style="font-size: 11px; font-weight: 700; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['ZAJU_AJUSTE_PGTO']}</td></tr>
-                        <tr><td style="font-size: 11px; color: #475569;">Pgto Reprovado</td><td style="font-size: 11px; font-weight: 700; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['ZAJU_PGTO_REPROVADO']}</td></tr>
+                        <tr><td style="padding: 4px 0; font-size: 13px; color: #475569;">Verba Promo & Ações</td><td style="padding: 4px 0; font-size: 13px; font-weight: 800; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['Verba Promo & Ações']}</td></tr>
+                        <tr><td style="padding: 4px 0; font-size: 13px; color: #475569;">Verbas de contrato</td><td style="padding: 4px 0; font-size: 13px; font-weight: 800; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['Verbas de contrato']}</td></tr>
+                        <tr><td style="padding: 4px 0; font-size: 13px; color: #475569;">Acordos</td><td style="padding: 4px 0; font-size: 13px; font-weight: 800; color: #0f172a; text-align: right;">{data['zaju']['detalhamento_pendentes']['Acordos']}</td></tr>
                     </table>
                 </div>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #dc2626;">❌ Com Erro</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #dc2626; text-align: right;">{data['zaju']['total_erro']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #dc2626;">❌ Com Erro</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #dc2626; text-align: right;">{data['zaju']['total_erro']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #d97706;">🔄 Retorno Pendente SAP</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #d97706; text-align: right;">{data['zaju']['total_retorno']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #d97706;">🔄 Retorno Pendente SAP</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['zaju']['total_retorno']}</td>
                     </tr>
                 </table>
             </div>
 
             <!-- ZVER -->
-            <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 800; color: #991b1b; text-transform: uppercase;">💳 ZVER (Pagamentos)</h3>
+            <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-left: 5px solid #ef4444; border-radius: 8px; padding: 25px; margin-bottom: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <h3 style="margin: 0 0 18px 0; font-size: 15px; font-weight: 800; color: #991b1b; text-transform: uppercase;">💳 ZVER (Pagamentos)</h3>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #991b1b;">✅ Integrados</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #b91c1c; text-align: right;">{data['zver']['success']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #991b1b;">✅ Integrados</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #b91c1c; text-align: right;">{data['zver']['success']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #991b1b;">⏳ Pendentes</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #b91c1c; text-align: right;">{data['zver']['pending']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #991b1b;">⏳ Pendentes</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #b91c1c; text-align: right;">{data['zver']['pending']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #dc2626;">❌ Com Erro</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #dc2626; text-align: right;">{data['zver']['error']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #dc2626;">❌ Com Erro</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #dc2626; text-align: right;">{data['zver']['error']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; font-size: 13px; color: #d97706;">🔄 Retorno Pendente SAP</td>
-                        <td style="padding: 4px 0; font-size: 14px; font-weight: 800; color: #d97706; text-align: right;">{data['zver']['pending_return']}</td>
+                        <td style="padding: 6px 0; font-size: 14px; color: #d97706;">🔄 Retorno Pendente SAP</td>
+                        <td style="padding: 6px 0; font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['zver']['pending_return']}</td>
                     </tr>
                 </table>
             </div>

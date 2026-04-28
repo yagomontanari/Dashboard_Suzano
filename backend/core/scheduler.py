@@ -108,6 +108,15 @@ async def process_notification_job():
             periodo_nome = f"{meses[start_dt.month]} {start_dt.year}"
             arquivo_nome = f"Inconsistencias_{meses[start_dt.month]}_{start_dt.year}.xlsx"
 
+            # Categorias permitidas para Últimos Registros Recebidos
+            allowed_sync_cats = ["SELLIN", "CUTOFF", "PRODUTO", "CLIENTE", "PAGAMENTO_LIQUIDADO", "PRE_CADASTRO_USUARIO"]
+            filtered_last_sync = [r for r in last_sync_res if r["categoria"] in allowed_sync_cats]
+
+            # Tipos do ZAJU baseados no Frontend
+            promo_types = ['ZAJU_AJUSTE_VERBA_PERC', 'ZAJU_AJUSTE_VERBA_NOMI', 'ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE']
+            contrato_types = ['ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_CT_PERC_CRE', 'ZAJU_AJUSTE_VERBA_CT_PERC_COM', 'ZAJU_AJUSTE_VERBA_CT_PERC_LOG', 'ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE']
+            acordos_types = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO', 'ZAJU_AJUSTE_DEV_OFF']
+
             summary_data = {
                 "periodo": periodo_nome,
                 "vk11": vk11,
@@ -117,12 +126,9 @@ async def process_notification_job():
                     "total_erro": zaju["error"],
                     "total_retorno": zaju["pending_return"],
                     "detalhamento_pendentes": {
-                        "Verba Nominal/Fixa": sum(i["pending"] for i in zaju_details if 'NOMI' in i["type"] or 'Fixas' in i["category"]),
-                        "Verba Off": sum(i["pending"] for i in zaju_details if 'OFF' in i["type"] or 'Off' in i["category"]),
-                        "CutOff Mes_Corrente": sum(i["pending"] for i in zaju_details if i["type"] == 'ZAJU_CUTOFF_MES_CORRENTE'),
-                        "CutOff Mes_Anterior": sum(i["pending"] for i in zaju_details if i["type"] == 'ZAJU_CUTOFF_MES_ANTERIOR'),
-                        "ZAJU_AJUSTE_PGTO": sum(i["pending"] for i in zaju_details if i["type"] == 'ZAJU_AJUSTE_PGTO'),
-                        "ZAJU_PGTO_REPROVADO": sum(i["pending"] for i in zaju_details if i["type"] == 'ZAJU_PGTO_REPROVADO'),
+                        "Verba Promo & Ações": sum(i["pending"] for i in zaju_details if i["type"] in promo_types or (i.get("category") and 'PROMO' in i["category"].upper())),
+                        "Verbas de contrato": sum(i["pending"] for i in zaju_details if i["type"] in contrato_types or (i.get("category") and 'CONTRA' in i["category"].upper())),
+                        "Acordos": sum(i["pending"] for i in zaju_details if i["type"] in acordos_types),
                     }
                 },
                 "zver": zver,
@@ -134,7 +140,7 @@ async def process_notification_job():
                     "USUARIOS": counts.get("usuarios", 0),
                     "PAGAMENTOS": counts.get("pagamentos", 0)
                 },
-                "last_sync": last_sync_res
+                "last_sync": filtered_last_sync
             }
 
             # 5. Enviar E-mails
