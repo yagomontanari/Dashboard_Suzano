@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from core.database_app import get_app_db
-from api.data import get_current_user
+from api.data import get_current_user, get_current_user_optional
 from core.models_app import NotificationRecipient, NotificationSchedule, UserRole, User
+from core.config import settings
 
 router = APIRouter()
 
@@ -104,17 +105,22 @@ async def update_schedules(
 
 @router.post("/send-manual")
 async def trigger_manual_notification(
+    request: Request,
     db: AsyncSession = Depends(get_app_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user_optional)
 ):
-    if current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
+    # Verifica se é uma chamada autorizada via CRON_SECRET do Vercel ou via Usuário Admin
+    auth_header = request.headers.get("Authorization")
+    is_cron = auth_header == f"Bearer {settings.CRON_SECRET}" if settings.CRON_SECRET else False
+    
+    if not is_cron:
+        if not current_user or current_user.role != UserRole.ADMIN:
+            raise HTTPException(status_code=403, detail="Acesso restrito")
     
     from core.scheduler import process_notification_job
-    # Em ambientes serverless (Vercel/AWS Lambda), o uso de background tasks pode ser interrompido 
-    # assim que a resposta for enviada. É mais seguro aguardar a execução síncrona.
+    # Em ambientes serverless (Vercel), aguardamos a execução síncrona
     await process_notification_job()
     
-    return {"message": "Notificações enviadas com sucesso!"}
+    return {"message": "Notificações processadas com sucesso!"}
 
 from sqlalchemy import text

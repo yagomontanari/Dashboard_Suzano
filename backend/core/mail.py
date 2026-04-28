@@ -358,8 +358,8 @@ class MailService:
                     </tr>
                 </table>
 
-                <div style="background-color: #ffffff; border: 1px dashed #bae6fd; border-radius: 10px; padding: 20px; margin-bottom: 15px;">
-                    <p style="margin: 0 0 12px 0; font-size: 12px; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">Detalhamento de Pendências</p>
+                <div style="background-color: #fffbeb; border: 1px dashed #fde68a; border-radius: 10px; padding: 20px; margin-bottom: 15px;">
+                    <p style="margin: 0 0 12px 0; font-size: 12px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.05em;">Detalhamento de Pendências</p>
                     <table style="width: 100%; border-collapse: collapse;">
                         {zaju_rows_html}
                     </table>

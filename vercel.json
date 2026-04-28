@@ -9,5 +9,15 @@
       "entrypoint": "backend",
       "routePrefix": "/api"
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/notifications/send-manual",
+      "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/notifications/send-manual",
+      "schedule": "0 19 * * *"
+    }
+  ]
 }

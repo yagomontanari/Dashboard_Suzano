@@ -59,6 +59,29 @@ async def get_current_user(
         )
 
 
+async def get_current_user_optional(
+    token: Optional[str] = Depends(oauth2_scheme), db_app: AsyncSession = Depends(get_app_db)
+) -> Optional[User]:
+    if not token:
+        return None
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+
+        from sqlalchemy.future import select
+        result = await db_app.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+
+        if not user or user.status != UserStatus.APPROVED:
+            return None
+
+        return user
+    except JWTError:
+        return None
+
+
 @router.get("/dashboard")
 @limiter.limit("60/minute")
 async def get_dashboard_metrics(

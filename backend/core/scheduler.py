@@ -12,9 +12,12 @@ from core.models_app import NotificationRecipient, NotificationSchedule
 from core.mail import mail_service
 from api.queries import *
 
+from pytz import timezone
+import logging
+
 logger = logging.getLogger(__name__)
 
-scheduler = AsyncIOScheduler()
+scheduler = AsyncIOScheduler(timezone=timezone('America/Sao_Paulo'))
 
 async def fetch_data(session, q, p):
     res = await session.execute(q, p)
@@ -164,6 +167,9 @@ async def process_notification_job():
     except Exception as e:
         logger.error(f"Erro ao processar job de notificação: {e}")
 
+async def heartbeat_job():
+    logger.info(f"--- Scheduler Heartbeat: {datetime.now()} ---")
+
 async def restart_scheduler():
     """
     Sincroniza os jobs do scheduler com o banco de dados.
@@ -172,25 +178,39 @@ async def restart_scheduler():
     
     # Remover todos os jobs de cron existentes
     for job in scheduler.get_jobs():
-        if job.id.startswith("notif_"):
+        if job.id.startswith("notif_") or job.id == "heartbeat":
             scheduler.remove_job(job.id)
             
+    # Adicionar heartbeat
+    scheduler.add_job(heartbeat_job, 'interval', minutes=5, id='heartbeat')
+    logger.info("Job de Heartbeat (5min) configurado.")
+
     try:
         async with AsyncSessionLocalApp() as db_app:
             result = await db_app.execute(select(NotificationSchedule).where(NotificationSchedule.active == True))
             schedules = result.scalars().all()
             
+            if not schedules:
+                logger.info("Nenhum agendamento ativo encontrado no banco.")
+                return
+
             for s in schedules:
                 try:
-                    hour, minute = s.time.split(":")
+                    # Garantir que o formato HH:MM seja respeitado
+                    time_parts = s.time.split(":")
+                    if len(time_parts) != 2:
+                        logger.error(f"Formato de horário inválido (esperado HH:MM): {s.time} (ID: {s.id})")
+                        continue
+                        
+                    hour, minute = time_parts
                     scheduler.add_job(
                         process_notification_job,
-                        CronTrigger(hour=hour, minute=minute),
+                        CronTrigger(hour=hour, minute=minute, timezone=timezone('America/Sao_Paulo')),
                         id=f"notif_{s.id}"
                     )
-                    logger.info(f"Agendamento adicionado: {s.time} (ID: {s.id})")
-                except ValueError:
-                    logger.error(f"Formato de horário inválido: {s.time} (ID: {s.id})")
+                    logger.info(f"Agendamento ATIVADO: {s.time} (ID: {s.id})")
+                except Exception as e:
+                    logger.error(f"Erro ao adicionar job para {s.time}: {e}")
                     
     except Exception as e:
         logger.error(f"Erro ao sincronizar scheduler: {e}")

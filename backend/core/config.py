@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     
     # Segurança
     SECRET_KEY: str = "suzanodashboardsecretkey" # DEVE ser alterado via env em prod
+    CRON_SECRET: str | None = None
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:5173", 
         "http://localhost:3001",
