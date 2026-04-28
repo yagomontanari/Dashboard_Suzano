@@ -414,13 +414,14 @@ async def bg_generate_zaju_report(
                         )
                     )
 
-            # Separar Contrato vs Promo & Acoes
+            # Separar Contrato vs Promo & Acoes (Garantindo que todos os dados entrem em alguma aba)
             if not df.empty and "id_tipo_verba" in df.columns:
+                # Contrato: 9, 10. Todo o resto vai para Promo & Ações para não perder dados
                 df_contrato = df[df["id_tipo_verba"].isin([9, 10])].drop(columns=["id_tipo_verba"])
-                df_promo = df[df["id_tipo_verba"].isin([5, 6])].drop(columns=["id_tipo_verba"])
+                df_promo = df[~df["id_tipo_verba"].isin([9, 10])].drop(columns=["id_tipo_verba"])
             else:
                 df_contrato = pd.DataFrame()
-                df_promo = pd.DataFrame()
+                df_promo = df.copy() # Se nao tiver a coluna, joga tudo no promo
 
             ordem_colunas = [
                 "Orcamento",
@@ -448,10 +449,13 @@ async def bg_generate_zaju_report(
                 "Erros"
             ]
 
+            # Reordenar colunas existentes
             if not df_contrato.empty:
-                df_contrato = df_contrato[[c for c in ordem_colunas if c in df_contrato.columns]]
+                cols_present = [c for c in ordem_colunas if c in df_contrato.columns]
+                df_contrato = df_contrato[cols_present]
             if not df_promo.empty:
-                df_promo = df_promo[[c for c in ordem_colunas if c in df_promo.columns]]
+                cols_present = [c for c in ordem_colunas if c in df_promo.columns]
+                df_promo = df_promo[cols_present]
 
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine="openpyxl") as writer:

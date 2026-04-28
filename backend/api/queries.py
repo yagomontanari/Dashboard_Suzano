@@ -627,18 +627,18 @@ QUERY_RELATORIO_ZAJU = text("""
         sapmc.cond_value AS "Provisão",
         sapmc.dta_criacao AS "Data Criação",
         sapmc.purch_no_c AS "Tipo Integração",
-        sapmc.doc_type AS "Tipo Documento",
+        sapmc.tipo_doc AS "Tipo Documento",
         sapmc.sequencial AS "Sequencial",
         concat(sapmc.material, ' - ', p.nom_produto) AS "Material",
-        sapmc.target_qty AS "Unidade de Medida",
+        sapmc.unidade_medida AS "Unidade de Medida",
         sapmc.cond_type AS "Condition Type",
         sapmc.waerk AS "Moeda",
         sapmc.status AS "Status",
-        sapmc.numfat AS "Numfat Integração",
-        sapmc.numov AS "Numov Integração",
+        sapmc.numfat_integracao AS "Numfat Integração",
+        sapmc.numov_integracao AS "Numov Integração",
         sapmc.dta_integracao AS "Data Integração",
         sapmc.msg AS "Erros",
-        sapmc.id_tipo_verba -- Interno para separação de abas
+        o.id_tipo_verba -- Interno para separação de abas
     FROM suzano_ajuste_provisao_memoria_calculo sapmc
     LEFT JOIN orcamento o ON o.id = sapmc.id_orcamento
     LEFT JOIN sellin s ON sapmc.id_sellin = s.id 

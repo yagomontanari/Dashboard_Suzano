@@ -4,11 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.45] - 2026-04-28
-### Alterado
-- **UI/UX**: Renomeado botão de ação no card de Bloqueados de "Resolver Log" para "Acessar Log" para manter a consistência de navegação.
+## [2.3.46] - 2026-04-28
+### Corrigido
+- **Backend**: Corrigida extração de campos em branco no relatório ZAJU através da sincronização de aliases SQL com os nomes técnicos do banco de dados (`numfat_integracao`, `numov_integracao`, `tipo_doc`, `unidade_medida`).
+- **Backend**: Refatorada a divisão de abas do Excel ZAJU para garantir que registros sem ID de verba específico sejam incluídos na aba "Promo & Ações" (catch-all), evitando perda de dados.
 
-## [2.3.44] - 2026-04-28
+## [2.3.45] - 2026-04-28
 
 ---
 
