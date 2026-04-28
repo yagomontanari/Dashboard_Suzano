@@ -117,12 +117,15 @@ async def process_notification_job():
             contrato_types = ['ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_CT_PERC_CRE', 'ZAJU_AJUSTE_VERBA_CT_PERC_COM', 'ZAJU_AJUSTE_VERBA_CT_PERC_LOG']
             acordos_types = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO', 'ZAJU_AJUSTE_DEV_OFF']
 
-            # Agrupamento Granular
+            # Agrupamento Granular de Pendências
             zaju_groups = {
                 "Verba Promo & Ações": {i["type"]: i["pending"] for i in zaju_details if i["type"] in promo_types and i["pending"] > 0},
                 "Verbas de contrato": {i["type"]: i["pending"] for i in zaju_details if i["type"] in contrato_types and i["pending"] > 0},
                 "Acordos": {i["type"]: i["pending"] for i in zaju_details if i["type"] in acordos_types and i["pending"] > 0}
             }
+
+            # Detalhamento de Erros por Tipo (Granular)
+            zaju_error_det = {i["type"]: i["error"] for i in zaju_details if i["error"] > 0}
 
             summary_data = {
                 "periodo": periodo_nome,
@@ -132,7 +135,8 @@ async def process_notification_job():
                     "total_pendente": zaju["pending"],
                     "total_erro": zaju["error"],
                     "total_retorno": zaju["pending_return"],
-                    "detalhamento_pendentes": zaju_groups
+                    "detalhamento_pendentes": zaju_groups,
+                    "detalhamento_erros": zaju_error_det
                 },
                 "zver": zver,
                 "inconsistencias": {

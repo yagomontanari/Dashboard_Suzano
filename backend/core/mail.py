@@ -255,6 +255,10 @@ class MailService:
                 label_suffix = ""
                 if item_type in ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO']:
                     label_suffix = ' <span style="color: #dc2626; font-size: 10px; font-weight: 800;">(BLOQUEADO A PEDIDO DO CLIENTE)</span>'
+                elif item_type == 'ZAJU_CUTOFF_MES_CORRENTE':
+                    label_suffix = ' <span style="color: #0284c7; font-size: 10px; font-weight: 700;">(Integra no dia 30)</span>'
+                elif item_type == 'ZAJU_CUTOFF_MES_ANTERIOR':
+                    label_suffix = ' <span style="color: #0284c7; font-size: 10px; font-weight: 700;">(Integra no 1º dia do mês seguinte)</span>'
                 
                 zaju_rows_html += f"""
                 <tr>
@@ -263,19 +267,23 @@ class MailService:
                 </tr>
                 """
 
+        # Pre-gerar linhas do detalhamento de ERROS ZAJU
+        zaju_error_rows_html = ""
+        detalhe_erros = data['zaju'].get('detalhamento_erros', {})
+        for item_type, count in detalhe_erros.items():
+            zaju_error_rows_html += f"""
+            <tr>
+                <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #dc2626; font-family: monospace;">• {item_type}</td>
+                <td style="padding: 4px 0; font-size: 13px; font-weight: 700; color: #dc2626; text-align: right;">{count}</td>
+            </tr>
+            """
+
         content = f"""
         <div style="text-align: center; margin-bottom: 35px;">
             <h2 style="color: #0f172a; font-size: 28px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em;">Status das Integrações</h2>
             <p style="font-size: 16px; color: #64748b; margin: 0;">Relatório Consolidado • {data['periodo']}</p>
         </div>
         
-        <div style="background-color: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px; padding: 15px 20px; margin-bottom: 30px; display: flex; align-items: center;">
-            <span style="font-size: 20px; margin-right: 12px;">⚠️</span>
-            <p style="font-size: 14px; color: #9a3412; margin: 0; font-weight: 600;">
-                Atenção: Itens bloqueados (incluindo aqueles a pedido do cliente), reprovados ou com erro de validação não serão integrados ao SAP até que a pendência seja corrigida.
-            </p>
-        </div>
-
         <p style="font-size: 15px; color: #334155; margin-bottom: 30px; line-height: 1.6;">
             Olá. Segue abaixo o resumo executivo das integrações e o status das cargas de dados referente ao período de fechamento atual.
         </p>
@@ -326,6 +334,18 @@ class MailService:
                         <td style="padding: 8px 0; font-size: 14px; color: #dc2626;">Inconsistências (Erro)</td>
                         <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #dc2626; text-align: right;">{data['zaju']['total_erro']}</td>
                     </tr>
+                </table>
+                
+                {f'''
+                <div style="background-color: #fef2f2; border: 1px dashed #fecaca; border-radius: 10px; padding: 15px; margin-top: 5px; margin-bottom: 15px;">
+                    <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase;">Tipos com Erro</p>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        {zaju_error_rows_html}
+                    </table>
+                </div>
+                ''' if zaju_error_rows_html else ''}
+                
+                <table style="width: 100%; border-collapse: collapse;">
                     <tr>
                         <td style="padding: 8px 0; font-size: 14px; color: #d97706;">Aguardando Retorno SAP</td>
                         <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #d97706; text-align: right;">{data['zaju']['total_retorno']}</td>
