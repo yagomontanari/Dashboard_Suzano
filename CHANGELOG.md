@@ -4,11 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.52] - 2026-04-28
+## [2.3.53] - 2026-04-28
 ### Alterado
-- **Exportação**: Reestruturada a exportação detalhada do Log de Inconsistências ZAJU para o formato de 20 colunas, com labels personalizados e campos concatenados (Cliente e Material), conforme solicitado pela equipe operacional.
+- **Exportação**: Simplificados os nomes das colunas de "Cliente" e "Material" na exportação ZAJU.
+- **Exportação**: Aplicada a formatação de data e hora `DD/MM/AA HH:MM:SS` para todos os campos de timestamp no relatório detalhado de inconsistências ZAJU.
 
-## [2.3.51] - 2026-04-28
+## [2.3.52] - 2026-04-28
 
 ---
 

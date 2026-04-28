@@ -778,8 +778,8 @@ export default function Dashboard() {
         {key: 'orcamento', label: 'Orçamento'},
         {key: 'linha_investimento', label: 'Linha Investimento'},
         {key: 'tipo_linha_investimento', label: 'Tipo Linha Investimento'},
-        {key: 'cliente', label: 'Cliente (id_externo + nom_cliente)'},
-        {key: 'material_display', label: 'Material (sapmc.material + p.nom_produto)'},
+        {key: 'cliente', label: 'Cliente'},
+        {key: 'material_display', label: 'Material'},
         {key: 'unidade_medida', label: 'Unidade Medida'},
         {key: 'nro_nota_fiscal', label: 'Nº Nota Fiscal'},
         {key: 'nro_documento', label: 'Nº Documento'},
@@ -903,8 +903,13 @@ export default function Dashboard() {
           transformed.valor_pagamento = isNaN(numVal) ? val : formatCurrency(numVal);
         }
         if (cat === 'zaju') {
-          transformed.cliente = `${transformed.cod_cliente || ""} - ${transformed.nome_cliente || ""}`;
+          transformed.cliente = `${transformed.cod_cliente || ""} - ${transformed.nom_cliente || ""}`;
           transformed.material_display = `${transformed.material || ""} - ${transformed.nome_produto || ""}`;
+          
+          // Formatação de Datas
+          if (transformed.data_integracao) transformed.data_integracao = formatDateTime(transformed.data_integracao);
+          if (transformed.dta_criacao) transformed.dta_criacao = formatDateTime(transformed.dta_criacao);
+          if (transformed.dta_alteracao) transformed.dta_alteracao = formatDateTime(transformed.dta_alteracao);
         }
         return transformed;
       };
