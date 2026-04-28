@@ -9,11 +9,5 @@
       "entrypoint": "backend",
       "routePrefix": "/api"
     }
-  },
-  "crons": [
-    {
-      "path": "/api/notifications/process-scheduled",
-      "schedule": "0 * * * *"
-    }
-  ]
+  }
 }
