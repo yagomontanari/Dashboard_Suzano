@@ -234,21 +234,30 @@ class MailService:
             </tr>
             """
 
-        # Pre-gerar linhas do detalhamento ZAJU
+        # Pre-gerar linhas do detalhamento ZAJU (Agrupado)
         zaju_rows_html = ""
         detalhamento = data['zaju'].get('detalhamento_pendentes', {})
-        for idx, (label, value) in enumerate(detalhamento.items()):
-            border_style = "border-top: 1px solid #f1f5f9;" if idx > 0 else ""
+        
+        for cat_idx, (cat_name, items) in enumerate(detalhamento.items()):
+            if not items: continue # Pula categorias sem pendências
+            
+            # Cabeçalho da Categoria
+            border_top = "border-top: 1px solid #f1f5f9;" if cat_idx > 0 else ""
             zaju_rows_html += f"""
             <tr>
-                <td style="padding: 10px 0; vertical-align: middle; {border_style}">
-                    <div style="font-size: 13px; font-weight: 700; color: #0f172a;">{label}</div>
-                </td>
-                <td style="padding: 10px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-align: right; vertical-align: middle; {border_style}">
-                    {value}
+                <td colspan="2" style="padding: 12px 0 6px 0; font-size: 13px; font-weight: 800; color: #0f172a; {border_top}">
+                    {cat_name}
                 </td>
             </tr>
             """
+            # Itens da Categoria
+            for item_type, count in items.items():
+                zaju_rows_html += f"""
+                <tr>
+                    <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #64748b; font-family: monospace;">• {item_type}</td>
+                    <td style="padding: 4px 0; font-size: 13px; font-weight: 700; color: #334155; text-align: right;">{count}</td>
+                </tr>
+                """
 
         content = f"""
         <div style="text-align: center; margin-bottom: 35px;">
@@ -256,6 +265,13 @@ class MailService:
             <p style="font-size: 16px; color: #64748b; margin: 0;">Relatório Consolidado • {data['periodo']}</p>
         </div>
         
+        <div style="background-color: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px; padding: 15px 20px; margin-bottom: 30px; display: flex; align-items: center;">
+            <span style="font-size: 20px; margin-right: 12px;">⚠️</span>
+            <p style="font-size: 14px; color: #9a3412; margin: 0; font-weight: 600;">
+                Atenção: Itens bloqueados, reprovados ou com erro de validação não serão integrados ao SAP até que a pendência seja corrigida.
+            </p>
+        </div>
+
         <p style="font-size: 15px; color: #334155; margin-bottom: 30px; line-height: 1.6;">
             Olá. Segue abaixo o resumo executivo das integrações e o status das cargas de dados referente ao período de fechamento atual.
         </p>
