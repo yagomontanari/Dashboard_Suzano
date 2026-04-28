@@ -774,29 +774,24 @@ export default function Dashboard() {
       ];
       case 'zaju': return [
         {key: 'mensagem_retorno_integracao', label: 'Erros de Integração'},
-        {key: 'purch_no_c', label: 'ID Ajuste'},
+        {key: 'data_integracao', label: 'Data Integração SAP'},
         {key: 'orcamento', label: 'Orçamento'},
         {key: 'linha_investimento', label: 'Linha Investimento'},
         {key: 'tipo_linha_investimento', label: 'Tipo Linha Investimento'},
-        {key: 'cod_cliente', label: 'Cód. Cliente'},
-        {key: 'nome_cliente', label: 'Nome Cliente'},
-        {key: 'nro_nota_fiscal', label: 'NRO Nota Fiscal'},
-        {key: 'vkorg', label: 'VKORG'},
-        {key: 'nro_documento', label: 'NRO Documento'},
+        {key: 'cliente', label: 'Cliente (id_externo + nom_cliente)'},
+        {key: 'material_display', label: 'Material (sapmc.material + p.nom_produto)'},
+        {key: 'unidade_medida', label: 'Unidade Medida'},
+        {key: 'nro_nota_fiscal', label: 'Nº Nota Fiscal'},
+        {key: 'nro_documento', label: 'Nº Documento'},
         {key: 'valor_bruto', label: 'Valor Bruto'},
         {key: 'valor_liquido', label: 'Valor Líquido'},
+        {key: 'vkorg', label: 'VKORG'},
+        {key: 'purch_no_c', label: 'Tipo Integracao'},
         {key: 'valor_provisao', label: 'Valor Provisão'},
-        {key: 'dta_criacao', label: 'Criação Integração'},
         {key: 'tipo_doc', label: 'Tipo Documento'},
         {key: 'sequencial', label: 'Sequencial'},
-        {key: 'material', label: 'Código Material'},
-        {key: 'nome_produto', label: 'Nome Material'},
-        {key: 'unidade_medida', label: 'Unidade Medida'},
+        {key: 'dta_criacao', label: 'Criação Integração'},
         {key: 'cond_type', label: 'Tipo Condição'},
-        {key: 'status', label: 'Status'},
-        {key: 'numov_integracao', label: 'Numero OV'},
-        {key: 'numfat_integracao', label: 'Numero Faturamento'},
-        {key: 'data_integracao', label: 'Data Integração SAP'},
         {key: 'dta_alteracao', label: 'Última Alteração'}
       ];
       default: return getColumnsForCategory(category);
@@ -906,6 +901,10 @@ export default function Dashboard() {
           }
           const numVal = parseFloat(String(val).replace(',', '.'));
           transformed.valor_pagamento = isNaN(numVal) ? val : formatCurrency(numVal);
+        }
+        if (cat === 'zaju') {
+          transformed.cliente = `${transformed.cod_cliente || ""} - ${transformed.nome_cliente || ""}`;
+          transformed.material_display = `${transformed.material || ""} - ${transformed.nome_produto || ""}`;
         }
         return transformed;
       };

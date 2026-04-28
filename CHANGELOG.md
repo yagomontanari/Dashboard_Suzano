@@ -4,12 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.51] - 2026-04-28
-### Corrigido
-- **Interface**: Corrigida a exibição do campo "Cliente" no Log de Inconsistências ZAJU, concatenando o código e nome corretamente.
-- **Interface**: Removida a coluna "Status" do modal de ZAJU para simplificar a visualização, conforme solicitado.
+## [2.3.52] - 2026-04-28
+### Alterado
+- **Exportação**: Reestruturada a exportação detalhada do Log de Inconsistências ZAJU para o formato de 20 colunas, com labels personalizados e campos concatenados (Cliente e Material), conforme solicitado pela equipe operacional.
 
-## [2.3.50] - 2026-04-28
+## [2.3.51] - 2026-04-28
 
 ---
 
