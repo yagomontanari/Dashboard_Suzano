@@ -1557,24 +1557,9 @@ export default function Dashboard() {
             {/* Top Summaries */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {(() => {
-                const byType = data?.zaju?.by_type || [];
-                const BLOCKED_TYPES = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'];
-                const SCHEDULED_TYPES = ['ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE', 'ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_NOMI'];
+                const totalStats = data?.zaju?.total || 1;
+                const efficiency = ((data?.zaju?.success || 0) / totalStats) * 100;
                 
-                const successTotal = byType.reduce((acc, item) => {
-                  if (BLOCKED_TYPES.includes(item.type)) return acc;
-                  return acc + (item.success || 0);
-                }, 0);
-                
-                const denominatotal = byType.reduce((acc, item) => {
-                  if (BLOCKED_TYPES.includes(item.type)) return acc;
-                  if (SCHEDULED_TYPES.includes(item.type)) return acc + (item.success || 0) + (item.error || 0);
-                  return acc + (item.success || 0) + (item.error || 0) + (item.pending || 0);
-                }, 0);
-                
-                const efficiency = denominatotal > 0 ? (successTotal / denominatotal) * 100 : 100;
-                
-                const totalStats = data?.zaju?.total || 1; 
                 const successPct = ((data?.zaju?.success || 0) / totalStats * 100).toFixed(1);
                 const pendingPct = ((data?.zaju?.pending || 0) / totalStats * 100).toFixed(1);
                 const returnPct = ((data?.zaju?.pending_return || 0) / totalStats * 100).toFixed(1);
@@ -1629,7 +1614,7 @@ export default function Dashboard() {
                         <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
                         <div className="text-right flex-grow pl-3">
                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Integrados</p>
-                          <p className={`text-lg font-black tracking-tight mt-1 ${getEfficiencyColor(parseFloat(successPct))}`}>{successPct}% vol.</p>
+                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{successPct}% vol.</p>
                         </div>
                       </div>
                       <div>

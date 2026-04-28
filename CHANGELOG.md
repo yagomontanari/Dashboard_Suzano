@@ -4,11 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.54] - 2026-04-28
-### Corrigido
-- **Interface**: Aplicada a formatação de data `DD/MM/AA HH:MM:SS` também na visualização do modal de Log de Inconsistências ZAJU, mantendo a consistência com o arquivo de exportação.
+## [2.3.55] - 2026-04-28
+### Alterado
+- **Métricas**: Alinhada a lógica da "Taxa de Eficiência" de ZAJU com a de Pagamentos, passando a refletir o progresso real do mês (Sucessos / Total).
+- **Interface**: Neutralizada a cor do percentual nos cards de volume de ZAJU ("Integrados" e "Processando") para evitar indicadores vermelhos falsos quando o volume processado é apenas reflexo do estágio inicial do mês.
 
-## [2.3.53] - 2026-04-28
+## [2.3.54] - 2026-04-28
 
 ---
 
