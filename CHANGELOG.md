@@ -4,6 +4,16 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.38] - 2026-04-28
+### Adicionado
+- **Inteligência de Monitoramento Temporal**: O sistema de notificações agora valida a data real de cada integração crítica. Mesmo que um item conste no log, se o registro for anterior a 24 horas (ex: logs históricos de Usuários), um alerta de inatividade é gerado automaticamente.
+
+### Corrigido
+- **Normalização de Categorias (Fuzzy Matching)**: Implementada função de normalização de strings no Log de Integrações para lidar com discrepâncias entre o banco de dados e o frontend (ex: `USUARIOS` vs `Usuários`). Agora o mapeamento de ícones e a detecção de atrasos ignoram acentos e diferenças de caixa Alta/Baixa.
+- **Mapeamento de Ícones**: Corrigido bug onde categorias sem acento no banco (como `USUARIOS` ou `DADOS PROVISOES`) perdiam a identidade visual e exibiam o ícone genérico de histórico.
+
+---
+
 ## [2.3.37] - 2026-04-28
 ### Adicionado
 - **Sistema de Notificação de Log**: Implementado monitoramento ativo de inatividade nas rotinas de integração. Se uma categoria crítica (Sell-In, ZAJU, ZVER, VK11 ou Retorno) não registrar atividade por mais de 24h, o Log de Integrações agora exibe um banner de alerta pulsante (`Zap`) para ação imediata.

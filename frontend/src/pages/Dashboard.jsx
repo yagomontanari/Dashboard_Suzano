@@ -165,44 +165,59 @@ const IntegrationHealthCard = React.memo(({ title, success, pending, error, pend
 });
 
 const IntegrationLog = React.memo(({ updates, className = "" }) => {
-  const criticalCategories = useMemo(() => ['Sell-In', 'ZAJU', 'ZVER', 'VK11', 'Retorno Pagamento'], []);
+  const normalize = useCallback((str) => str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "", []);
+  const criticalCategories = useMemo(() => ['Sell-In', 'ZAJU', 'ZVER', 'VK11', 'Retorno Pagamento', 'Usuários', 'Clientes', 'Produtos', 'Dados Provisões'], []);
   
   const staleCategories = useMemo(() => {
     if (!updates || updates.length === 0) return [];
-    return criticalCategories.filter(cat => !updates.some(u => u.categoria === cat));
-  }, [updates, criticalCategories]);
+    
+    const now = new Date();
+    const oneDayInMs = 24 * 60 * 60 * 1000;
+    
+    return criticalCategories.filter(cat => {
+      const normCat = normalize(cat);
+      const relevantUpdates = updates.filter(u => normalize(u.categoria) === normCat);
+      
+      if (relevantUpdates.length === 0) return true;
+
+      const latestDate = new Date(Math.max(...relevantUpdates.map(u => new Date(u.data))));
+      return (now - latestDate) > oneDayInMs;
+    });
+  }, [updates, criticalCategories, normalize]);
 
   const getIcon = useCallback((category) => {
-    switch(category) {
-      case 'Sell-In': return <HandCoins size={16} />;
-      case 'Clientes': return <Contact size={16} />;
-      case 'Produtos': return <Package size={16} />;
-      case 'Usuários': return <UserCheck size={16} />;
-      case 'ZAJU': return <ArrowDownUp size={16} />;
-      case 'ZVER': return <CreditCard size={16} />;
-      case 'VK11': return <BarChart3 size={16} />;
-      case 'Dados Provisões': return <ShieldCheck size={16} />;
-      case 'Retorno Pagamento': return <ReceiptText size={16} />;
-      case 'Cutoff': return <CalendarClock size={16} />;
+    const norm = normalize(category);
+    switch(norm) {
+      case 'sell-in': return <HandCoins size={16} />;
+      case 'clientes': return <Contact size={16} />;
+      case 'produtos': return <Package size={16} />;
+      case 'usuarios': return <UserCheck size={16} />;
+      case 'zaju': return <ArrowDownUp size={16} />;
+      case 'zver': return <CreditCard size={16} />;
+      case 'vk11': return <BarChart3 size={16} />;
+      case 'dados provisoes': return <ShieldCheck size={16} />;
+      case 'retorno pagamento': return <ReceiptText size={16} />;
+      case 'cutoff': return <CalendarClock size={16} />;
       default: return <History size={16} />;
     }
-  }, []);
+  }, [normalize]);
 
   const getIconBg = useCallback((category) => {
+    const norm = normalize(category);
     const colors = {
-      'Sell-In': 'bg-blue-50 text-blue-600 ring-blue-100',
-      'Clientes': 'bg-amber-50 text-amber-600 ring-amber-100',
-      'Produtos': 'bg-indigo-50 text-indigo-600 ring-indigo-100',
-      'Usuários': 'bg-emerald-50 text-emerald-600 ring-emerald-100',
-      'ZAJU': 'bg-rose-50 text-rose-600 ring-rose-100',
-      'ZVER': 'bg-sky-50 text-sky-600 ring-sky-100',
-      'VK11': 'bg-violet-50 text-violet-600 ring-violet-100',
-      'Dados Provisões': 'bg-teal-50 text-teal-600 ring-teal-100',
-      'Retorno Pagamento': 'bg-orange-50 text-orange-600 ring-orange-100',
-      'Cutoff': 'bg-slate-50 text-slate-600 ring-slate-100'
+      'sell-in': 'bg-blue-50 text-blue-600 ring-blue-100',
+      'clientes': 'bg-amber-50 text-amber-600 ring-amber-100',
+      'produtos': 'bg-indigo-50 text-indigo-600 ring-indigo-100',
+      'usuarios': 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+      'zaju': 'bg-rose-50 text-rose-600 ring-rose-100',
+      'zver': 'bg-sky-50 text-sky-600 ring-sky-100',
+      'vk11': 'bg-violet-50 text-violet-600 ring-violet-100',
+      'dados provisoes': 'bg-teal-50 text-teal-600 ring-teal-100',
+      'retorno pagamento': 'bg-orange-50 text-orange-600 ring-orange-100',
+      'cutoff': 'bg-slate-50 text-slate-600 ring-slate-100'
     };
-    return colors[category] || 'bg-slate-50 text-slate-400 ring-slate-100';
-  }, []);
+    return colors[norm] || 'bg-slate-50 text-slate-400 ring-slate-100';
+  }, [normalize]);
 
   const formatTime = useCallback((isoDate) => {
     if (!isoDate) return "--/--";
