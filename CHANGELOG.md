@@ -4,6 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.4] - 2026-04-28
+### Corrigido
+- **Frontend**: Corrigido erro de "404 Not Found" ao adicionar e gerenciar destinatários. A interface agora utiliza o interceptor de rotas configurado (`/api`) ao invés de buscar a URL local absoluta, integrando corretamente com o servidor backend no Vercel.
+
 ## [2.4.3] - 2026-04-28
 ### Corrigido
 - **Frontend**: Corrigida a ausência do import `NotificationSettings` em `App.jsx`, que estava causando a quebra do carregamento da árvore React (white screen).

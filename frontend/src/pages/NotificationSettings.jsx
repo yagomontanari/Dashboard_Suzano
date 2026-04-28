@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../services/api';
 import { 
   Bell, 
   Mail, 
@@ -12,12 +12,11 @@ import {
   Loader2,
   Calendar
 } from 'lucide-react';
+
 const toast = {
   success: (msg) => alert(`✅ ${msg}`),
   error: (msg) => alert(`❌ ${msg}`)
 };
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const NotificationSettings = () => {
   const [recipients, setRecipients] = useState([]);
@@ -29,14 +28,9 @@ const NotificationSettings = () => {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token');
       const [recRes, schRes] = await Promise.all([
-        axios.get(`${API_URL}/notifications/recipients`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get(`${API_URL}/notifications/schedules`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+        api.get('/notifications/recipients'),
+        api.get('/notifications/schedules')
       ]);
       setRecipients(recRes.data);
       setSchedules(schRes.data);
@@ -58,11 +52,7 @@ const NotificationSettings = () => {
     if (!newEmail) return;
     
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post(`${API_URL}/notifications/recipients`, 
-        { email: newEmail },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post('/notifications/recipients', { email: newEmail });
       setRecipients([...recipients, res.data]);
       setNewEmail('');
       toast.success('Destinatário adicionado');
@@ -73,10 +63,7 @@ const NotificationSettings = () => {
 
   const handleDeleteRecipient = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`${API_URL}/notifications/recipients/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/notifications/recipients/${id}`);
       setRecipients(recipients.filter(r => r.id !== id));
       toast.success('Destinatário removido');
     } catch (error) {
@@ -87,17 +74,13 @@ const NotificationSettings = () => {
 
   const handleUpdateSchedules = async () => {
     try {
-      const token = localStorage.getItem('token');
       // Por enquanto, simplificando: adiciona o novo horário se não existir
       const updatedTimes = [...schedules.map(s => s.time)];
       if (!updatedTimes.includes(newTime)) {
           updatedTimes.push(newTime);
       }
       
-      await axios.post(`${API_URL}/notifications/schedules`, 
-        { times: updatedTimes },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post('/notifications/schedules', { times: updatedTimes });
       fetchData();
       toast.success('Agendamentos atualizados');
     } catch (error) {
@@ -109,10 +92,7 @@ const NotificationSettings = () => {
   const handleSendManual = async () => {
     setIsSending(true);
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(`${API_URL}/notifications/send-manual`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post('/notifications/send-manual', {});
       toast.success('Processo de notificação disparado!');
     } catch (error) {
       console.error(error);
@@ -251,13 +231,15 @@ const NotificationSettings = () => {
                     <span className="text-[10px] font-black text-green-600 bg-green-100 px-2 py-1 rounded uppercase tracking-wider">Ativo</span>
                     <button 
                         onClick={async () => {
-                            const token = localStorage.getItem('token');
-                            const updatedTimes = schedules.filter(sch => sch.id !== s.id).map(sch => sch.time);
-                            await axios.post(`${API_URL}/notifications/schedules`, 
-                                { times: updatedTimes },
-                                { headers: { Authorization: `Bearer ${token}` } }
-                            );
-                            fetchData();
+                            try {
+                              const updatedTimes = schedules.filter(sch => sch.id !== s.id).map(sch => sch.time);
+                              await api.post('/notifications/schedules', { times: updatedTimes });
+                              fetchData();
+                              toast.success('Agendamento removido');
+                            } catch (error) {
+                              console.error(error);
+                              toast.error('Erro ao remover agendamento');
+                            }
                         }}
                         className="p-2 text-slate-400 hover:text-red-500 rounded-lg transition-all"
                     >
