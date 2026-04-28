@@ -72,9 +72,44 @@ async def process_notification_job():
             # ZVER
             zver = zver_res[0] if zver_res else {"success": 0, "pending": 0, "error": 0, "pending_return": 0}
 
-            # 3. Montar Resumo para o E-mail
+            # 3. Gerar Arquivo Excel Consolidado com as Inconsistências
+            import pandas as pd
+            import io
+            from api.data import apply_excel_premium_style
+
+            # Consultar detalhamento das inconsistências
+            sellin_det = await fetch_data(db_metrics, QUERY_ERRO_SELLIN_DETALHADO, params)
+            clientes_det = await fetch_data(db_metrics, QUERY_ERRO_CLIENTES, params)
+            produtos_det = await fetch_data(db_metrics, QUERY_ERRO_PRODUTOS, params)
+            cutoff_det = await fetch_data(db_metrics, QUERY_ERRO_CUTOFF, params)
+            usuarios_det = await fetch_data(db_metrics, QUERY_ERRO_USUARIOS, params)
+            pagamentos_det = await fetch_data(db_metrics, QUERY_ERRO_PAGAMENTOS_LIST, params)
+
+            # Criar os DataFrames
+            dfs = {
+                "Sell-In": pd.DataFrame(sellin_det) if sellin_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Sell-In no período."}]),
+                "Clientes": pd.DataFrame(clientes_det) if clientes_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Clientes no período."}]),
+                "Produtos": pd.DataFrame(produtos_det) if produtos_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Produtos no período."}]),
+                "Cutoff": pd.DataFrame(cutoff_det) if cutoff_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Cutoff no período."}]),
+                "Usuarios": pd.DataFrame(usuarios_det) if usuarios_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Usuários no período."}]),
+                "Pagamentos": pd.DataFrame(pagamentos_det) if pagamentos_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Pagamentos no período."}])
+            }
+
+            excel_buffer = io.BytesIO()
+            with pd.ExcelWriter(excel_buffer, engine="openpyxl") as writer:
+                for sheet_name, df in dfs.items():
+                    df.to_excel(writer, index=False, sheet_name=sheet_name)
+                    apply_excel_premium_style(writer, sheet_name)
+
+            excel_bytes = excel_buffer.getvalue()
+
+            # 4. Montar Resumo para o E-mail
+            meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+            periodo_nome = f"{meses[start_dt.month]} {start_dt.year}"
+            arquivo_nome = f"Inconsistencias_{meses[start_dt.month]}_{start_dt.year}.xlsx"
+
             summary_data = {
-                "periodo": f"{start_dt.strftime('%m/%Y')}",
+                "periodo": periodo_nome,
                 "vk11": vk11,
                 "zaju": {
                     "total_integrado": zaju["success"],
@@ -97,13 +132,14 @@ async def process_notification_job():
                     "PRODUTOS": counts.get("produtos", 0),
                     "CUTOFF": counts.get("cutoff", 0),
                     "USUARIOS": counts.get("usuarios", 0),
+                    "PAGAMENTOS": counts.get("pagamentos", 0)
                 },
                 "last_sync": last_sync_res
             }
 
-            # 4. Enviar E-mails
+            # 5. Enviar E-mails
             for email in email_list:
-                await mail_service.send_operational_summary_email(email, summary_data)
+                await mail_service.send_operational_summary_email(email, summary_data, excel_bytes, arquivo_nome)
                 
         logger.info("Job de notificação operacional concluído com sucesso.")
 

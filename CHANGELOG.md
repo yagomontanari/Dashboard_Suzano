@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.8] - 2026-04-28
+### Adicionado
+- **Backend**: O e-mail de "Status Integrações" foi completamente redesenhado com base nas cores e layout *premium* do Dashboard (cards arredondados, bordas laterais coloridas, espaçamento corporativo).
+- **Backend**: O e-mail agora inclui, automaticamente, uma planilha Excel (`Inconsistencias_<Mes_Ano>.xlsx`) em anexo contendo o detalhamento de todos os registros inconsistentes de Sell-In, Clientes, Produtos, Cutoff e Usuários separados em abas, oferecendo muito mais produtividade.
+- **Backend**: O assunto do e-mail de "Status Integrações" agora exibe o mês por extenso e o ano (Ex: "Status Integrações: Abril 2026") no lugar da representação numérica.
+
 ## [2.4.7] - 2026-04-28
 ### Corrigido
 - **Backend**: Corrigido erro de "Unexpected State Change" / "_connection_for_bind() is already in progress" no SQLAlchemy durante o disparo de notificação. As consultas de métricas do banco de dados agora são executadas de forma sequencial ao invés de simultânea (`asyncio.gather`), pois sessões SQLAlchemy nativas não são `thread-safe` para acesso concorrente.
