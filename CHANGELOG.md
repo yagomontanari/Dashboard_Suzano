@@ -11,6 +11,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **Backend**: Adicionado suporte a `CRON_SECRET` para autenticação segura entre o Vercel e o Backend.
 - **Frontend**: Componente de Agendamento redesenhado com visual *premium* e restrição a "Horas Cheias", garantindo que as configurações do usuário no Dashboard coincidam com os ciclos de execução do Vercel.
 - **Design**: O e-mail de notificação agora utiliza o esquema de cores âmbar/laranja para o detalhamento de pendências, mantendo a consistência visual com o dashboard.
+- **Design**: Reposicionado o bloco informativo do anexo Excel para o rodapé da seção de integrações e renomeado título para "📡 Últimas Integrações Recebidas".
 
 ## [2.4.8] - 2026-04-28
 ### Adicionado
