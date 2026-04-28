@@ -112,10 +112,8 @@ async def process_notification_job():
             allowed_sync_cats = ["SELLIN", "CUTOFF", "PRODUTO", "CLIENTE", "PAGAMENTO_LIQUIDADO", "PRE_CADASTRO_USUARIO"]
             filtered_last_sync = [r for r in last_sync_res if r["categoria"] in allowed_sync_cats]
 
-            # Tipos do ZAJU baseados no Frontend
-            promo_types = ['ZAJU_AJUSTE_VERBA_PERC', 'ZAJU_AJUSTE_VERBA_NOMI', 'ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE']
-            contrato_types = ['ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_CT_PERC_CRE', 'ZAJU_AJUSTE_VERBA_CT_PERC_COM', 'ZAJU_AJUSTE_VERBA_CT_PERC_LOG', 'ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE']
-            acordos_types = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO', 'ZAJU_AJUSTE_DEV_OFF']
+            # Detalhamento granular de pendências ZAJU (apenas os que possuem pendências)
+            zaju_pending_det = {i["type"]: i["pending"] for i in zaju_details if i["pending"] > 0}
 
             summary_data = {
                 "periodo": periodo_nome,
@@ -125,11 +123,7 @@ async def process_notification_job():
                     "total_pendente": zaju["pending"],
                     "total_erro": zaju["error"],
                     "total_retorno": zaju["pending_return"],
-                    "detalhamento_pendentes": {
-                        "Verba Promo & Ações": sum(i["pending"] for i in zaju_details if i["type"] in promo_types or (i.get("category") and 'PROMO' in i["category"].upper())),
-                        "Verbas de contrato": sum(i["pending"] for i in zaju_details if i["type"] in contrato_types or (i.get("category") and 'CONTRA' in i["category"].upper())),
-                        "Acordos": sum(i["pending"] for i in zaju_details if i["type"] in acordos_types),
-                    }
+                    "detalhamento_pendentes": zaju_pending_det
                 },
                 "zver": zver,
                 "inconsistencias": {

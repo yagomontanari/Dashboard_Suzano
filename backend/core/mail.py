@@ -234,6 +234,22 @@ class MailService:
             </tr>
             """
 
+        # Pre-gerar linhas do detalhamento ZAJU
+        zaju_rows_html = ""
+        detalhamento = data['zaju'].get('detalhamento_pendentes', {})
+        for idx, (label, value) in enumerate(detalhamento.items()):
+            border_style = "border-top: 1px solid #f1f5f9;" if idx > 0 else ""
+            zaju_rows_html += f"""
+            <tr>
+                <td style="padding: 10px 0; vertical-align: middle; {border_style}">
+                    <div style="font-size: 13px; font-weight: 700; color: #0f172a;">{label}</div>
+                </td>
+                <td style="padding: 10px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-align: right; vertical-align: middle; {border_style}">
+                    {value}
+                </td>
+            </tr>
+            """
+
         content = f"""
         <div style="text-align: center; margin-bottom: 35px;">
             <h2 style="color: #0f172a; font-size: 28px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em;">Status das Integrações</h2>
@@ -280,29 +296,9 @@ class MailService:
                     </tr>
                 </table>
                 <div style="background-color: #ffffff; border: 1px dashed #bae6fd; border-radius: 10px; padding: 20px; margin-bottom: 15px;">
-                    <p style="margin: 0 0 12px 0; font-size: 12px; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">Categorias de Pendências</p>
+                    <p style="margin: 0 0 12px 0; font-size: 12px; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">Detalhamento de Pendências</p>
                     <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 6px 0; vertical-align: top;">
-                                <div style="font-size: 13px; font-weight: 700; color: #0f172a;">Verba Promo & Ações</div>
-                                <div style="font-size: 11px; color: #64748b;">Ajustes de percentual, nominal e cutoff de promoções</div>
-                            </td>
-                            <td style="padding: 6px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-align: right; vertical-align: middle;">{data['zaju']['detalhamento_pendentes']['Verba Promo & Ações']}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 10px 0; vertical-align: top; border-top: 1px solid #f1f5f9;">
-                                <div style="font-size: 13px; font-weight: 700; color: #0f172a;">Verbas de contrato</div>
-                                <div style="font-size: 11px; color: #64748b;">Ajustes nominais e percentuais (Cred/Com/Log) e cutoff</div>
-                            </td>
-                            <td style="padding: 10px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-align: right; vertical-align: middle; border-top: 1px solid #f1f5f9;">{data['zaju']['detalhamento_pendentes']['Verbas de contrato']}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 6px 0; vertical-align: top; border-top: 1px solid #f1f5f9;">
-                                <div style="font-size: 13px; font-weight: 700; color: #0f172a;">Acordos</div>
-                                <div style="font-size: 11px; color: #64748b;">Ajustes de pagamento, apurações reprovadas e devoluções</div>
-                            </td>
-                            <td style="padding: 6px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-align: right; vertical-align: middle; border-top: 1px solid #f1f5f9;">{data['zaju']['detalhamento_pendentes']['Acordos']}</td>
-                        </tr>
+                        {zaju_rows_html}
                     </table>
                 </div>
                 <table style="width: 100%; border-collapse: collapse;">
