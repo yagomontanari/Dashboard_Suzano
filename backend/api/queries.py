@@ -305,9 +305,6 @@ QUERY_ERRO_SELLIN = text(r"""
             SELECT 1 FROM sellin se 
             WHERE de.nro_documento ~ '^[0-9]+$' 
               AND se.nro_documento = CAST(de.nro_documento AS BIGINT)
-              AND se.id_produto IN (SELECT p.id FROM produto p WHERE p.id_externo = de.id_produto)
-              AND se.id_cliente IN (SELECT c.id FROM cliente c WHERE c.id_externo = de.id_cliente)
-              AND se.tipo_doc_fat = de.tipo_doc_fat
         )
     )
     SELECT 
@@ -359,9 +356,6 @@ QUERY_ERRO_SELLIN_DETALHADO = text(r"""
         SELECT 1 FROM sellin se 
         WHERE de.nro_documento ~ '^[0-9]+$' 
           AND se.nro_documento = CAST(de.nro_documento AS BIGINT)
-          AND se.id_produto IN (SELECT p.id FROM produto p WHERE p.id_externo = de.id_produto)
-          AND se.id_cliente IN (SELECT c.id FROM cliente c WHERE c.id_externo = de.id_cliente)
-          AND se.tipo_doc_fat = de.tipo_doc_fat
     )
     ORDER BY nro_documento, item_documento;
 """)
@@ -402,15 +396,7 @@ QUERY_ERRO_CLIENTES = text("""
     FROM dados_extraidos de
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM cliente c
-        LEFT JOIN cliente_contato cc ON c.id_contato_responsavel = cc.id
         WHERE c.id_externo = de.cod_cliente
-          AND c.nom_cliente = de.nom_cliente
-          AND c.des_cnpj = de.cnpj
-          AND c.ind_ativo = de.ativo_inativo
-          AND cc.nom_contato = de.contato_cliente
-          AND cc.vlr_email = de.email_contato_cliente
-          AND cc.vlr_telefone = de.telefone_contato_cliente
-          AND c.ind_pagador = de.sap_pagador
     )
 """)
 
@@ -513,8 +499,6 @@ QUERY_ERRO_USUARIOS = text("""
     WHERE de.rn = 1 AND NOT EXISTS (
         SELECT 1 FROM usuario u 
         WHERE u.matricula = de.matricula 
-          AND u.email = de.email 
-          AND u.chave_integracao = de.chave_integracao
     )
 """)
 

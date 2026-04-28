@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.36] - 2026-04-27
+### Corrigido
+- **Falsos Positivos no Modal de Inconsistências (Linhas Fantasmas)**: Corrigida a lógica de filtragem das consultas detalhadas das filas de integração (`Sell-in`, `Clientes` e `Usuários`). Anteriormente, o validador mestre dos contadores considerava um registro resolvido caso a Chave Primária existisse no banco destino, contudo, o modal *extrainterrogava* se toda a carga de propriedades ("campos menores") enviada originalmente constava idêntica e intocada no destino. Qualquer edição posterior feita no banco (ou manual) deixava a flag do erro perpetuamente retida no modal sob a forma de uma "linha fantasma". O grau de criticidade da *Detail Query* foi rebaixado e alinhado integralmente com o contador do Dashboard, exigindo a resolução apenas pela completude da Chave Primária da Fila.
+
+---
+
 ## [2.3.35] - 2026-04-27
 ### Adicionado
 - **Legendas de Retorno em Tempo Real**: Os *cards* sumários da seção "Operação Ativa" (`ZAJU` e `ZVER`), que já contabilizavam e desenhavam a fatia de `Pendente Retorno` no Gráfico de Rosca, agora exibem formalmente essa informação na régua de legendas textuais na parte inferior do card, com a tag e a cor correta (`#indigo`).
