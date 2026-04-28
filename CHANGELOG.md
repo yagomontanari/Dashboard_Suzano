@@ -4,6 +4,18 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.39] - 2026-04-28
+### Adicionado
+- **Diferenciação Direcional de Alertas**: O sistema de notificações no Log de Integrações agora identifica automaticamente se a falha de fluxo é de **recebimento** (SAP > TL) ou de **envio** (TL > SAP), fornecendo um diagnóstico granular e acionável.
+
+### Alterado
+- **Nomenclatura Cockpits (Business-Ready)**:
+  - Painel de Pagamento (ZVER): `Registros Financeiros` atualizado para **`Pagamentos`**.
+  - Painel de Ajuste (ZAJU): `Registros Aprovados` atualizado para **`ZAJUS`** e `Aguard. Integração` expandido para **`Aguardando Integração`**.
+- **Refinamento de UX de Alerta**: Nova redação assertiva para o banner de inatividade ("Ponto de Atenção: Inatividade de Fluxo") com orientações de verificação de canal.
+
+---
+
 ## [2.3.38] - 2026-04-28
 ### Adicionado
 - **Inteligência de Monitoramento Temporal**: O sistema de notificações agora valida a data real de cada integração crítica. Mesmo que um item conste no log, se o registro for anterior a 24 horas (ex: logs históricos de Usuários), um alerta de inatividade é gerado automaticamente.

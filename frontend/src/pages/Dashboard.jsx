@@ -246,10 +246,31 @@ const IntegrationLog = React.memo(({ updates, className = "" }) => {
               <Zap size={18} fill="currentColor" className="animate-pulse" />
            </div>
            <div className="flex-1">
-              <h4 className="text-xs font-black text-rose-800 uppercase tracking-widest mb-1">Atraso na Integração</h4>
+              <h4 className="text-xs font-black text-rose-800 uppercase tracking-widest mb-1">Ponto de Atenção: Inatividade de Fluxo</h4>
               <p className="text-[11px] text-rose-600 font-bold leading-relaxed">
-                 As seguintes rotinas não registraram atividade nas últimas 24h: 
-                 <span className="ml-1 text-rose-700 font-extrabold uppercase">{staleCategories.join(', ')}</span>
+                 {(() => {
+                   const inboundList = ['sell-in', 'clientes', 'produtos', 'usuarios', 'retorno pagamento', 'cutoff'];
+                   const inboundStale = staleCategories.filter(cat => inboundList.includes(normalize(cat)));
+                   const outboundStale = staleCategories.filter(cat => !inboundList.includes(normalize(cat)));
+                   
+                   return (
+                     <>
+                       {inboundStale.length > 0 && (
+                         <span className="block mb-1">
+                           Não identificamos **recebimento de dados** (SAP {'>'} TL) para: 
+                           <span className="ml-1 text-rose-700 font-extrabold uppercase">{inboundStale.join(', ')}</span>.
+                         </span>
+                       )}
+                       {outboundStale.length > 0 && (
+                         <span className="block">
+                           Não identificamos **envio de dados** (TL {'>'} SAP) para: 
+                           <span className="ml-1 text-rose-700 font-extrabold uppercase">{outboundStale.join(', ')}</span>.
+                         </span>
+                       )}
+                       <span className="block mt-2 opacity-80 italic">Recomenda-se verificar a comunicação ou processamento no SAP.</span>
+                     </>
+                   );
+                 })()}
               </p>
            </div>
         </div>
@@ -1239,7 +1260,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h4 className="text-3xl font-black text-emerald-600 tracking-tighter">{data.zver.success}</h4>
-                  <p className="text-xs font-bold text-slate-400 mt-1 uppercase">Registros Financeiros</p>
+                  <p className="text-xs font-bold text-slate-400 mt-1 uppercase">Pagamentos</p>
                 </div>
               </div>
 
@@ -1589,7 +1610,7 @@ export default function Dashboard() {
                       </div>
                       <div>
                         <h4 className="text-3xl font-black text-emerald-600 tracking-tighter">{data?.zaju?.success || 0}</h4>
-                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Registros Aprovados</p>
+                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">ZAJUS</p>
                       </div>
                     </div>
 
@@ -1603,7 +1624,7 @@ export default function Dashboard() {
                       </div>
                       <div>
                         <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data?.zaju?.pending || 0}</h4>
-                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Aguard. Integração</p>
+                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Aguardando Integração</p>
                       </div>
                     </div>
 
