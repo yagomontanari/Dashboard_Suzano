@@ -111,10 +111,10 @@ async def trigger_manual_notification(
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
     
     from core.scheduler import process_notification_job
-    # Disparar em background para não travar a UI
-    import asyncio
-    asyncio.create_task(process_notification_job())
+    # Em ambientes serverless (Vercel/AWS Lambda), o uso de background tasks pode ser interrompido 
+    # assim que a resposta for enviada. É mais seguro aguardar a execução síncrona.
+    await process_notification_job()
     
-    return {"message": "Processo de notificação disparado com sucesso"}
+    return {"message": "Notificações enviadas com sucesso!"}
 
 from sqlalchemy import text

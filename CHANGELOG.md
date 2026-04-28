@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.6] - 2026-04-28
+### Corrigido
+- **Backend**: Alterado o disparo manual de e-mails de uma *background task* assíncrona para uma execução síncrona (`await`). Isso corrige a falha no envio de e-mails na nuvem, pois o ambiente Serverless (Vercel) congela a execução da função imediatamente após o retorno da resposta, impedindo que tarefas em segundo plano fossem concluídas.
+
+## [2.4.5] - 2026-04-28
+### Adicionado
+- **Frontend**: Implementado componente nativo de Toast para substituição dos alertas bloqueantes do navegador.
+
 ## [2.4.4] - 2026-04-28
 ### Corrigido
 - **Frontend**: Corrigido erro de "404 Not Found" ao adicionar e gerenciar destinatários. A interface agora utiliza o interceptor de rotas configurado (`/api`) ao invés de buscar a URL local absoluta, integrando corretamente com o servidor backend no Vercel.
