@@ -1084,7 +1084,7 @@ export default function Dashboard() {
                   <IntegrationHealthCard title="ZVER" success={data?.zver?.success || 0} pending={data?.zver?.pending || 0} error={data?.zver?.error || 0} pendingReturn={data?.zver?.pending_return || 0} />
                 </div>
 
-                <IntegrationLog updates={data.last_updates} className="flex-1 min-h-[450px]" />
+                <IntegrationLog updates={data.last_updates} className="h-[600px]" />
               </div>
 
               {/* Hub de Resolução (40%) */}
@@ -1095,7 +1095,7 @@ export default function Dashboard() {
                   </h2>
                 </div>
 
-                <div className="space-y-6 flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col gap-6 min-h-[600px]">
                   {/* Category Group 1: Integração Financeira */}
                   <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex-1 flex flex-col">
                     <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
