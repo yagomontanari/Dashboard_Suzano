@@ -141,61 +141,68 @@ const NotificationSettings = () => {
         <button
           onClick={handleSendManual}
           disabled={isSending || recipients.length === 0}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-200 active:scale-95"
+          className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-400 text-white rounded-2xl font-black transition-all shadow-xl shadow-blue-200 active:scale-95 disabled:shadow-none"
         >
-          {isSending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+          {isSending ? (
+            <Loader2 size={20} className="animate-spin" />
+          ) : (
+            <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          )}
           Disparar Agora
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Coluna 1: Destinatários */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-6 border-bottom border-slate-50 bg-slate-50/50">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-slate-50 bg-slate-50/50">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <Mail className="text-blue-500" size={20} />
               Destinatários
             </h2>
           </div>
           
-          <div className="p-6">
-            <form onSubmit={handleAddRecipient} className="flex gap-2 mb-6">
+          <div className="p-6 flex-grow">
+            <form onSubmit={handleAddRecipient} className="flex gap-2 mb-8">
               <div className="relative flex-grow">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                 <input
                   type="email"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                   placeholder="E-mail do stakeholder"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all font-medium"
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all font-semibold text-slate-700"
                 />
               </div>
               <button
                 type="submit"
-                className="p-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl transition-all shadow-md active:scale-95"
+                className="p-3 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl transition-all shadow-lg active:scale-95"
               >
-                <Plus size={22} />
+                <Plus size={24} />
               </button>
             </form>
 
             <div className="space-y-3">
               {recipients.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
-                  <AlertCircle className="mx-auto mb-2 opacity-20" size={40} />
-                  <p>Nenhum destinatário cadastrado.</p>
+                <div className="text-center py-10 text-slate-400">
+                  <Mail className="mx-auto mb-3 opacity-20" size={48} />
+                  <p className="text-sm">Nenhum destinatário cadastrado.</p>
                 </div>
               ) : (
                 recipients.map((r) => (
-                  <div key={r.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl group hover:border-blue-200 transition-all">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                  <div key={r.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group hover:border-blue-200 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg">
                         {r.email[0].toUpperCase()}
                       </div>
-                      <span className="font-semibold text-slate-700">{r.email}</span>
+                      <div>
+                        <p className="font-bold text-slate-800 leading-tight">{r.email}</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Informativo Ativo</p>
+                      </div>
                     </div>
                     <button
                       onClick={() => handleDeleteRecipient(r.id)}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                      className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -207,45 +214,63 @@ const NotificationSettings = () => {
         </div>
 
         {/* Coluna 2: Agendamentos */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-6 border-bottom border-slate-50 bg-slate-50/50">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-slate-50 bg-slate-50/50">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <Clock className="text-blue-500" size={20} />
               Horários de Envio
             </h2>
           </div>
           
-          <div className="p-6">
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6">
+          <div className="p-6 flex-grow">
+            <div className="bg-blue-50 border border-blue-100 p-5 rounded-2xl mb-6 flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center">
+                <Calendar size={20} />
+              </div>
               <p className="text-blue-700 text-sm font-medium leading-relaxed">
-                As notificações serão enviadas automaticamente nos horários configurados abaixo. Recomendamos <strong>08:00</strong> e <strong>16:00</strong> para acompanhamento do fechamento.
+                As notificações são disparadas automaticamente. Recomendamos <strong>08:00, 12:00</strong> e <strong>16:00</strong> para um acompanhamento executivo do fechamento.
               </p>
             </div>
 
-            <div className="flex gap-2 mb-8">
-              <input
-                type="time"
-                value={newTime}
-                onChange={(e) => setNewTime(e.target.value)}
-                className="flex-grow px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold"
-              />
+            <div className="flex gap-3 mb-8">
+              <div className="relative flex-grow">
+                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
+                <select
+                  value={newTime}
+                  onChange={(e) => setNewTime(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-bold text-slate-700 appearance-none transition-all cursor-pointer"
+                >
+                  {Array.from({ length: 24 }).map((_, i) => {
+                    const h = i.toString().padStart(2, '0');
+                    return <option key={h} value={`${h}:00`}>{h}:00</option>;
+                  })}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                   <Plus size={16} />
+                </div>
+              </div>
               <button
                 onClick={handleUpdateSchedules}
-                className="px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-all"
+                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-100 active:scale-95"
               >
-                Adicionar Horário
+                Adicionar
               </button>
             </div>
 
-            <div className="space-y-3">
-              {schedules.map((s) => (
-                <div key={s.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="text-blue-500" size={20} />
-                    <span className="font-black text-slate-800 text-xl tracking-tighter">{s.time}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-green-600 bg-green-100 px-2 py-1 rounded uppercase tracking-wider">Ativo</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {schedules.length === 0 ? (
+                <div className="col-span-full text-center py-8 text-slate-400">
+                  <p className="text-sm">Nenhum horário agendado.</p>
+                </div>
+              ) : (
+                schedules.sort((a, b) => a.time.localeCompare(b.time)).map((s) => (
+                  <div key={s.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-blue-200 hover:shadow-md transition-all group">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+                        <Clock size={16} />
+                      </div>
+                      <span className="font-bold text-slate-800 text-lg tracking-tight">{s.time}</span>
+                    </div>
                     <button 
                         onClick={async () => {
                             try {
@@ -258,13 +283,14 @@ const NotificationSettings = () => {
                               showToast('Erro ao remover agendamento', 'error');
                             }
                         }}
-                        className="p-2 text-slate-400 hover:text-red-500 rounded-lg transition-all"
+                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                        title="Remover"
                     >
                       <Trash2 size={18} />
                     </button>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
