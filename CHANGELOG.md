@@ -4,11 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.44] - 2026-04-28
+### Alterado
+- **UI/UX**: Simplificação do Hub de Resolução ZAJU. O botão de ação agora reside diretamente no card de "Bloqueados", eliminando o banner expansivo e otimizando o espaço vertical.
+- **Visual**: Adicionado feedback visual dinâmico (background rose e shadow) ao card de Bloqueados quando houver inconsistências ativas.
+
 ## [2.3.43] - 2026-04-28
-### Adicionado
-- **UI/UX**: Implementado Hub de Resolução de Inconsistências na aba ZAJU (Banner de Conflitos).
-- **Backend**: Atualizada query de exportação detalhada de ZAJU para 22 colunas conforme nova especificação.
-- **Frontend**: Padronizadas as colunas do modal de Log de Inconsistências ZAJU.
 
 ---
 

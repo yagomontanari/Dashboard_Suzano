@@ -1545,7 +1545,7 @@ export default function Dashboard() {
         {activeTab === 'zaju' && (
           <div className="space-y-8 animate-in fade-in duration-500 pb-12">
             {/* Top Summaries */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {(() => {
                 const byType = data?.zaju?.by_type || [];
                 const BLOCKED_TYPES = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'];
@@ -1576,8 +1576,7 @@ export default function Dashboard() {
 
                 return (
                   <>
-                    {/* Row 1: 4 KPI Cards */}
-                    <div className="lg:col-span-3 bg-emerald-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-sm hover:shadow-md transition-all group min-h-[160px]">
+                    <div className="bg-emerald-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-sm hover:shadow-md transition-all group min-h-[160px]">
                        <div className="absolute top-0 right-0 p-4 opacity-20 transition-transform group-hover:scale-110 group-hover:rotate-12">
                           <Target size={60} />
                        </div>
@@ -1595,7 +1594,7 @@ export default function Dashboard() {
                        </div>
                     </div>
 
-                    <div className="lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative flex flex-col justify-between h-full min-h-[160px]">
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative flex flex-col justify-between h-full min-h-[160px]">
                       <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
                       <div className="relative z-10 flex items-start justify-between mb-4">
                         <div>
@@ -1610,12 +1609,12 @@ export default function Dashboard() {
                       </div>
                       <div className="mt-auto relative z-10">
                          <div className="flex items-center gap-1 text-emerald-500 font-bold text-[10px] uppercase">
-                           <TrendingUp size={12} /> Desempenho Operacional
+                           <Activity size={12} /> Desempenho Operacional
                          </div>
                       </div>
                     </div>
 
-                    <div className="lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
                       <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
                         <div className="text-right flex-grow pl-3">
@@ -1629,7 +1628,7 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <div className="lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
                       <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={20} /></div>
                         <div className="text-right flex-grow pl-3">
@@ -1651,62 +1650,49 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    {/* Row 2: 2 KPI Cards + Resolution Hub */}
-                    <div className="lg:col-span-3 flex flex-col gap-6">
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
-                         <div className="flex justify-between items-start mb-4">
-                           <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
-                           <div className="text-right flex-grow pl-3">
-                             <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Ag. Retorno</p>
-                             <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{returnPct}% vol.</p>
-                           </div>
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
+                       <div className="flex justify-between items-start mb-4">
+                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
+                         <div className="text-right flex-grow pl-3">
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Ag. Retorno</p>
+                           <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{returnPct}% vol.</p>
                          </div>
-                         <div>
-                           <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h4>
-                           <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Pendente SAP</p>
-                         </div>
-                      </div>
-
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
-                         <div className="flex justify-between items-start mb-4">
-                           <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={20} /></div>
-                           <div className="text-right flex-grow pl-3">
-                             <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Bloqueados</p>
-                             <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{errorPct}% vol.</p>
-                           </div>
-                         </div>
-                         <div>
-                           <h4 className="text-3xl font-black text-rose-600 tracking-tighter">{data?.zaju?.error || 0}</h4>
-                           <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Falhas Detectadas</p>
-                         </div>
-                      </div>
+                       </div>
+                       <div>
+                         <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h4>
+                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Pendente SAP</p>
+                       </div>
                     </div>
 
-                    <div className="lg:col-span-9 flex flex-col h-full">
-                      <div className="flex-1 bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group flex flex-col justify-center min-h-[344px]">
-                        <div className="absolute -top-10 -left-10 w-40 h-40 bg-rose-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                        <div className="relative z-10 text-center space-y-6">
-                          <div className="w-20 h-20 bg-rose-50 text-rose-600 rounded-[1.8rem] mx-auto flex items-center justify-center shadow-lg shadow-rose-100/50 transition-transform group-hover:-rotate-12 border border-rose-100">
-                            <AlertCircle size={40} strokeWidth={2} />
-                          </div>
-                          <div>
-                            <h4 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Resolução de <span className="text-rose-600">Conflitos</span></h4>
-                            <p className="text-slate-500 text-sm mt-3 font-medium leading-relaxed max-w-sm mx-auto uppercase tracking-wide">
-                              Existem <strong className="text-slate-800 font-bold">{data?.zaju?.error || 0} inconsistências</strong> detectadas na integração de provisões que aguardam sua auditoria.
-                            </p>
-                          </div>
-                          <div className="pt-2 max-w-xs mx-auto w-full">
-                            <button 
-                              onClick={() => handleOpenModal('zaju')}
-                              disabled={(data?.zaju?.error || 0) === 0}
-                              className="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white font-black text-sm uppercase tracking-[0.15em] rounded-2xl shadow-xl shadow-rose-200 transition-all hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:shadow-none"
-                            >
-                              Acessar Log
-                            </button>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-4">Ação Corretiva Obrigatória</p>
-                          </div>
-                        </div>
-                      </div>
+                    <div className={`p-6 rounded-2xl border transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px] ${
+                      (data?.zaju?.error || 0) > 0 
+                      ? 'bg-rose-50/30 border-rose-200 shadow-rose-100 shadow-sm' 
+                      : 'bg-white border-slate-200 shadow-sm hover:shadow-md'
+                    }`}>
+                       <div className="flex justify-between items-start mb-4">
+                         <div className={`p-2 rounded-lg ${ (data?.zaju?.error || 0) > 0 ? 'bg-rose-100 text-rose-600' : 'bg-rose-50 text-rose-400' }`}>
+                           <AlertCircle size={20} />
+                         </div>
+                         <div className="text-right flex-grow pl-3">
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Bloqueados</p>
+                           <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{errorPct}% vol.</p>
+                         </div>
+                       </div>
+                       <div>
+                         <h4 className={`text-3xl font-black tracking-tighter ${ (data?.zaju?.error || 0) > 0 ? 'text-rose-600' : 'text-slate-600' }`}>
+                           {data?.zaju?.error || 0}
+                         </h4>
+                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Falhas Detectadas</p>
+                         
+                         {(data?.zaju?.error || 0) > 0 && (
+                           <button 
+                             onClick={() => handleOpenModal('zaju')}
+                             className="w-full mt-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-[0.15em] rounded-xl shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                           >
+                             Resolver Log
+                           </button>
+                         )}
+                       </div>
                     </div>
                   </>
                 );
