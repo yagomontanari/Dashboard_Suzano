@@ -1565,6 +1565,8 @@ export default function Dashboard() {
                 const returnPct = ((data?.zaju?.pending_return || 0) / totalStats * 100).toFixed(1);
                 const errorPct = ((data?.zaju?.error || 0) / totalStats * 100).toFixed(1);
                 
+                const byType = data?.zaju?.by_type || [];
+                const BLOCKED_TYPES = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'];
                 const totalPending = data?.zaju?.pending || 0;
                 const blockedPending = byType.filter(item => BLOCKED_TYPES.includes(item.type)).reduce((acc, item) => acc + (item.pending || 0), 0);
                 const isOnlySuspendedPending = totalPending > 0 && totalPending === blockedPending;
