@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.42] - 2026-04-28
+### Adicionado
+- **Inteligência de Monitoramento ZAJU**: Implementada notificação contextual no card "Aguardando Integração". O sistema agora identifica se as pendências volumétricas são compostas exclusivamente por itens com **Fluxo Suspenso**, exibindo um alerta informativo para evitar falsas preocupações operacionais.
+
+---
+
 ## [2.3.41] - 2026-04-28
 ### Alterado
 - **Informativo de Ciclo de Integração**: Atualizado o texto informativo para indicar que o ciclo ocorre no **dia 30**, substituindo a menção genérica ao "último dia do mês corrente".

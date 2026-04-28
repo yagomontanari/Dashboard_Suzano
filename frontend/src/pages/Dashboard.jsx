@@ -47,7 +47,8 @@ import {
   ArrowDownUp,
   Zap,
   XCircle,
-  Grip
+  Grip,
+  Info
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
@@ -1574,6 +1575,10 @@ export default function Dashboard() {
                 const pendingPct = ((data?.zaju?.pending || 0) / totalStats * 100).toFixed(1);
                 const returnPct = ((data?.zaju?.pending_return || 0) / totalStats * 100).toFixed(1);
                 const errorPct = ((data?.zaju?.error || 0) / totalStats * 100).toFixed(1);
+                
+                const totalPending = data?.zaju?.pending || 0;
+                const blockedPending = byType.filter(item => BLOCKED_TYPES.includes(item.type)).reduce((acc, item) => acc + (item.pending || 0), 0);
+                const isOnlySuspendedPending = totalPending > 0 && totalPending === blockedPending;
 
                 return (
                   <>
@@ -1640,6 +1645,14 @@ export default function Dashboard() {
                       <div>
                         <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data?.zaju?.pending || 0}</h4>
                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Aguardando Integração</p>
+                        {isOnlySuspendedPending && (
+                          <div className="mt-3 p-2.5 bg-amber-50/80 rounded-xl border border-amber-100 flex items-start gap-2.5 animate-in fade-in zoom-in duration-500 shadow-sm shadow-amber-100/50">
+                             <Info size={14} className="text-amber-600 mt-0.5 shrink-0" />
+                             <p className="text-[9px] font-black text-amber-700 uppercase leading-tight tracking-wider">
+                                Pendências restritas a itens com Fluxo Suspenso
+                             </p>
+                          </div>
+                        )}
                       </div>
                     </div>
 
