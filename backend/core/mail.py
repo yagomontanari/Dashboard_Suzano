@@ -209,4 +209,110 @@ class MailService:
         """
         await self._send_html_email(email_to, "Recuperação de Senha - Dashboard Suzano", self._get_base_template(content))
 
+    async def send_operational_summary_email(self, email_to: str, data: dict):
+        # Mapeamento de Categorias para exibição amigável
+        category_map = {
+            "CLIENTE": "Clientes",
+            "CUTOFF": "Cutoff",
+            "PAGAMENTO_LIQUIDADO": "Retorno Pagamento",
+            "PRE_CADASTRO_USUARIO": "Usuários",
+            "PRODUTO": "Produtos",
+            "SELLIN": "Sell-In",
+            "ORCAMENTO": "VK11",
+            "PAGAMENTO": "ZVER",
+            "AJUSTE_PROVISAO": "ZAJU",
+        }
+
+        last_sync_html = ""
+        for r in data["last_sync"]:
+            cat_name = category_map.get(r["categoria"], r["categoria"])
+            dta_str = r["dta"].strftime("%d/%m/%Y %H:%M") if r["dta"] else "---"
+            last_sync_html += f"""
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #475569;">{cat_name}</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #0f172a; text-align: right; font-weight: 600;">{dta_str}</td>
+            </tr>
+            """
+
+        content = f"""
+        <div style="margin-bottom: 30px;">
+            <p style="font-size: 16px; color: #475569; margin-bottom: 20px;">Prezados, bom dia / boa tarde.</p>
+            <p style="font-size: 15px; color: #1e293b;">Segue o resumo operacional das integrações referente ao fechamento de <strong>{data['periodo']}</strong>.</p>
+        </div>
+
+        <!-- Seção VK11 -->
+        <div style="margin-bottom: 25px; padding: 20px; background-color: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.05em;">VK11 (Orçamento)</h3>
+            <div style="display: grid; grid-template-cols: 1fr 1fr 1fr; gap: 10px;">
+                <p style="margin: 5px 0; font-size: 13px;">✅ Integrados: <strong>{data['vk11']['success']}</strong></p>
+                <p style="margin: 5px 0; font-size: 13px;">⏳ Pendentes: <strong>{data['vk11']['pending']}</strong></p>
+                <p style="margin: 5px 0; font-size: 13px;">❌ Com Erro: <strong>{data['vk11']['error']}</strong></p>
+            </div>
+        </div>
+
+        <!-- Seção ZAJU -->
+        <div style="margin-bottom: 25px; padding: 20px; background-color: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">ZAJU (Ajuste de Provisão)</h3>
+            <div style="margin-bottom: 15px;">
+                <p style="margin: 5px 0; font-size: 13px;">✅ Integrados: <strong>{data['zaju']['total_integrado']}</strong></p>
+                <p style="margin: 5px 0; font-size: 13px;">⏳ Pendentes: <strong>{data['zaju']['total_pendente']}</strong></p>
+                <div style="margin-left: 20px; border-left: 2px solid #e2e8f0; padding-left: 15px; margin-top: 5px;">
+                    <p style="margin: 2px 0; font-size: 12px; color: #64748b;">• Verba Nominal/Fixa: {data['zaju']['detalhamento_pendentes']['Verba Nominal/Fixa']}</p>
+                    <p style="margin: 2px 0; font-size: 12px; color: #64748b;">• Verba Off: {data['zaju']['detalhamento_pendentes']['Verba Off']}</p>
+                    <p style="margin: 2px 0; font-size: 12px; color: #64748b;">• CutOff Mes_Corrente: {data['zaju']['detalhamento_pendentes']['CutOff Mes_Corrente']}</p>
+                    <p style="margin: 2px 0; font-size: 12px; color: #64748b;">• CutOff Mes_Anterior: {data['zaju']['detalhamento_pendentes']['CutOff Mes_Anterior']}</p>
+                    <p style="margin: 2px 0; font-size: 12px; color: #64748b;">• ZAJU_AJUSTE_PGTO: {data['zaju']['detalhamento_pendentes']['ZAJU_AJUSTE_PGTO']}</p>
+                    <p style="margin: 2px 0; font-size: 12px; color: #64748b;">• ZAJU_PGTO_REPROVADO: {data['zaju']['detalhamento_pendentes']['ZAJU_PGTO_REPROVADO']}</p>
+                </div>
+                <p style="margin: 5px 0; font-size: 13px;">❌ Com Erro: <strong>{data['zaju']['total_erro']}</strong></p>
+                <p style="margin: 5px 0; font-size: 13px;">🔄 Aguardando Retorno: <strong>{data['zaju']['total_retorno']}</strong></p>
+            </div>
+        </div>
+
+        <!-- Seção ZVER -->
+        <div style="margin-bottom: 25px; padding: 20px; background-color: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 800; color: #4f46e5; text-transform: uppercase; letter-spacing: 0.05em;">ZVER (Pagamentos)</h3>
+            <p style="margin: 5px 0; font-size: 13px;">✅ Integrados: <strong>{data['zver']['success']}</strong></p>
+            <p style="margin: 5px 0; font-size: 13px;">⏳ Pendentes: <strong>{data['zver']['pending']}</strong></p>
+            <p style="margin: 5px 0; font-size: 13px;">❌ Com Erro: <strong>{data['zver']['error']}</strong></p>
+            <p style="margin: 5px 0; font-size: 13px;">🔄 Aguardando Retorno: <strong>{data['zver']['pending_return']}</strong></p>
+        </div>
+
+        <!-- Seção Inconsistências -->
+        <div style="margin-bottom: 25px;">
+            <h3 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase;">Inconsistências de Cadastro</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 6px 0; font-size: 13px; color: #475569;">• Sell-In (Notas Fiscais):</td>
+                    <td style="padding: 6px 0; font-size: 13px; color: #dc2626; font-weight: 700; text-align: right;">{data['inconsistencias']['SELLIN']}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px 0; font-size: 13px; color: #475569;">• Clientes:</td>
+                    <td style="padding: 6px 0; font-size: 13px; color: #dc2626; font-weight: 700; text-align: right;">{data['inconsistencias']['CLIENTES']}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px 0; font-size: 13px; color: #475569;">• Produtos:</td>
+                    <td style="padding: 6px 0; font-size: 13px; color: #dc2626; font-weight: 700; text-align: right;">{data['inconsistencias']['PRODUTOS']}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px 0; font-size: 13px; color: #475569;">• Cutoff:</td>
+                    <td style="padding: 6px 0; font-size: 13px; color: #dc2626; font-weight: 700; text-align: right;">{data['inconsistencias']['CUTOFF']}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px 0; font-size: 13px; color: #475569;">• Usuários:</td>
+                    <td style="padding: 6px 0; font-size: 13px; color: #dc2626; font-weight: 700; text-align: right;">{data['inconsistencias']['USUARIOS']}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Seção Últimos Recebimentos -->
+        <div style="margin-top: 30px; border-top: 2px solid #f1f5f9; padding-top: 20px;">
+            <h3 style="margin: 0 0 15px 0; font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase;">Últimos Registros Recebidos</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                {last_sync_html}
+            </table>
+        </div>
+        """
+        await self._send_html_email(email_to, f"Status Integrações: {data['periodo']}", self._get_base_template(content))
+
 mail_service = MailService()

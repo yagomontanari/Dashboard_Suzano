@@ -64,6 +64,14 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/notificacoes" 
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <NotificationSettings />
+            </ProtectedRoute>
+          } 
+        />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

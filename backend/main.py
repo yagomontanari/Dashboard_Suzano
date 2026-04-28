@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from api import auth, data
+from api import auth, data, notifications
 from core.config import settings
 from core.limiter import limiter
+from core.scheduler import scheduler
 
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -38,6 +39,20 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(data.router, prefix="/data", tags=["data"])
+app.include_router(notifications.router, prefix="/notifications", tags=["notifications"])
+
+
+@app.on_event("startup")
+async def startup_event():
+    # Inicializa o scheduler de tarefas automáticas
+    from core.scheduler import restart_scheduler
+    scheduler.start()
+    await restart_scheduler()
+    print("Scheduler iniciado e jobs carregados.")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    scheduler.shutdown()
 
 
 @app.get("/health")

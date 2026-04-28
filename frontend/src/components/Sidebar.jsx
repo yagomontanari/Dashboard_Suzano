@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, Users, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, ChevronLeft, ChevronRight, LogOut, Bell } from 'lucide-react';
 import { getPendingUsersCount } from '../services/api';
 
 export default function Sidebar() {
@@ -124,6 +124,25 @@ export default function Sidebar() {
             </div>
             <span className={`transition-all duration-300 font-medium ${expanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
               Gestão de Usuários
+            </span>
+          </NavLink>
+        )}
+
+        {role === 'ADMIN' && (
+          <NavLink 
+            to="/notificacoes"
+            title={!expanded ? "Notificações" : ""}
+            className={({ isActive }) => 
+              `flex items-center gap-4 px-3 py-3 rounded-md transition-all group overflow-hidden whitespace-nowrap ${
+                isActive 
+                  ? 'bg-blue-600/10 text-blue-400 border-l-2 border-blue-500' 
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200 border-l-2 border-transparent'
+              }`
+            }
+          >
+            <Bell size={20} className="shrink-0" />
+            <span className={`transition-all duration-300 font-medium ${expanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
+              Notificações
             </span>
           </NavLink>
         )}

@@ -4,11 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.59] - 2026-04-28
-### Alterado
-- **Interface**: Refinados os rótulos dos cards de retorno para diferenciar o indicador de volume/valor no topo ("Aguardando Retorno") do contador absoluto no rodapé ("Retorno Pendente SAP") nas abas ZAJU e Pagamentos.
+## [2.4.0] - 2026-04-28
+### Adicionado
+- **Funcionalidade**: Sistema de Notificações Automáticas via E-mail. Agora administradores podem configurar destinatários e horários (2x ao dia) para receber um resumo executivo premium com o status das integrações (VK11, ZAJU, ZVER e Dados Mestres).
+- **Interface**: Nova página de "Configurações de Notificação" para gestão de e-mails e agendamentos.
+- **Backend**: Implementação do motor de agendamento `APScheduler` e integração com o `fastapi-mail`.
 
-## [2.3.58] - 2026-04-28
+## [2.3.59] - 2026-04-28
 
 ---
 
