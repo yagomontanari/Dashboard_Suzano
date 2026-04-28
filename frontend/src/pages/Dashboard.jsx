@@ -1300,13 +1300,13 @@ export default function Dashboard() {
                  <div className="flex justify-between items-start mb-4">
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
                    <div className="text-right flex-grow pl-3">
-                     <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
+                     <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Retorno Pendente SAP</p>
                      <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
                  </div>
                  <div>
                    <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zver?.pending_return || 0}</h4>
-                   <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Pendente Retorno SAP</p>
+                   <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Retorno Pendente SAP</p>
                  </div>
                </div>
 
@@ -1658,13 +1658,13 @@ export default function Dashboard() {
                        <div className="flex justify-between items-start mb-4">
                          <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
                          <div className="text-right flex-grow pl-3">
-                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Ag. Retorno</p>
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Retorno Pendente SAP</p>
                            <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{returnPct}% vol.</p>
                          </div>
                        </div>
                        <div>
                          <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h4>
-                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Pendente SAP</p>
+                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Retorno Pendente SAP</p>
                        </div>
                     </div>
 
