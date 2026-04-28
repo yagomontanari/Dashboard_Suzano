@@ -350,6 +350,13 @@ export default function Dashboard() {
     if (rate >= 95) return 'text-amber-500';
     return 'text-rose-500';
   }, []);
+
+  const formatVolumePct = useCallback((count, total) => {
+    if (!count || count === 0) return "0.0";
+    const pct = (count / (total || 1)) * 100;
+    if (pct < 0.1) return "< 0.1";
+    return pct.toFixed(1);
+  }, []);
   const [totalCount, setTotalCount] = useState(0);
   const [sortConfig, setSortConfig] = useState(null);
 
@@ -1560,10 +1567,10 @@ export default function Dashboard() {
                 const totalStats = data?.zaju?.total || 1;
                 const efficiency = ((data?.zaju?.success || 0) / totalStats) * 100;
                 
-                const successPct = ((data?.zaju?.success || 0) / totalStats * 100).toFixed(1);
-                const pendingPct = ((data?.zaju?.pending || 0) / totalStats * 100).toFixed(1);
-                const returnPct = ((data?.zaju?.pending_return || 0) / totalStats * 100).toFixed(1);
-                const errorPct = ((data?.zaju?.error || 0) / totalStats * 100).toFixed(1);
+                const successPct = formatVolumePct(data?.zaju?.success || 0, totalStats);
+                const pendingPct = formatVolumePct(data?.zaju?.pending || 0, totalStats);
+                const returnPct = formatVolumePct(data?.zaju?.pending_return || 0, totalStats);
+                const errorPct = formatVolumePct(data?.zaju?.error || 0, totalStats);
                 
                 const byType = data?.zaju?.by_type || [];
                 const BLOCKED_TYPES = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'];

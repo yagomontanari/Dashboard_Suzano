@@ -4,11 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.56] - 2026-04-28
-### Corrigido
-- **Interface**: Corrigido erro de execução (crash) na aba de ZAJU causado pela remoção acidental de variáveis auxiliares (`isOnlySuspendedPending`) durante a refatoração das métricas.
+## [2.3.57] - 2026-04-28
+### Alterado
+- **Métricas**: Implementada a função `formatVolumePct` que exibe `< 0.1%` quando há registros mas o percentual é matematicamente desprezível em relação ao total, evitando que falhas reais sejam exibidas como `0.0%`.
 
-## [2.3.55] - 2026-04-28
+## [2.3.56] - 2026-04-28
 
 ---
 
