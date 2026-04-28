@@ -650,7 +650,6 @@ QUERY_RELATORIO_ZAJU = text("""
         concat(sapmc.material, ' - ', p.nom_produto) AS "Material",
         sapmc.target_qty AS "Unidade de Medida",
         sapmc.cond_type AS "Condition Type",
-        sapmc.waerk AS "Moeda",
         sapmc.status AS "Status",
         sapmc.numfat AS "Numfat Integração",
         sapmc.numov AS "Numov Integração",

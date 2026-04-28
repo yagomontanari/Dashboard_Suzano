@@ -4,11 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.49] - 2026-04-28
+## [2.3.50] - 2026-04-28
 ### Corrigido
-- **Queries**: Corrigido erro `UndefinedColumnError` no PostgreSQL ao ajustar os nomes das colunas de `tipo_doc` para `doc_type` e de `unidade_medida` para `target_qty` em ambas as queries de exportação ZAJU (Mensal e Log de Erros).
+- **Queries**: Removida a coluna `waerk` (Moeda) da `QUERY_RELATORIO_ZAJU` para corrigir o erro `UndefinedColumnError`, uma vez que este campo não está presente na tabela de memória de cálculo no PostgreSQL.
 
-## [2.3.48] - 2026-04-28
+## [2.3.49] - 2026-04-28
 
 ---
 
