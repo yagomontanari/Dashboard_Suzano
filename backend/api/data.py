@@ -9,7 +9,7 @@ import asyncio
 import io
 import pandas as pd
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from openpyxl.styles import PatternFill, Font
 
 from core.database import get_db, AsyncSessionLocal
