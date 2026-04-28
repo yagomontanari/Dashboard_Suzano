@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.43] - 2026-04-28
+### Adicionado
+- **UI/UX**: Implementado Hub de Resolução de Inconsistências na aba ZAJU (Banner de Conflitos).
+- **Backend**: Atualizada query de exportação detalhada de ZAJU para 22 colunas conforme nova especificação.
+- **Frontend**: Padronizadas as colunas do modal de Log de Inconsistências ZAJU.
+
+---
+
 ## [2.3.42] - 2026-04-28
 ### Adicionado
 - **Inteligência de Monitoramento ZAJU**: Implementada notificação contextual no card "Aguardando Integração". O sistema agora identifica se as pendências volumétricas são compostas exclusivamente por itens com **Fluxo Suspenso**, exibindo um alerta informativo para evitar falsas preocupações operacionais.

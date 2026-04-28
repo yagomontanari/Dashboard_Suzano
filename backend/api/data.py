@@ -397,23 +397,11 @@ async def bg_generate_zaju_report(
                 # Opcional: enviar e-mail avisando que nao ha dados
                 return
 
-            # Garantir a ordenacao exata (keys do dict podem quebrar a ordem dependendo da versao do pandas)
+            # Garantir a ordenacao exata
             df = pd.DataFrame([dict(r) for r in rows])
 
-            # Ajuste de pontuacao para o Padrao BRL (Virgula em decimais, ponto em milhares)
-            colunas_numericas = [
-                "Valor Bruto",
-                "Valor Liquido",
-                "Provisao Original",
-                "Provisao % SAP",
-                "Contrato COM % Bruto",
-                "Contrato COM % Liquido",
-                "Contrato LOG % Bruto",
-                "Contrato LOG % Liquido",
-                "Contrato CRE % Bruto",
-                "Contrato CRE % Liquido",
-                "Valor Provisao",
-            ]
+            # Ajuste de pontuacao para o Padrao BRL
+            colunas_numericas = ["Valor Bruto", "Valor Liquido", "Provisão"]
             for col in colunas_numericas:
                 if col in df.columns:
                     df[col] = pd.to_numeric(df[col], errors="coerce").apply(
@@ -426,109 +414,57 @@ async def bg_generate_zaju_report(
                         )
                     )
 
-            # Ajuste para campos puramente Percentuais
-            colunas_percentuais = ["% Original", "% Atual"]
-            for col in colunas_percentuais:
-                if col in df.columns:
-                    df[col] = pd.to_numeric(df[col], errors="coerce").apply(
-                        lambda x: (
-                            f"{x:,.2f}".replace(",", "X")
-                            .replace(".", ",")
-                            .replace("X", ".")
-                            + "%"
-                            if pd.notna(x)
-                            else ""
-                        )
-                    )
-
             # Separar Contrato vs Promo & Acoes
             if not df.empty and "id_tipo_verba" in df.columns:
-                df_contrato = df[df["id_tipo_verba"].isin([9, 10])].drop(
-                    columns=["id_tipo_verba"]
-                )
-                df_promo = df[df["id_tipo_verba"].isin([5, 6])].drop(
-                    columns=["id_tipo_verba"]
-                )
+                df_contrato = df[df["id_tipo_verba"].isin([9, 10])].drop(columns=["id_tipo_verba"])
+                df_promo = df[df["id_tipo_verba"].isin([5, 6])].drop(columns=["id_tipo_verba"])
             else:
                 df_contrato = pd.DataFrame()
                 df_promo = pd.DataFrame()
 
             ordem_colunas = [
                 "Orcamento",
-                "ID Ajuste Verba",
                 "Linha de Investimento",
-                "Tipo Linha Investimento",
-                "Cod. Cliente",
-                "Nome Cliente",
-                "Nº Nota Fiscal",
+                "Tipo",
+                "Cliente",
+                "Nota Fiscal",
                 "VKORG",
-                "Nº Documento",
+                "Nº Doc Fat",
                 "Valor Bruto",
                 "Valor Liquido",
-                "% Original",
-                "Provisao Original",
-                "Provisao % SAP",
-                "Contrato COM % Bruto",
-                "Contrato COM % Liquido",
-                "Contrato LOG % Bruto",
-                "Contrato LOG % Liquido",
-                "Contrato CRE % Bruto",
-                "Contrato CRE % Liquido",
-                "% Atual",
-                "Valor Provisao",
-                "Cutoff",
-                "Data Criacao",
-                "Purch. No C",
-                "Tipo Doc",
+                "Provisão",
+                "Data Criação",
+                "Tipo Integração",
+                "Tipo Documento",
                 "Sequencial",
-                "Cod. Material",
                 "Material",
-                "Unidade Medida",
-                "Cond. Type",
+                "Unidade de Medida",
+                "Condition Type",
                 "Moeda",
                 "Status",
-                "Numfat Integracao",
-                "Numov Integracao",
-                "Data Integracao",
-                "Mensagem Retorno",
+                "Numfat Integração",
+                "Numov Integração",
+                "Data Integração",
+                "Erros"
             ]
 
             if not df_contrato.empty:
-                df_contrato = df_contrato[
-                    [c for c in ordem_colunas if c in df_contrato.columns]
-                ]
+                df_contrato = df_contrato[[c for c in ordem_colunas if c in df_contrato.columns]]
             if not df_promo.empty:
                 df_promo = df_promo[[c for c in ordem_colunas if c in df_promo.columns]]
 
             output = io.BytesIO()
-            from openpyxl.styles import PatternFill, Font
-
             with pd.ExcelWriter(output, engine="openpyxl") as writer:
                 if not df_contrato.empty:
-                    df_contrato.to_excel(
-                        writer, index=False, sheet_name="Verbas de Contrato"
-                    )
+                    df_contrato.to_excel(writer, index=False, sheet_name="Verbas de Contrato")
                 else:
-                    pd.DataFrame(
-                        columns=(
-                            df.columns.drop("id_tipo_verba")
-                            if "id_tipo_verba" in df.columns
-                            else df.columns
-                        )
-                    ).to_excel(writer, index=False, sheet_name="Verbas de Contrato")
+                    pd.DataFrame(columns=[c for c in ordem_colunas if c != "id_tipo_verba"]).to_excel(writer, index=False, sheet_name="Verbas de Contrato")
 
                 if not df_promo.empty:
                     df_promo.to_excel(writer, index=False, sheet_name="Promo & Acoes")
                 else:
-                    pd.DataFrame(
-                        columns=(
-                            df.columns.drop("id_tipo_verba")
-                            if "id_tipo_verba" in df.columns
-                            else df.columns
-                        )
-                    ).to_excel(writer, index=False, sheet_name="Promo & Acoes")
+                    pd.DataFrame(columns=[c for c in ordem_colunas if c != "id_tipo_verba"]).to_excel(writer, index=False, sheet_name="Promo & Acoes")
 
-                # Aplicar Identidade Visual Suzano em todas as abas
                 for sheet_name in writer.sheets:
                     apply_excel_premium_style(writer, sheet_name)
 

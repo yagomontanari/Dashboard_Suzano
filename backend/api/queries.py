@@ -588,38 +588,19 @@ QUERY_ERRO_VK11_LIST_PAGINATED = text(QUERY_ERRO_VK11_LIST.text + PAGINATION_SOR
 
 QUERY_ERRO_ZAJU_LIST = text("""
     SELECT DISTINCT
-        o.id,
-        o.descricao as orcamento,
-        oli.descricao as LINHA_INVESTIMENTO,
-        oti.nome as TIPO_LINHA_INVESTIMENTO,
-        c.id_externo as COD_CLIENTE,
-        c.nom_cliente as NOME_CLIENTE,
-        s.nro_nota_fiscal as NRO_NOTA_FISCAL,
-        s.vkorg,
-        s.nro_documento as NRO_DOCUMENTO,
-        s.valor_total as VALOR_BRUTO,
-        s.valor_liquido as VALOR_LIQUIDO,
-        sapmc.cond_value as valor_provisao,
-        sapmc.dta_criacao as dta_criacao,
-        sapmc.purch_no_c,
-        sapmc.doc_type as tipo_doc,
-        sapmc.sequencial,
-        sapmc.material,
-        p.nom_produto as nome_produto,
-        sapmc.target_qty as unidade_medida,
-        sapmc.cond_type,
-        sapmc.status,
-        sapmc.numov as numov_integracao,
-        sapmc.numfat as numfat_integracao,
-        sapmc.dta_integracao as data_integracao,
         sapmc.msg as mensagem_retorno_integracao,
+        o.descricao as orcamento,
+        oli.descricao as linha_investimento,
+        concat(c.id_externo, ' - ', c.nom_cliente) as cliente,
+        sapmc.purch_no_c,
+        sapmc.sequencial,
+        sapmc.status,
+        sapmc.dta_integracao as data_integracao,
         sapmc.dta_alteracao
     FROM suzano_ajuste_provisao_memoria_calculo sapmc
     INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
     INNER JOIN sellin s ON sapmc.id_sellin = s.id 
     INNER JOIN orcamento_linha_investimento oli ON sapmc.id_linha_investimento = oli.id 
-    LEFT JOIN orcamento_tipo_investimento oti ON oti.id = oli.id_tipo_investimento
-    LEFT JOIN produto p ON sapmc.material = p.id_externo
     LEFT JOIN cliente c ON c.id = s.id_cliente
     WHERE sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao < :end_date 
       AND sapmc.cond_value != 0 
@@ -634,44 +615,30 @@ QUERY_ERRO_ZAJU_LIST_PAGINATED = text(QUERY_ERRO_ZAJU_LIST.text + PAGINATION_SOR
 
 QUERY_RELATORIO_ZAJU = text("""
     SELECT DISTINCT 
-        o.descricao AS "Orçamento",
-        sapmc.id_ajuste_verba AS "ID Ajuste Verba",
+        o.descricao AS "Orcamento",
         oli.descricao AS "Linha de Investimento",
-        oti.nome AS "Tipo Linha Investimento",
-        c.id_externo AS "Cód. Cliente",
-        c.nom_cliente AS "Nome Cliente",
-        s.nro_nota_fiscal AS "Nº Nota Fiscal",
+        oti.nome AS "Tipo",
+        concat(c.id_externo, ' - ', c.nom_cliente) AS "Cliente",
+        s.nro_nota_fiscal AS "Nota Fiscal",
         s.vkorg AS "VKORG",
-        s.nro_documento AS "Nº Documento",
+        s.nro_documento AS "Nº Doc Fat",
         s.valor_total AS "Valor Bruto",
-        s.valor_liquido AS "Valor Líquido",
-        sapmc.vlr_percentual_original AS "% Original",
-        sapmc.vlr_provisao_original AS "Provisão Original",
-        s.verba_perc_bruto AS "Provisão % SAP",
-        s.contrato_perc_bruto AS "Contrato COM % Bruto",
-        s.contrato_perc_liq AS "Contrato COM % Liquido",
-        s.contrato_log_bruto AS "Contrato LOG % Bruto",
-        s.contrato_log_liq AS "Contrato LOG % Líquido",
-        s.contrato_cre_perc_bruto AS "Contrato CRE % Bruto",
-        s.contrato_cre_perc_liq AS "Contrato CRE % Líquido",
-        sapmc.vlr_percentual AS "% Atual",
-        sapmc.cond_value AS "Valor Provisão",
-        sapmc.cutoff AS "Cutoff",
+        s.valor_liquido AS "Valor Liquido",
+        sapmc.cond_value AS "Provisão",
         sapmc.dta_criacao AS "Data Criação",
-        sapmc.purch_no_c AS "Purch. No C",
-        sapmc.doc_type AS "Tipo Doc",
+        sapmc.purch_no_c AS "Tipo Integração",
+        sapmc.doc_type AS "Tipo Documento",
         sapmc.sequencial AS "Sequencial",
-        sapmc.material AS "Cod. Material",
-        p.nom_produto AS "Material",
-        sapmc.target_qty AS "Unidade Medida",
-        sapmc.cond_type AS "Cond. Type",
-        sapmc.currency AS "Moeda",
+        concat(sapmc.material, ' - ', p.nom_produto) AS "Material",
+        sapmc.target_qty AS "Unidade de Medida",
+        sapmc.cond_type AS "Condition Type",
+        sapmc.waerk AS "Moeda",
         sapmc.status AS "Status",
         sapmc.numfat AS "Numfat Integração",
         sapmc.numov AS "Numov Integração",
         sapmc.dta_integracao AS "Data Integração",
-        sapmc.msg AS "Mensagem Retorno",
-        o.id_tipo_verba AS "id_tipo_verba"
+        sapmc.msg AS "Erros",
+        sapmc.id_tipo_verba -- Interno para separação de abas
     FROM suzano_ajuste_provisao_memoria_calculo sapmc
     LEFT JOIN orcamento o ON o.id = sapmc.id_orcamento
     LEFT JOIN sellin s ON sapmc.id_sellin = s.id 
@@ -682,7 +649,7 @@ QUERY_RELATORIO_ZAJU = text("""
     WHERE sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao <= :end_date
       AND sapmc.cond_value != 0
       AND sapmc.status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
-    ORDER BY sapmc.dta_criacao DESC;
+    ORDER BY "Data Criação" DESC;
 """)
 
 QUERY_RELATORIO_CG_ELEGIVEIS = text("""
