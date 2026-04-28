@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.41] - 2026-04-28
+### Alterado
+- **Informativo de Ciclo de Integração**: Atualizado o texto informativo para indicar que o ciclo ocorre no **dia 30**, substituindo a menção genérica ao "último dia do mês corrente".
+
+---
+
 ## [2.3.40] - 2026-04-28
 ### Alterado
 - **KPI de Eficiência ZAJU (Ajuste Operacional)**: Refatorada a fórmula da Taxa de Eficiência para desconsiderar itens em "Ciclo Agendado" (Aguardando Integração). A taxa agora reflete a relação real entre **Sucessos vs Bloqueados**, evitando distorções causadas por grandes volumes de dados aguardando o horário de processamento planejado.

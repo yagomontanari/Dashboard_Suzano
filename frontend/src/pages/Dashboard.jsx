@@ -1546,18 +1546,28 @@ export default function Dashboard() {
             {/* Top Summaries */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {(() => {
-                const eligibleItems = data?.zaju?.by_type?.filter(item => 
-                  !['ZAJU_AJUSTE_PGTO'].includes(item.type)
-                ) || [];
+                const byType = data?.zaju?.by_type || [];
+                const BLOCKED_TYPES = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'];
+                const SCHEDULED_TYPES = ['ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE', 'ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_NOMI'];
                 
-                const successAmount = eligibleItems.reduce((acc, curr) => acc + (curr.success || 0), 0);
-                const errorAmount = eligibleItems.reduce((acc, curr) => acc + (curr.error || 0), 0);
+                const successTotal = byType.reduce((acc, item) => {
+                  if (BLOCKED_TYPES.includes(item.type)) return acc;
+                  return acc + (item.success || 0);
+                }, 0);
                 
-                // Nova Fórmula: Eficiência = Sucesso / (Sucesso + Erros)
-                // Ignora o que está "Processando" (Aguardando Ciclo)
-                const efficiency = (successAmount + errorAmount) > 0 
-                  ? (successAmount / (successAmount + errorAmount)) * 100 
-                  : 100;
+                const denominatotal = byType.reduce((acc, item) => {
+                  if (BLOCKED_TYPES.includes(item.type)) return acc;
+                  
+                  // Se for Ciclo Agendado, ignoramos os Pendentes (eles não são "ineficiência")
+                  if (SCHEDULED_TYPES.includes(item.type)) {
+                    return acc + (item.success || 0) + (item.error || 0);
+                  }
+                  
+                  // Se for item operacional comum, Pendentes contam como ineficiência
+                  return acc + (item.success || 0) + (item.error || 0) + (item.pending || 0);
+                }, 0);
+                
+                const efficiency = denominatotal > 0 ? (successTotal / denominatotal) * 100 : 100;
                 
                 const totalStats = data?.zaju?.total || 1; 
                 const successPct = ((data?.zaju?.success || 0) / totalStats * 100).toFixed(1);
@@ -1770,7 +1780,7 @@ export default function Dashboard() {
                                         )}
                                         {['ZAJU_CUTOFF_MES_CORRENTE', 'ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_NOMI'].includes(item.type) && (
                                           <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-1.5 rounded border border-indigo-100 mt-2 max-w-[280px] leading-tight font-medium">
-                                            <span className="font-bold">Ciclo de Integração:</span> Ocorre somente no último dia do mês corrente.
+                                            <span className="font-bold">Ciclo de Integração:</span> Ocorre no dia 30.
                                           </span>
                                         )}
                                       </p>
