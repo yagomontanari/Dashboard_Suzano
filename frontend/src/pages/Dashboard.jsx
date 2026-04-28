@@ -1300,7 +1300,7 @@ export default function Dashboard() {
                  <div className="flex justify-between items-start mb-4">
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
                    <div className="text-right flex-grow pl-3">
-                     <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Retorno Pendente SAP</p>
+                     <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
                      <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
                  </div>
@@ -1658,7 +1658,7 @@ export default function Dashboard() {
                        <div className="flex justify-between items-start mb-4">
                          <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
                          <div className="text-right flex-grow pl-3">
-                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Retorno Pendente SAP</p>
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
                            <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{returnPct}% vol.</p>
                          </div>
                        </div>

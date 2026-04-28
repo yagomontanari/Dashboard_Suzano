@@ -4,11 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.58] - 2026-04-28
+## [2.3.59] - 2026-04-28
 ### Alterado
-- **Interface**: Padronizada a nomenclatura dos indicadores de retorno para "Retorno Pendente SAP" em ambas as abas (ZAJU e Pagamentos), garantindo uma linguagem técnica comum em todo o dashboard.
+- **Interface**: Refinados os rótulos dos cards de retorno para diferenciar o indicador de volume/valor no topo ("Aguardando Retorno") do contador absoluto no rodapé ("Retorno Pendente SAP") nas abas ZAJU e Pagamentos.
 
-## [2.3.57] - 2026-04-28
+## [2.3.58] - 2026-04-28
 
 ---
 
