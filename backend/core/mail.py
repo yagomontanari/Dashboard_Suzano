@@ -252,9 +252,13 @@ class MailService:
             """
             # Itens da Categoria
             for item_type, count in items.items():
+                label_suffix = ""
+                if item_type in ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO']:
+                    label_suffix = ' <span style="color: #dc2626; font-size: 10px; font-weight: 800;">(BLOQUEADO A PEDIDO DO CLIENTE)</span>'
+                
                 zaju_rows_html += f"""
                 <tr>
-                    <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #64748b; font-family: monospace;">• {item_type}</td>
+                    <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #64748b; font-family: monospace;">• {item_type}{label_suffix}</td>
                     <td style="padding: 4px 0; font-size: 13px; font-weight: 700; color: #334155; text-align: right;">{count}</td>
                 </tr>
                 """
@@ -268,7 +272,7 @@ class MailService:
         <div style="background-color: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px; padding: 15px 20px; margin-bottom: 30px; display: flex; align-items: center;">
             <span style="font-size: 20px; margin-right: 12px;">⚠️</span>
             <p style="font-size: 14px; color: #9a3412; margin: 0; font-weight: 600;">
-                Atenção: Itens bloqueados, reprovados ou com erro de validação não serão integrados ao SAP até que a pendência seja corrigida.
+                Atenção: Itens bloqueados (incluindo aqueles a pedido do cliente), reprovados ou com erro de validação não serão integrados ao SAP até que a pendência seja corrigida.
             </p>
         </div>
 
