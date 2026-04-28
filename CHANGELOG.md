@@ -4,12 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.53] - 2026-04-28
-### Alterado
-- **Exportação**: Simplificados os nomes das colunas de "Cliente" e "Material" na exportação ZAJU.
-- **Exportação**: Aplicada a formatação de data e hora `DD/MM/AA HH:MM:SS` para todos os campos de timestamp no relatório detalhado de inconsistências ZAJU.
+## [2.3.54] - 2026-04-28
+### Corrigido
+- **Interface**: Aplicada a formatação de data `DD/MM/AA HH:MM:SS` também na visualização do modal de Log de Inconsistências ZAJU, mantendo a consistência com o arquivo de exportação.
 
-## [2.3.52] - 2026-04-28
+## [2.3.53] - 2026-04-28
 
 ---
 

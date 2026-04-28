@@ -532,7 +532,12 @@ export default function Dashboard() {
         if (cat === 'pagamentos' || cat === 'zaju') {
           const clientVal = `${transformed.cod_cliente || ""} - ${transformed.nome_cliente || ""}`;
           if (cat === 'pagamentos') transformed.cliente_display = clientVal;
-          else transformed.cliente = clientVal;
+          else {
+            transformed.cliente = clientVal;
+            if (transformed.data_integracao) {
+              transformed.data_integracao = formatDateTime(transformed.data_integracao);
+            }
+          }
         }
         
         return transformed;
