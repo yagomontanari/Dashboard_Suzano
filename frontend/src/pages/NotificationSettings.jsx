@@ -10,13 +10,9 @@ import {
   CheckCircle2, 
   AlertCircle,
   Loader2,
-  Calendar
+  Calendar,
+  X
 } from 'lucide-react';
-
-const toast = {
-  success: (msg) => alert(`✅ ${msg}`),
-  error: (msg) => alert(`❌ ${msg}`)
-};
 
 const NotificationSettings = () => {
   const [recipients, setRecipients] = useState([]);
@@ -25,6 +21,14 @@ const NotificationSettings = () => {
   const [newTime, setNewTime] = useState('08:00');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  
+  // Custom Toast State
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToastMessage({ message, type });
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   const fetchData = async () => {
     try {
@@ -36,7 +40,7 @@ const NotificationSettings = () => {
       setSchedules(schRes.data);
     } catch (error) {
       console.error('Erro ao buscar configurações:', error);
-      toast.error('Erro ao carregar configurações');
+      showToast('Erro ao carregar configurações', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -55,9 +59,9 @@ const NotificationSettings = () => {
       const res = await api.post('/notifications/recipients', { email: newEmail });
       setRecipients([...recipients, res.data]);
       setNewEmail('');
-      toast.success('Destinatário adicionado');
+      showToast('Destinatário adicionado');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erro ao adicionar destinatário');
+      showToast(error.response?.data?.detail || 'Erro ao adicionar destinatário', 'error');
     }
   };
 
@@ -65,16 +69,15 @@ const NotificationSettings = () => {
     try {
       await api.delete(`/notifications/recipients/${id}`);
       setRecipients(recipients.filter(r => r.id !== id));
-      toast.success('Destinatário removido');
+      showToast('Destinatário removido');
     } catch (error) {
       console.error(error);
-      toast.error('Erro ao remover destinatário');
+      showToast('Erro ao remover destinatário', 'error');
     }
   };
 
   const handleUpdateSchedules = async () => {
     try {
-      // Por enquanto, simplificando: adiciona o novo horário se não existir
       const updatedTimes = [...schedules.map(s => s.time)];
       if (!updatedTimes.includes(newTime)) {
           updatedTimes.push(newTime);
@@ -82,10 +85,10 @@ const NotificationSettings = () => {
       
       await api.post('/notifications/schedules', { times: updatedTimes });
       fetchData();
-      toast.success('Agendamentos atualizados');
+      showToast('Agendamentos atualizados');
     } catch (error) {
       console.error(error);
-      toast.error('Erro ao atualizar agendamentos');
+      showToast('Erro ao atualizar agendamentos', 'error');
     }
   };
 
@@ -93,10 +96,10 @@ const NotificationSettings = () => {
     setIsSending(true);
     try {
       await api.post('/notifications/send-manual', {});
-      toast.success('Processo de notificação disparado!');
+      showToast('Processo de notificação disparado!');
     } catch (error) {
       console.error(error);
-      toast.error('Erro ao disparar notificação');
+      showToast('Erro ao disparar notificação', 'error');
     } finally {
       setIsSending(false);
     }
@@ -111,7 +114,21 @@ const NotificationSettings = () => {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
+    <div className="p-8 max-w-6xl mx-auto animate-in fade-in duration-500 relative">
+      
+      {/* Custom Toast Component */}
+      {toastMessage && (
+        <div className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl animate-in slide-in-from-right-8 fade-in duration-300 ${
+          toastMessage.type === 'success' ? 'bg-slate-800 text-white' : 'bg-red-600 text-white'
+        }`}>
+          {toastMessage.type === 'success' ? <CheckCircle2 size={24} className="text-green-400" /> : <AlertCircle size={24} className="text-red-200" />}
+          <span className="font-semibold">{toastMessage.message}</span>
+          <button onClick={() => setToastMessage(null)} className="ml-2 text-slate-300 hover:text-white transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
@@ -235,10 +252,10 @@ const NotificationSettings = () => {
                               const updatedTimes = schedules.filter(sch => sch.id !== s.id).map(sch => sch.time);
                               await api.post('/notifications/schedules', { times: updatedTimes });
                               fetchData();
-                              toast.success('Agendamento removido');
+                              showToast('Agendamento removido');
                             } catch (error) {
                               console.error(error);
-                              toast.error('Erro ao remover agendamento');
+                              showToast('Erro ao remover agendamento', 'error');
                             }
                         }}
                         className="p-2 text-slate-400 hover:text-red-500 rounded-lg transition-all"
