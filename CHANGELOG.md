@@ -4,12 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.47] - 2026-04-28
-### Alterado
-- **Relatórios**: Padronização total do layout de exportação ZAJU com 23 colunas, seguindo rigorosamente os labels e fontes de dados solicitados (Erros de Integração, Orçamento, Linha Investimento, etc.).
-- **Backend**: Corrigidos vínculos de colunas técnicas (`numfat`, `numov`) e labels de moeda/provisão no Excel.
+## [2.3.48] - 2026-04-28
+### Corrigido
+- **Relatórios**: Realizado rollback das alterações no Relatório Mensal ZAJU (Aba Relatórios), restaurando a estrutura de colunas e nomes originais.
+- **Log de Inconsistências**: Implementada a exportação detalhada de 23 colunas especificamente para o Log de Inconsistências ZAJU, sincronizando a query `QUERY_ERRO_ZAJU_LIST` com o frontend para download via modal de erros.
 
-## [2.3.46] - 2026-04-28
+## [2.3.47] - 2026-04-28
 
 ---
 

@@ -589,18 +589,36 @@ QUERY_ERRO_VK11_LIST_PAGINATED = text(QUERY_ERRO_VK11_LIST.text + PAGINATION_SOR
 QUERY_ERRO_ZAJU_LIST = text("""
     SELECT DISTINCT
         sapmc.msg as mensagem_retorno_integracao,
+        sapmc.purch_no_c,
         o.descricao as orcamento,
         oli.descricao as linha_investimento,
-        concat(c.id_externo, ' - ', c.nom_cliente) as cliente,
-        sapmc.purch_no_c,
+        oti.nome as tipo_linha_investimento,
+        c.id_externo as cod_cliente,
+        c.nom_cliente as nome_cliente,
+        s.nro_nota_fiscal,
+        s.vkorg,
+        s.nro_documento,
+        s.valor_total as valor_bruto,
+        s.valor_liquido,
+        sapmc.cond_value as valor_provisao,
+        sapmc.dta_criacao,
+        sapmc.tipo_doc,
         sapmc.sequencial,
+        sapmc.material,
+        p.nom_produto as nome_produto,
+        sapmc.unidade_medida,
+        sapmc.cond_type,
         sapmc.status,
+        sapmc.numov as numov_integracao,
+        sapmc.numfat as numfat_integracao,
         sapmc.dta_integracao as data_integracao,
         sapmc.dta_alteracao
     FROM suzano_ajuste_provisao_memoria_calculo sapmc
     INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
     INNER JOIN sellin s ON sapmc.id_sellin = s.id 
     INNER JOIN orcamento_linha_investimento oli ON sapmc.id_linha_investimento = oli.id 
+    LEFT JOIN orcamento_tipo_investimento oti ON oti.id = oli.id_tipo_investimento
+    LEFT JOIN produto p ON sapmc.material = p.id_externo
     LEFT JOIN cliente c ON c.id = s.id_cliente
     WHERE sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao < :end_date 
       AND sapmc.cond_value != 0 
@@ -615,29 +633,29 @@ QUERY_ERRO_ZAJU_LIST_PAGINATED = text(QUERY_ERRO_ZAJU_LIST.text + PAGINATION_SOR
 
 QUERY_RELATORIO_ZAJU = text("""
     SELECT DISTINCT 
-        sapmc.msg AS "Erros de Integração",
-        o.descricao AS "Orçamento",
-        oli.descricao AS "Linha Investimento",
-        oti.nome AS "Tipo Linha Investimento",
-        c.id_externo AS "Cód. Cliente",
-        c.nom_cliente AS "Nome Cliente",
-        s.nro_nota_fiscal AS "Nº Nota Fiscal",
-        s.nro_documento AS "Nº Documento",
-        s.valor_total AS "Valor Bruto",
-        s.valor_liquido AS "Valor Líquido",
+        o.descricao AS "Orcamento",
+        oli.descricao AS "Linha de Investimento",
+        oti.nome AS "Tipo",
+        concat(c.id_externo, ' - ', c.nom_cliente) AS "Cliente",
+        s.nro_nota_fiscal AS "Nota Fiscal",
         s.vkorg AS "VKORG",
-        sapmc.cond_value AS "Valor Provisão",
-        sapmc.dta_criacao AS "Criação Integração",
+        s.nro_documento AS "Nº Doc Fat",
+        s.valor_total AS "Valor Bruto",
+        s.valor_liquido AS "Valor Liquido",
+        sapmc.cond_value AS "Provisão",
+        sapmc.dta_criacao AS "Data Criação",
+        sapmc.purch_no_c AS "Tipo Integração",
         sapmc.tipo_doc AS "Tipo Documento",
         sapmc.sequencial AS "Sequencial",
         concat(sapmc.material, ' - ', p.nom_produto) AS "Material",
-        sapmc.unidade_medida AS "Unidade Medida",
-        sapmc.cond_type AS "Tipo Condição",
+        sapmc.unidade_medida AS "Unidade de Medida",
+        sapmc.cond_type AS "Condition Type",
+        sapmc.waerk AS "Moeda",
         sapmc.status AS "Status",
-        sapmc.numov AS "NUMOV Integracao",
-        sapmc.numfat AS "NUMFAT Integração",
-        sapmc.dta_integracao AS "Data Integração SAP",
-        sapmc.dta_alteracao AS "Última Alteração",
+        sapmc.numfat AS "Numfat Integração",
+        sapmc.numov AS "Numov Integração",
+        sapmc.dta_integracao AS "Data Integração",
+        sapmc.msg AS "Erros",
         o.id_tipo_verba -- Interno para separação de abas
     FROM suzano_ajuste_provisao_memoria_calculo sapmc
     LEFT JOIN orcamento o ON o.id = sapmc.id_orcamento

@@ -414,48 +414,44 @@ async def bg_generate_zaju_report(
                         )
                     )
 
-            # Separar Contrato vs Promo & Acoes (Garantindo que todos os dados entrem em alguma aba)
+            # Separar Contrato vs Promo & Acoes
             if not df.empty and "id_tipo_verba" in df.columns:
-                # Contrato: 9, 10. Todo o resto vai para Promo & Ações para não perder dados
                 df_contrato = df[df["id_tipo_verba"].isin([9, 10])].drop(columns=["id_tipo_verba"])
-                df_promo = df[~df["id_tipo_verba"].isin([9, 10])].drop(columns=["id_tipo_verba"])
+                df_promo = df[df["id_tipo_verba"].isin([5, 6])].drop(columns=["id_tipo_verba"])
             else:
                 df_contrato = pd.DataFrame()
-                df_promo = df.copy() # Se nao tiver a coluna, joga tudo no promo
+                df_promo = pd.DataFrame()
 
             ordem_colunas = [
-                "Erros de Integração",
-                "Orçamento",
-                "Linha Investimento",
-                "Tipo Linha Investimento",
-                "Cód. Cliente",
-                "Nome Cliente",
-                "Nº Nota Fiscal",
-                "Nº Documento",
-                "Valor Bruto",
-                "Valor Líquido",
+                "Orcamento",
+                "Linha de Investimento",
+                "Tipo",
+                "Cliente",
+                "Nota Fiscal",
                 "VKORG",
-                "Valor Provisão",
-                "Criação Integração",
+                "Nº Doc Fat",
+                "Valor Bruto",
+                "Valor Liquido",
+                "Provisão",
+                "Data Criação",
+                "Tipo Integração",
                 "Tipo Documento",
                 "Sequencial",
                 "Material",
-                "Unidade Medida",
-                "Tipo Condição",
+                "Unidade de Medida",
+                "Condition Type",
+                "Moeda",
                 "Status",
-                "NUMOV Integracao",
-                "NUMFAT Integração",
-                "Data Integração SAP",
-                "Última Alteração"
+                "Numfat Integração",
+                "Numov Integração",
+                "Data Integração",
+                "Erros"
             ]
 
-            # Reordenar colunas existentes
             if not df_contrato.empty:
-                cols_present = [c for c in ordem_colunas if c in df_contrato.columns]
-                df_contrato = df_contrato[cols_present]
+                df_contrato = df_contrato[[c for c in ordem_colunas if c in df_contrato.columns]]
             if not df_promo.empty:
-                cols_present = [c for c in ordem_colunas if c in df_promo.columns]
-                df_promo = df_promo[cols_present]
+                df_promo = df_promo[[c for c in ordem_colunas if c in df_promo.columns]]
 
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine="openpyxl") as writer:
