@@ -4,6 +4,18 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.37] - 2026-04-28
+### Adicionado
+- **Sistema de Notificação de Log**: Implementado monitoramento ativo de inatividade nas rotinas de integração. Se uma categoria crítica (Sell-In, ZAJU, ZVER, VK11 ou Retorno) não registrar atividade por mais de 24h, o Log de Integrações agora exibe um banner de alerta pulsante (`Zap`) para ação imediata.
+- **Cromatismo Dinâmico de Performance**: Os percentuais de saúde nos gráficos Donut e KPIs de volume agora mudam de cor conforme a proximidade com a meta de 100%: Verde (≥99.5%), Amarelo (≥95%) e Vermelho (<95%).
+
+### Alterado
+- **Nomenclatura Executiva**: Atualizado o rótulo de "Aguardando SAP" para **"Aguardando Integração"** no dashboard principal para uma comunicação mais voltada ao processo de negócio.
+- **Simetria de Layout (Alinhamento Vertical)**: Ajustado o grid principal e os containers de flexbox para garantir que a coluna do Log de Integrações e as colunas de Inconsistências tenham exatamente a mesma altura, alinhando as bases visuais do dashboard.
+- **Refinamento de Gráficos**: Padronização da posição das legendas (`mt-auto`) e espaçamento do container de gráficos para garantir alinhamento horizontal perfeito entre os cards de saúde das integrações.
+
+---
+
 ## [2.3.36] - 2026-04-27
 ### Corrigido
 - **Falsos Positivos no Modal de Inconsistências (Linhas Fantasmas)**: Corrigida a lógica de filtragem das consultas detalhadas das filas de integração (`Sell-in`, `Clientes` e `Usuários`). Anteriormente, o validador mestre dos contadores considerava um registro resolvido caso a Chave Primária existisse no banco destino, contudo, o modal *extrainterrogava* se toda a carga de propriedades ("campos menores") enviada originalmente constava idêntica e intocada no destino. Qualquer edição posterior feita no banco (ou manual) deixava a flag do erro perpetuamente retida no modal sob a forma de uma "linha fantasma". O grau de criticidade da *Detail Query* foi rebaixado e alinhado integralmente com o contador do Dashboard, exigindo a resolução apenas pela completude da Chave Primária da Fila.
@@ -700,4 +712,4 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Componentização visual com Lucide React.
 
 ---
-*Atualizado em: 27 de Abril de 2026 por Antigravity AI.*
+*Atualizado em: 28 de Abril de 2026 por Antigravity AI.*

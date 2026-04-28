@@ -66,7 +66,13 @@ const IntegrationHealthCard = React.memo(({ title, success, pending, error, pend
 
   const displayData = data.length > 0 ? data : [{ name: 'Vazio', value: 1, color: '#f1f5f9' }];
   
-  const getPercentage = (val) => total > 0 ? ((val / total) * 100).toFixed(1) : "0";
+  const rate = total > 0 ? (success / total) * 100 : 0;
+  
+  const getStatusColor = (val) => {
+    if (val >= 99.5) return 'text-emerald-600';
+    if (val >= 95) return 'text-amber-500';
+    return 'text-rose-500';
+  };
 
   return (
     <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-300/50 transition-all group flex flex-col h-full">
@@ -74,9 +80,9 @@ const IntegrationHealthCard = React.memo(({ title, success, pending, error, pend
         <h3 className="font-black text-slate-800 tracking-tighter text-sm uppercase tracking-[0.15em] opacity-70 group-hover:opacity-100 transition-opacity">{title}</h3>
       </div>
       
-      <div className="flex flex-col items-center gap-8 flex-grow justify-center">
+      <div className="flex flex-col items-center flex-grow">
         {/* Modern Donut Chart */}
-        <div className="w-44 h-44 relative flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
+        <div className="w-44 h-44 relative flex-shrink-0 group-hover:scale-105 transition-transform duration-500 mb-8 mt-2">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -99,14 +105,14 @@ const IntegrationHealthCard = React.memo(({ title, success, pending, error, pend
           </ResponsiveContainer>
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
              <span className="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">Status</span>
-             <span className="text-3xl font-black text-slate-800 leading-none mt-2 tracking-tighter">
-                {getPercentage(success)}<span className="text-sm text-emerald-500 font-bold">%</span>
+             <span className={`text-3xl font-black leading-none mt-2 tracking-tighter transition-colors duration-500 ${getStatusColor(rate)}`}>
+                {rate.toFixed( rate >= 100 ? 0 : 1 )}<span className="text-sm font-bold opacity-60 ml-0.5">%</span>
              </span>
           </div>
         </div>
 
         {/* Legend */}
-        <div className="w-full space-y-4 pt-4 border-t border-slate-50">
+        <div className="w-full space-y-4 pt-4 border-t border-slate-50 mt-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
@@ -158,7 +164,14 @@ const IntegrationHealthCard = React.memo(({ title, success, pending, error, pend
   );
 });
 
-const IntegrationLog = React.memo(({ updates }) => {
+const IntegrationLog = React.memo(({ updates, className = "" }) => {
+  const criticalCategories = useMemo(() => ['Sell-In', 'ZAJU', 'ZVER', 'VK11', 'Retorno Pagamento'], []);
+  
+  const staleCategories = useMemo(() => {
+    if (!updates || updates.length === 0) return [];
+    return criticalCategories.filter(cat => !updates.some(u => u.categoria === cat));
+  }, [updates, criticalCategories]);
+
   const getIcon = useCallback((category) => {
     switch(category) {
       case 'Sell-In': return <HandCoins size={16} />;
@@ -201,7 +214,7 @@ const IntegrationLog = React.memo(({ updates }) => {
   }, []);
 
   return (
-    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col max-h-[450px]">
+    <div className={`bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col ${className}`}>
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-slate-900 text-white rounded-2xl">
@@ -212,7 +225,22 @@ const IntegrationLog = React.memo(({ updates }) => {
         <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Últimas 24h</span>
       </div>
       
-      <div className="space-y-2 overflow-y-auto pr-4 custom-scrollbar">
+      {staleCategories.length > 0 && (
+        <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-100 flex items-start gap-4 animate-in slide-in-from-top-2 duration-500">
+           <div className="p-2 bg-rose-100 text-rose-600 rounded-xl shadow-sm">
+              <Zap size={18} fill="currentColor" className="animate-pulse" />
+           </div>
+           <div className="flex-1">
+              <h4 className="text-xs font-black text-rose-800 uppercase tracking-widest mb-1">Atraso na Integração</h4>
+              <p className="text-[11px] text-rose-600 font-bold leading-relaxed">
+                 As seguintes rotinas não registraram atividade nas últimas 24h: 
+                 <span className="ml-1 text-rose-700 font-extrabold uppercase">{staleCategories.join(', ')}</span>
+              </p>
+           </div>
+        </div>
+      )}
+      
+      <div className="space-y-2 overflow-y-auto pr-4 custom-scrollbar flex-1">
         {updates && updates.map((update, index) => (
           <div key={index} className="flex gap-5 group py-4 transition-all hover:bg-slate-50/50 rounded-2xl px-3 -mx-2 border border-transparent hover:border-slate-100/50">
             <div className={`p-3 rounded-2xl flex-shrink-0 flex items-center justify-center h-12 w-12 shadow-sm transition-transform group-hover:rotate-6 ${getIconBg(update.categoria)}`}>
@@ -997,7 +1025,7 @@ export default function Dashboard() {
                         {(data?.vk11?.pending || 0) + (data?.zaju?.pending || 0) + (data?.zver?.pending || 0)}
                     </h3>
                     <p className="text-xs font-bold text-amber-600 mt-2 flex items-center gap-1.5 uppercase tracking-widest">
-                       <Clock size={12} /> Aguardando SAP
+                       <Clock size={12} /> Aguardando Integração
                     </p>
                   </div>
                   <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
@@ -1041,9 +1069,9 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
               {/* Saúde das Integrações (60%) */}
-              <div className="lg:col-span-6 space-y-8">
+              <div className="lg:col-span-6 flex flex-col gap-8">
                 <div className="flex items-center justify-between px-2">
                   <h2 className="text-sm font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-3">
                     <span className="w-8 h-px bg-slate-200"></span> Operação Ativa
@@ -1056,20 +1084,20 @@ export default function Dashboard() {
                   <IntegrationHealthCard title="ZVER" success={data?.zver?.success || 0} pending={data?.zver?.pending || 0} error={data?.zver?.error || 0} pendingReturn={data?.zver?.pending_return || 0} />
                 </div>
 
-                <IntegrationLog updates={data.last_updates} />
+                <IntegrationLog updates={data.last_updates} className="flex-1 min-h-[450px]" />
               </div>
 
               {/* Hub de Resolução (40%) */}
-              <div className="lg:col-span-4 space-y-8">
+              <div className="lg:col-span-4 flex flex-col gap-8">
                 <div className="flex items-center justify-between px-2">
                   <h2 className="text-sm font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-3">
                     <span className="w-8 h-px bg-slate-200"></span> Central de Inconsistências
                   </h2>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-6 flex-1 flex flex-col">
                   {/* Category Group 1: Integração Financeira */}
-                  <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50">
+                  <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex-1 flex flex-col">
                     <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                        <div className="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]"></div> Inconsistencias Integração
                     </h4>
@@ -1104,7 +1132,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Category Group 2: Cadeia de Suprimentos */}
-                  <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50">
+                  <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex-1 flex flex-col">
                     <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                        <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div> Inconsistências de Cadastro
                     </h4>
@@ -1541,7 +1569,7 @@ export default function Dashboard() {
                         <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
                         <div className="text-right flex-grow pl-3">
                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Integrados</p>
-                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{successPct}% vol.</p>
+                          <p className={`text-lg font-black tracking-tight mt-1 ${getEfficiencyColor(parseFloat(successPct))}`}>{successPct}% vol.</p>
                         </div>
                       </div>
                       <div>
