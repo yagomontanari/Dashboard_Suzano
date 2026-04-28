@@ -4,6 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.7] - 2026-04-28
+### Corrigido
+- **Backend**: Corrigido erro de "Unexpected State Change" / "_connection_for_bind() is already in progress" no SQLAlchemy durante o disparo de notificação. As consultas de métricas do banco de dados agora são executadas de forma sequencial ao invés de simultânea (`asyncio.gather`), pois sessões SQLAlchemy nativas não são `thread-safe` para acesso concorrente.
+
 ## [2.4.6] - 2026-04-28
 ### Corrigido
 - **Backend**: Alterado o disparo manual de e-mails de uma *background task* assíncrona para uma execução síncrona (`await`). Isso corrige a falha no envio de e-mails na nuvem, pois o ambiente Serverless (Vercel) congela a execução da função imediatamente após o retorno da resposta, impedindo que tarefas em segundo plano fossem concluídas.

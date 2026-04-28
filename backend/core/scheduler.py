@@ -50,17 +50,14 @@ async def process_notification_job():
         }
 
         async with AsyncSessionLocal() as db_metrics:
-            # Reusando queries do dashboard
-            results = await asyncio.gather(
-                fetch_data(db_metrics, QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str),
-                fetch_data(db_metrics, QUERY_ZAJU_TOTAL, params),
-                fetch_data(db_metrics, QUERY_ZAJU_BY_TYPE, params),
-                fetch_data(db_metrics, QUERY_PAGAMENTOS_TOTAL, params),
-                fetch_data(db_metrics, QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params),
-                fetch_data(db_metrics, QUERY_LAST_SYNC, {}),
-            )
-            
-            (vk11_res, zaju_res, zaju_by_type_res, zver_res, counts_res, last_sync_res) = results
+            # Sessões do SQLAlchemy não são thread/concurrency-safe para rodar no mesmo context em asyncio.gather
+            # Executando de forma sequencial
+            vk11_res = await fetch_data(db_metrics, QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str)
+            zaju_res = await fetch_data(db_metrics, QUERY_ZAJU_TOTAL, params)
+            zaju_by_type_res = await fetch_data(db_metrics, QUERY_ZAJU_BY_TYPE, params)
+            zver_res = await fetch_data(db_metrics, QUERY_PAGAMENTOS_TOTAL, params)
+            counts_res = await fetch_data(db_metrics, QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params)
+            last_sync_res = await fetch_data(db_metrics, QUERY_LAST_SYNC, {})
 
             # Processamento de Dados
             counts = counts_res[0] if counts_res else {}
