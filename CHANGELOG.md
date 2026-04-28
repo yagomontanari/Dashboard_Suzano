@@ -4,12 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.44] - 2026-04-28
+## [2.3.45] - 2026-04-28
 ### Alterado
-- **UI/UX**: Simplificação do Hub de Resolução ZAJU. O botão de ação agora reside diretamente no card de "Bloqueados", eliminando o banner expansivo e otimizando o espaço vertical.
-- **Visual**: Adicionado feedback visual dinâmico (background rose e shadow) ao card de Bloqueados quando houver inconsistências ativas.
+- **UI/UX**: Renomeado botão de ação no card de Bloqueados de "Resolver Log" para "Acessar Log" para manter a consistência de navegação.
 
-## [2.3.43] - 2026-04-28
+## [2.3.44] - 2026-04-28
 
 ---
 
