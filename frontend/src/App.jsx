@@ -6,6 +6,7 @@ import ChangePassword from './pages/ChangePassword';
 import Dashboard from './pages/Dashboard';
 import Relatorios from './pages/Relatorios';
 import UserManagement from './pages/UserManagement';
+import NotificationSettings from './pages/NotificationSettings';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 

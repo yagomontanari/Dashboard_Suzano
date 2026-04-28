@@ -4,6 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.3] - 2026-04-28
+### Corrigido
+- **Frontend**: Corrigida a ausência do import `NotificationSettings` em `App.jsx`, que estava causando a quebra do carregamento da árvore React (white screen).
+- **Frontend**: Resolvidos conflitos de `Temporal Dead Zone` e dependências no arquivo de configurações de notificações, mantendo o build Vercel estável.
+
 ## [2.4.2] - 2026-04-28
 ### Corrigido
 - **Frontend**: Removida a dependência `react-hot-toast` que não estava instalada no projeto e causava tela branca (crash) ao carregar a aplicação. Substituída por alertas nativos temporários.

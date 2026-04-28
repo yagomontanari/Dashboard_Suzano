@@ -27,10 +27,6 @@ const NotificationSettings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -51,6 +47,11 @@ const NotificationSettings = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData();
+  }, []);
 
   const handleAddRecipient = async (e) => {
     e.preventDefault();
@@ -79,6 +80,7 @@ const NotificationSettings = () => {
       setRecipients(recipients.filter(r => r.id !== id));
       toast.success('Destinatário removido');
     } catch (error) {
+      console.error(error);
       toast.error('Erro ao remover destinatário');
     }
   };
@@ -99,6 +101,7 @@ const NotificationSettings = () => {
       fetchData();
       toast.success('Agendamentos atualizados');
     } catch (error) {
+      console.error(error);
       toast.error('Erro ao atualizar agendamentos');
     }
   };
@@ -112,6 +115,7 @@ const NotificationSettings = () => {
       });
       toast.success('Processo de notificação disparado!');
     } catch (error) {
+      console.error(error);
       toast.error('Erro ao disparar notificação');
     } finally {
       setIsSending(false);
