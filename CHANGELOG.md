@@ -4,6 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.2] - 2026-04-28
+### Corrigido
+- **Frontend**: Removida a dependência `react-hot-toast` que não estava instalada no projeto e causava tela branca (crash) ao carregar a aplicação. Substituída por alertas nativos temporários.
+
 ## [2.4.1] - 2026-04-28
 ### Corrigido
 - **Backend**: Corrigido erro de importação do `get_current_active_user` que impedia o boot da aplicação no Vercel. Substituído por `get_current_user` do módulo `api.data`.
