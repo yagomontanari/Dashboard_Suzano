@@ -256,9 +256,9 @@ class MailService:
                 if item_type in ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO']:
                     label_suffix = ' <span style="color: #dc2626; font-size: 10px; font-weight: 800;">(BLOQUEADO A PEDIDO DO CLIENTE)</span>'
                 elif item_type == 'ZAJU_CUTOFF_MES_CORRENTE':
-                    label_suffix = ' <span style="color: #0284c7; font-size: 10px; font-weight: 700;">(Integra no dia 30)</span>'
+                    label_suffix = ' <span style="color: #0284c7; font-size: 10px; font-weight: 700;">(Ciclo de Integração: Ocorre no dia 30.)</span>'
                 elif item_type == 'ZAJU_CUTOFF_MES_ANTERIOR':
-                    label_suffix = ' <span style="color: #0284c7; font-size: 10px; font-weight: 700;">(Integra no 1º dia do mês seguinte)</span>'
+                    label_suffix = ' <span style="color: #0284c7; font-size: 10px; font-weight: 700;">(Ciclo de Integração: Ocorre a partir do dia 01 do mês seguinte ao período)</span>'
                 
                 zaju_rows_html += f"""
                 <tr>
@@ -338,7 +338,7 @@ class MailService:
                 
                 {f'''
                 <div style="background-color: #fef2f2; border: 1px dashed #fecaca; border-radius: 10px; padding: 15px; margin-top: 5px; margin-bottom: 15px;">
-                    <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase;">Tipos com Erro</p>
+                    <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase;">Erros</p>
                     <table style="width: 100%; border-collapse: collapse;">
                         {zaju_error_rows_html}
                     </table>
