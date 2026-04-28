@@ -139,6 +139,19 @@ const IntegrationHealthCard = React.memo(({ title, success, pending, error, pend
                <span className="text-xs font-bold text-slate-400">REG.</span>
              </div>
           </div>
+
+          {pendingReturn !== null && pendingReturn !== undefined && (
+            <div className="flex items-center justify-between">
+               <div className="flex items-center gap-3">
+                 <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]"></div>
+                 <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Retorno</span>
+               </div>
+               <div className="flex items-baseline gap-1.5">
+                 <span className="text-base font-black text-indigo-500">{pendingReturn}</span>
+                 <span className="text-xs font-bold text-slate-400">REG.</span>
+               </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

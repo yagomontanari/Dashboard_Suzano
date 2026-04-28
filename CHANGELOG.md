@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.35] - 2026-04-27
+### Adicionado
+- **Legendas de Retorno em Tempo Real**: Os *cards* sumários da seção "Operação Ativa" (`ZAJU` e `ZVER`), que já contabilizavam e desenhavam a fatia de `Pendente Retorno` no Gráfico de Rosca, agora exibem formalmente essa informação na régua de legendas textuais na parte inferior do card, com a tag e a cor correta (`#indigo`).
+
+---
+
 ## [2.3.34] - 2026-04-27
 ### Corrigido
 - **Divergência de Contagem no Modal de Inconsistências**: Corrigido um bug na aba lateral "Inconsistências de Cadastro". Os volumetrais mestres dos cards (ex: "Faturamento: 1 erro") exibiam uma contagem correta com base no filtro de datas ativo, entretanto, ao abrir o modal para drill-down, múltiplos registros não relacionados ao período aparente eram despejados, dando a sensação de um mismatch de dados. Isso acontecia pois o componente visual (`Dashboard.jsx`) falhava em trafegar os parâmetros `$start_date` e `$end_date` da barra de filtros para a requisição de detalhamento (`getInconsistenciasData`), fazendo a API retornar uma varredura *lifetime* do banco de dados ao invés de respeitar a janela em visualização. A passagem de parâmetros foi reestabelecida.
