@@ -4,12 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.48] - 2026-04-28
+## [2.3.49] - 2026-04-28
 ### Corrigido
-- **Relatórios**: Realizado rollback das alterações no Relatório Mensal ZAJU (Aba Relatórios), restaurando a estrutura de colunas e nomes originais.
-- **Log de Inconsistências**: Implementada a exportação detalhada de 23 colunas especificamente para o Log de Inconsistências ZAJU, sincronizando a query `QUERY_ERRO_ZAJU_LIST` com o frontend para download via modal de erros.
+- **Queries**: Corrigido erro `UndefinedColumnError` no PostgreSQL ao ajustar os nomes das colunas de `tipo_doc` para `doc_type` e de `unidade_medida` para `target_qty` em ambas as queries de exportação ZAJU (Mensal e Log de Erros).
 
-## [2.3.47] - 2026-04-28
+## [2.3.48] - 2026-04-28
 
 ---
 
