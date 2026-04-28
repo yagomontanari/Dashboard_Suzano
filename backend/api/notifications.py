@@ -103,6 +103,41 @@ async def update_schedules(
     
     return {"message": "Agendamentos atualizados com sucesso"}
 
+@router.post("/process-scheduled")
+async def process_scheduled_notifications(
+    request: Request,
+    db: AsyncSession = Depends(get_app_db)
+):
+    # Autenticação via CRON_SECRET
+    auth_header = request.headers.get("Authorization")
+    if auth_header != f"Bearer {settings.CRON_SECRET}":
+        raise HTTPException(status_code=403, detail="Acesso restrito")
+    
+    import pytz
+    from datetime import datetime
+    
+    # Obtém hora atual em Brasília
+    tz = pytz.timezone('America/Sao_Paulo')
+    now_br = datetime.now(tz)
+    current_hour = now_br.strftime("%H")
+    
+    # Busca se existe agendamento ativo para esta hora exata (HH:00 ou HH:MM)
+    # Como o Vercel Cron rodará no minuto 0, buscamos por horários que comecem com a hora atual
+    result = await db.execute(
+        select(NotificationSchedule).where(
+            NotificationSchedule.active == True,
+            NotificationSchedule.time.like(f"{current_hour}:%")
+        )
+    )
+    schedules = result.scalars().all()
+    
+    if schedules:
+        from core.scheduler import process_notification_job
+        await process_notification_job()
+        return {"message": f"Disparado processamento para {len(schedules)} agendamentos às {current_hour}h"}
+    
+    return {"message": f"Nenhum agendamento para a hora {current_hour}h"}
+
 @router.post("/send-manual")
 async def trigger_manual_notification(
     request: Request,

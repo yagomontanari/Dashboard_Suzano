@@ -12,16 +12,8 @@
   },
   "crons": [
     {
-      "path": "/api/notifications/send-manual",
-      "schedule": "0 11 * * *"
-    },
-    {
-      "path": "/api/notifications/send-manual",
-      "schedule": "0 15 * * *"
-    },
-    {
-      "path": "/api/notifications/send-manual",
-      "schedule": "0 19 * * *"
+      "path": "/api/notifications/process-scheduled",
+      "schedule": "0 * * * *"
     }
   ]
 }
