@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.3.40] - 2026-04-28
+### Alterado
+- **KPI de Eficiência ZAJU (Ajuste Operacional)**: Refatorada a fórmula da Taxa de Eficiência para desconsiderar itens em "Ciclo Agendado" (Aguardando Integração). A taxa agora reflete a relação real entre **Sucessos vs Bloqueados**, evitando distorções causadas por grandes volumes de dados aguardando o horário de processamento planejado.
+
+---
+
 ## [2.3.39] - 2026-04-28
 ### Adicionado
 - **Diferenciação Direcional de Alertas**: O sistema de notificações no Log de Integrações agora identifica automaticamente se a falha de fluxo é de **recebimento** (SAP > TL) ou de **envio** (TL > SAP), fornecendo um diagnóstico granular e acionável.

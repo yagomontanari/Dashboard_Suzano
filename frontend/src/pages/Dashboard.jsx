@@ -1547,12 +1547,17 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {(() => {
                 const eligibleItems = data?.zaju?.by_type?.filter(item => 
-                  !['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO'].includes(item.type)
+                  !['ZAJU_AJUSTE_PGTO'].includes(item.type)
                 ) || [];
                 
-                const totalEligible = eligibleItems.reduce((acc, curr) => acc + (curr.total || 0), 0);
-                const successEligible = eligibleItems.reduce((acc, curr) => acc + (curr.success || 0), 0);
-                const efficiency = totalEligible > 0 ? (successEligible / totalEligible) * 100 : 100;
+                const successAmount = eligibleItems.reduce((acc, curr) => acc + (curr.success || 0), 0);
+                const errorAmount = eligibleItems.reduce((acc, curr) => acc + (curr.error || 0), 0);
+                
+                // Nova Fórmula: Eficiência = Sucesso / (Sucesso + Erros)
+                // Ignora o que está "Processando" (Aguardando Ciclo)
+                const efficiency = (successAmount + errorAmount) > 0 
+                  ? (successAmount / (successAmount + errorAmount)) * 100 
+                  : 100;
                 
                 const totalStats = data?.zaju?.total || 1; 
                 const successPct = ((data?.zaju?.success || 0) / totalStats * 100).toFixed(1);
