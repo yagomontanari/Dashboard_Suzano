@@ -4,11 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.3.50] - 2026-04-28
+## [2.3.51] - 2026-04-28
 ### Corrigido
-- **Queries**: Removida a coluna `waerk` (Moeda) da `QUERY_RELATORIO_ZAJU` para corrigir o erro `UndefinedColumnError`, uma vez que este campo não está presente na tabela de memória de cálculo no PostgreSQL.
+- **Interface**: Corrigida a exibição do campo "Cliente" no Log de Inconsistências ZAJU, concatenando o código e nome corretamente.
+- **Interface**: Removida a coluna "Status" do modal de ZAJU para simplificar a visualização, conforme solicitado.
 
-## [2.3.49] - 2026-04-28
+## [2.3.50] - 2026-04-28
 
 ---
 

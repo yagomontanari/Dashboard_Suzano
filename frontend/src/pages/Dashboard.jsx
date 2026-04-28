@@ -529,8 +529,10 @@ export default function Dashboard() {
           transformed.aprova_workflow_label = isTrue(transformed.ind_aprova_workflow) ? 'Sim' : 'Não';
         }
 
-        if (cat === 'pagamentos') {
-          transformed.cliente_display = `${transformed.cod_cliente || ""} - ${transformed.nom_cliente || ""}`;
+        if (cat === 'pagamentos' || cat === 'zaju') {
+          const clientVal = `${transformed.cod_cliente || ""} - ${transformed.nome_cliente || ""}`;
+          if (cat === 'pagamentos') transformed.cliente_display = clientVal;
+          else transformed.cliente = clientVal;
         }
         
         return transformed;
@@ -654,7 +656,6 @@ export default function Dashboard() {
         {key: 'cliente', label: 'Cliente', align: 'center'}, 
         {key: 'purch_no_c', label: 'Tipo Integração', align: 'center'}, 
         {key: 'sequencial', label: 'Sequencial', align: 'center'}, 
-        {key: 'status', label: 'Status', align: 'center'},
         {key: 'data_integracao', label: 'Data Integração', align: 'center'}
       ];
       default: return [{key: 'id', label: 'ID'}];
