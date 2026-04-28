@@ -5,8 +5,8 @@ from sqlalchemy import text
 from typing import List
 from pydantic import BaseModel, EmailStr
 from core.database_app import get_app_db
-from core.models_app import NotificationRecipient, NotificationSchedule, UserRole
-from api.auth import get_current_active_user, User
+from api.data import get_current_user
+from core.models_app import NotificationRecipient, NotificationSchedule, UserRole, User
 
 router = APIRouter()
 
@@ -26,7 +26,7 @@ class ScheduleUpdate(BaseModel):
 @router.get("/recipients", response_model=List[RecipientResponse])
 async def get_recipients(
     db: AsyncSession = Depends(get_app_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
@@ -38,7 +38,7 @@ async def get_recipients(
 async def add_recipient(
     data: RecipientCreate,
     db: AsyncSession = Depends(get_app_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
@@ -53,7 +53,7 @@ async def add_recipient(
 async def delete_recipient(
     recipient_id: int,
     db: AsyncSession = Depends(get_app_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
@@ -70,7 +70,7 @@ async def delete_recipient(
 @router.get("/schedules")
 async def get_schedules(
     db: AsyncSession = Depends(get_app_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
@@ -82,7 +82,7 @@ async def get_schedules(
 async def update_schedules(
     data: ScheduleUpdate,
     db: AsyncSession = Depends(get_app_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
@@ -105,7 +105,7 @@ async def update_schedules(
 @router.post("/send-manual")
 async def trigger_manual_notification(
     db: AsyncSession = Depends(get_app_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Acesso restrito a administradores")

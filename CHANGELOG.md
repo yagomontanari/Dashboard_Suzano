@@ -4,6 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.1] - 2026-04-28
+### Corrigido
+- **Backend**: Corrigido erro de importação do `get_current_active_user` que impedia o boot da aplicação no Vercel. Substituído por `get_current_user` do módulo `api.data`.
+
 ## [2.4.0] - 2026-04-28
 ### Adicionado
 - **Funcionalidade**: Sistema de Notificações Automáticas via E-mail. Agora administradores podem configurar destinatários e horários (2x ao dia) para receber um resumo executivo premium com o status das integrações (VK11, ZAJU, ZVER e Dados Mestres).
