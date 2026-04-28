@@ -403,7 +403,10 @@ export default function Dashboard() {
         category, 
         page, 
         20, 
-        sort?.key, 
+        sort?.key,
+        sort?.direction || 'desc',
+        dateRange.startDate,
+        dateRange.endDate
       );
       
       const transformItem = (cat, item) => {
