@@ -117,15 +117,18 @@ async def process_notification_job():
             contrato_types = ['ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_CT_PERC_CRE', 'ZAJU_AJUSTE_VERBA_CT_PERC_COM', 'ZAJU_AJUSTE_VERBA_CT_PERC_LOG']
             acordos_types = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO', 'ZAJU_AJUSTE_DEV_OFF']
 
-            # Agrupamento Granular de Pendências
-            zaju_groups = {
-                "Verba Promo & Ações": {i["type"]: i["pending"] for i in zaju_details if i["type"] in promo_types and i["pending"] > 0},
-                "Verbas de contrato": {i["type"]: i["pending"] for i in zaju_details if i["type"] in contrato_types and i["pending"] > 0},
-                "Acordos": {i["type"]: i["pending"] for i in zaju_details if i["type"] in acordos_types and i["pending"] > 0}
-            }
-
-            # Detalhamento de Erros por Tipo (Granular)
+            # Detalhamentos Granulares por Tipo
+            zaju_success_det = {i["type"]: i["success"] for i in zaju_details if i["success"] > 0}
+            zaju_pending_det = {i["type"]: i["pending"] for i in zaju_details if i["pending"] > 0}
             zaju_error_det = {i["type"]: i["error"] for i in zaju_details if i["error"] > 0}
+            zaju_return_det = {i["type"]: i["pending_return"] for i in zaju_details if i["pending_return"] > 0}
+
+            # Agrupamento de Pendências (para manter a estrutura por categorias)
+            zaju_pending_groups = {
+                "Verba Promo & Ações": {k: v for k, v in zaju_pending_det.items() if k in promo_types},
+                "Verbas de contrato": {k: v for k, v in zaju_pending_det.items() if k in contrato_types},
+                "Acordos": {k: v for k, v in zaju_pending_det.items() if k in acordos_types}
+            }
 
             summary_data = {
                 "periodo": periodo_nome,
@@ -135,8 +138,10 @@ async def process_notification_job():
                     "total_pendente": zaju["pending"],
                     "total_erro": zaju["error"],
                     "total_retorno": zaju["pending_return"],
-                    "detalhamento_pendentes": zaju_groups,
-                    "detalhamento_erros": zaju_error_det
+                    "detalhamento_sucesso": zaju_success_det,
+                    "detalhamento_pendentes": zaju_pending_groups,
+                    "detalhamento_erros": zaju_error_det,
+                    "detalhamento_retorno": zaju_return_det
                 },
                 "zver": zver,
                 "inconsistencias": {
