@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.9] - 2026-04-28
+### Adicionado
+- **Funcionalidade**: Migração do sistema de agendamento para **Vercel Cron Jobs**. Isso garante que os relatórios automáticos funcionem corretamente no ambiente *serverless* do Vercel, superando as limitações do `APScheduler` em processos de curta duração.
+- **Backend**: Implementado endpoint de verificação de "Heartbeat" (`/process-scheduled`) que integra o cron do Vercel com os horários dinâmicos definidos no banco de dados.
+- **Backend**: Adicionado suporte a `CRON_SECRET` para autenticação segura entre o Vercel e o Backend.
+- **Frontend**: Componente de Agendamento redesenhado com visual *premium* e restrição a "Horas Cheias", garantindo que as configurações do usuário no Dashboard coincidam com os ciclos de execução do Vercel.
+- **Design**: O e-mail de notificação agora utiliza o esquema de cores âmbar/laranja para o detalhamento de pendências, mantendo a consistência visual com o dashboard.
+
 ## [2.4.8] - 2026-04-28
 ### Adicionado
 - **Backend**: O e-mail de "Status Integrações" foi completamente redesenhado com base nas cores e layout *premium* do Dashboard (cards arredondados, bordas laterais coloridas, espaçamento corporativo).
