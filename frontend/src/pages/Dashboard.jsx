@@ -1506,7 +1506,7 @@ export default function Dashboard() {
                       <div className="relative z-10 flex flex-col justify-between h-full">
                         <div>
                           <h5 className="font-bold text-slate-400 text-[10px] uppercase tracking-[0.2em] mb-1">Status de Entrega</h5>
-                          <p className="text-4xl font-black tracking-tighter text-white">100%</p>
+                          <p className="text-4xl font-black tracking-tighter text-white">{efficiency.toFixed(1)}%</p>
                           <p className="text-slate-500 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
                              <Target size={12} /> Meta Corporativa
                           </p>
@@ -1532,8 +1532,13 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="mt-auto">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Taxa de Eficiência</p>
-                        <div className="w-full h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+                        <div className="flex justify-between items-center mb-1.5">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Taxa de Eficiência</p>
+                          <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 uppercase tracking-tighter">
+                            Meta: 100%
+                          </span>
+                        </div>
+                        <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
                            <div className="bg-emerald-500 h-full transition-all duration-1000" style={{ width: `${total > 0 ? (data.vk11.success / total) * 100 : 0}%` }}></div>
                         </div>
                       </div>

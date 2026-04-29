@@ -4,6 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.14] - 2026-04-29
+### Adicionado
+- **Dinamismo (KPIs)**: Sincronização do card de "Status de Entrega" (Meta Corporativa) com o percentual real de itens integrados, substituindo valores estáticos por dados dinâmicos.
+- **Goal Tracking**: Adicionada sinalização de "Meta: 100%" no card de integrados para permitir a comparação imediata entre a performance real e o objetivo de negócio.
+
 ## [2.4.13] - 2026-04-29
 ### Adicionado
 - **UX/UI (KPI Cards)**: Implementação de um card dedicado para "Integrados com Sucesso", permitindo a visualização direta do volume absoluto de itens processados com êxito, acompanhado da taxa de eficiência.
