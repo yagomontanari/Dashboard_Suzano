@@ -172,18 +172,22 @@ const IntegrationLog = React.memo(({ updates, className = "" }) => {
   const staleCategories = useMemo(() => {
     if (!updates || updates.length === 0) return [];
     
+    // Lista de rotinas Inbound (SAP > TL) que devem ser monitoradas
+    const inboundList = ['sell-in', 'clientes', 'produtos', 'usuarios', 'retorno pagamento', 'cutoff'];
     const now = new Date();
     const oneDayInMs = 24 * 60 * 60 * 1000;
     
-    return criticalCategories.filter(cat => {
-      const normCat = normalize(cat);
-      const relevantUpdates = updates.filter(u => normalize(u.categoria) === normCat);
-      
-      if (relevantUpdates.length === 0) return true;
+    return criticalCategories
+      .filter(cat => inboundList.includes(normalize(cat))) // Considerar apenas Integrações SAP > Tradelinks
+      .filter(cat => {
+        const normCat = normalize(cat);
+        const relevantUpdates = updates.filter(u => normalize(u.categoria) === normCat);
+        
+        if (relevantUpdates.length === 0) return true;
 
-      const latestDate = new Date(Math.max(...relevantUpdates.map(u => new Date(u.data))));
-      return (now - latestDate) > oneDayInMs;
-    });
+        const latestDate = new Date(Math.max(...relevantUpdates.map(u => new Date(u.data))));
+        return (now - latestDate) > oneDayInMs;
+      });
   }, [updates, criticalCategories, normalize]);
 
   const getIcon = useCallback((category) => {
@@ -249,29 +253,9 @@ const IntegrationLog = React.memo(({ updates, className = "" }) => {
            <div className="flex-1">
               <h4 className="text-xs font-black text-rose-800 uppercase tracking-widest mb-1">Ponto de Atenção: Inatividade de Fluxo</h4>
               <p className="text-[11px] text-rose-600 font-bold leading-relaxed">
-                 {(() => {
-                   const inboundList = ['sell-in', 'clientes', 'produtos', 'usuarios', 'retorno pagamento', 'cutoff'];
-                   const inboundStale = staleCategories.filter(cat => inboundList.includes(normalize(cat)));
-                   const outboundStale = staleCategories.filter(cat => !inboundList.includes(normalize(cat)));
-                   
-                   return (
-                     <>
-                       {inboundStale.length > 0 && (
-                         <span className="block mb-1">
-                           Não identificamos **recebimento de dados** (SAP {'>'} TL) para: 
-                           <span className="ml-1 text-rose-700 font-extrabold uppercase">{inboundStale.join(', ')}</span>.
-                         </span>
-                       )}
-                       {outboundStale.length > 0 && (
-                         <span className="block">
-                           Não identificamos **envio de dados** (TL {'>'} SAP) para: 
-                           <span className="ml-1 text-rose-700 font-extrabold uppercase">{outboundStale.join(', ')}</span>.
-                         </span>
-                       )}
-                       <span className="block mt-2 opacity-80 italic">Recomenda-se verificar a comunicação ou processamento no SAP.</span>
-                     </>
-                   );
-                 })()}
+                 Não identificamos **recebimento de dados** (SAP {'>'} TL) para: 
+                 <span className="ml-1 text-rose-700 font-extrabold uppercase">{staleCategories.join(', ')}</span>.
+                 <span className="block mt-2 opacity-80 italic">Recomenda-se verificar a comunicação ou processamento no SAP.</span>
               </p>
            </div>
         </div>

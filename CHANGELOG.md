@@ -4,6 +4,16 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.18] - 2026-04-29
+### Adicionado
+- **Monitoria (E-mail)**: Refinamento das abas de erros no relatório Excel, agora nomeadas como **ZAJU** e **VK11** para maior concisão. Implementada reordenação de colunas na aba VK11 para priorizar mensagens de erro e IDs de orçamento.
+- **UX (Dashboard)**: Otimização do alerta de "Inatividade de Fluxo" no Log de Integrações, que agora monitora exclusivamente as rotinas de recebimento (**SAP > Tradelinks**), eliminando alertas de inatividade para rotinas de envio (**TL > SAP**) para focar em gargalos de entrada.
+
+## [2.4.17] - 2026-04-29
+### Adicionado
+- **Monitoria (E-mail)**: Expansão do relatório consolidado de inconsistências enviado por e-mail com a inclusão de duas novas abas: **ZAJU** e **VK11**.
+- **UX (Relatórios)**: Colunas do relatório de ZAJU renomeadas para termos de negócio (ex: "Erro / Mensagem SAP", "Valor Provisão") para agilizar a triagem de falhas pela equipe operacional.
+
 ## [2.4.16] - 2026-04-29
 ### Alterado
 - **UX/UI (Card de Destaque)**: Refinamento do card principal de monitoria para exibir exclusivamente a **Meta (100%)** e a **Taxa de Eficiência** percentual lado a lado, facilitando a análise comparativa de performance executiva.
