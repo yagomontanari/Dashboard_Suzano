@@ -39,7 +39,11 @@ async def process_notification_job():
                 logger.warning("Nenhum destinatário ativo encontrado para notificações.")
                 return
             
-            email_list = [r.email for r in recipients]
+            # Lógica para separar destinatário principal e cópia
+            # Se ninguém for marcado como is_primary, o primeiro da lista assume o "Para"
+            primary_recipient = next((r for r in recipients if r.is_primary), recipients[0])
+            cc_list = [r.email for r in recipients if r.email != primary_recipient.email]
+            email_to = primary_recipient.email
 
         # 2. Coletar Dados das Integrações (Mês Atual)
         now = datetime.now()
@@ -204,9 +208,8 @@ async def process_notification_job():
                 "last_sync": filtered_last_sync
             }
 
-            # 5. Enviar E-mails
-            for email in email_list:
-                await mail_service.send_operational_summary_email(email, summary_data, excel_bytes, arquivo_nome)
+            # 5. Enviar E-mail único com CC para todos os interessados
+            await mail_service.send_operational_summary_email(email_to, summary_data, excel_bytes, arquivo_nome, cc_list=cc_list)
                 
         logger.info("Job de notificação operacional concluído com sucesso.")
 

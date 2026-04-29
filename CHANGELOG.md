@@ -8,6 +8,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 ### Adicionado
 - **Monitoria (E-mail)**: Refinamento das abas de erros no relatório Excel, agora nomeadas como **ZAJU** e **VK11** para maior concisão. Implementada reordenação de colunas na aba VK11 para priorizar mensagens de erro e IDs de orçamento.
 - **UX (Dashboard)**: Otimização do alerta de "Inatividade de Fluxo" no Log de Integrações, que agora monitora exclusivamente as rotinas de recebimento (**SAP > Tradelinks**), eliminando alertas de inatividade para rotinas de envio (**TL > SAP**) para focar em gargalos de entrada.
+- **Monitoria (Gestão)**: Implementada a funcionalidade de seleção de **Destinatário Principal** na tela de configurações. O destinatário principal agora é enviado no campo "Para", enquanto os demais destinatários ativos são incluídos automaticamente em **Cópia (CC)**, garantindo que todos os stakeholders visualizem a mesma thread de comunicação.
 
 ## [2.4.17] - 2026-04-29
 ### Adicionado

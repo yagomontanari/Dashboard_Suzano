@@ -19,6 +19,7 @@ class RecipientResponse(BaseModel):
     id: int
     email: str
     active: bool
+    is_primary: bool
 
 class ScheduleUpdate(BaseModel):
     times: List[str] # ["08:00", "16:00"]
@@ -83,6 +84,37 @@ async def toggle_recipient(
         raise HTTPException(status_code=404, detail="Destinatário não encontrado")
     
     recipient.active = not recipient.active
+    await db.commit()
+    await db.refresh(recipient)
+    return recipient
+
+@router.patch("/recipients/{recipient_id}/primary", response_model=RecipientResponse)
+async def set_primary_recipient(
+    recipient_id: int,
+    db: AsyncSession = Depends(get_app_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
+    
+    # 1. Buscar o destinatário alvo
+    result = await db.execute(select(NotificationRecipient).where(NotificationRecipient.id == recipient_id))
+    recipient = result.scalar_one_or_none()
+    if not recipient:
+        raise HTTPException(status_code=404, detail="Destinatário não encontrado")
+    
+    # 2. Desmarcar qualquer outro que seja primário
+    from sqlalchemy import update
+    await db.execute(
+        update(NotificationRecipient)
+        .where(NotificationRecipient.id != recipient_id)
+        .values(is_primary=False)
+    )
+    
+    # 3. Marcar este como primário
+    recipient.is_primary = True
+    recipient.active = True # Garante que o primário esteja ativo
+    
     await db.commit()
     await db.refresh(recipient)
     return recipient

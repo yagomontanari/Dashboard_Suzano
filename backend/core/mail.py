@@ -25,19 +25,20 @@ class MailService:
     def __init__(self):
         self.fm = FastMail(conf)
 
-    async def _send_html_email(self, email_to: str, subject: str, body: str, attachments: list = []):
+    async def _send_html_email(self, email_to: str, subject: str, body: str, attachments: list = [], cc_list: list = []):
         message = MessageSchema(
             subject=subject,
-            recipients=[email_to],
+            recipients=[email_to] if isinstance(email_to, str) else email_to,
+            cc=cc_list,
             body=body,
             subtype=MessageType.html,
             attachments=attachments
         )
         try:
             await self.fm.send_message(message)
-            logger.info(f"Email enviado com sucesso para {email_to}")
+            logger.info(f"Email enviado com sucesso para {email_to} (CC: {cc_list})")
         except Exception as e:
-            logger.error(f"Email error for {email_to}: {e}")
+            logger.error(f"Email error: {e}")
 
     async def send_report_email(self, email_to: str, nome: str, report_name: str, file_content: bytes, filename: str, custom_period_text: str = None):
         import re
@@ -209,7 +210,7 @@ class MailService:
         """
         await self._send_html_email(email_to, "Recuperação de Senha - Dashboard Suzano", self._get_base_template(content))
 
-    async def send_operational_summary_email(self, email_to: str, data: dict, excel_bytes: bytes = None, filename: str = None):
+    async def send_operational_summary_email(self, email_to: str, data: dict, excel_bytes: bytes = None, filename: str = None, cc_list: list = []):
         # Mapeamento de Categorias para exibição amigável
         category_map = {
             "CLIENTE": "Clientes",
@@ -492,7 +493,8 @@ class MailService:
                 email_to, 
                 f"Status Integrações: {data['periodo']}", 
                 self._get_base_template(content, title="Monitoria Fechamento Suzano"),
-                attachments=attachments
+                attachments=attachments,
+                cc_list=cc_list
             )
         finally:
             if temp_path and os.path.exists(temp_path):

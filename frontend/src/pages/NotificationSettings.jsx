@@ -13,7 +13,8 @@ import {
   Calendar,
   X,
   Eye,
-  EyeOff
+  EyeOff,
+  Star
 } from 'lucide-react';
 
 const NotificationSettings = () => {
@@ -88,6 +89,21 @@ const NotificationSettings = () => {
     } catch (error) {
       console.error(error);
       showToast('Erro ao atualizar status', 'error');
+    }
+  };
+
+  const handleSetPrimaryRecipient = async (id) => {
+    try {
+      await api.patch(`/notifications/recipients/${id}/primary`);
+      setRecipients(recipients.map(r => ({
+        ...r,
+        is_primary: r.id === id,
+        active: r.id === id ? true : r.active // O primário deve estar ativo
+      })));
+      showToast('Destinatário principal atualizado');
+    } catch (error) {
+      console.error(error);
+      showToast('Erro ao definir principal', 'error');
     }
   };
 
@@ -216,15 +232,29 @@ const NotificationSettings = () => {
                       </div>
                       <div>
                         <p className={`font-bold leading-tight ${r.active ? 'text-slate-800' : 'text-slate-500 line-through'}`}>{r.email}</p>
-                        <p className={`text-[10px] font-bold uppercase tracking-widest mt-0.5 ${r.active ? 'text-blue-500' : 'text-slate-400'}`}>
-                          {r.active ? 'Informativo Ativo' : 'Inativo / Suspenso'}
+                        <p className={`text-[10px] font-bold uppercase tracking-widest mt-0.5 ${r.active ? 'text-blue-500' : 'text-slate-400'} flex items-center gap-1.5`}>
+                          {r.is_primary && <Star size={10} fill="currentColor" />}
+                          {r.is_primary ? 'Destinatário Principal (Campo Para)' : r.active ? 'Informativo Ativo (Campo CC)' : 'Inativo / Suspenso'}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => handleToggleRecipient(r.id)}
+                        onClick={() => handleSetPrimaryRecipient(r.id)}
                         className={`p-2 rounded-xl transition-all ${
+                          r.is_primary 
+                            ? 'text-amber-500 bg-amber-50' 
+                            : 'text-slate-300 hover:text-amber-500 hover:bg-amber-50'
+                        }`}
+                        title={r.is_primary ? "Destinatário Principal" : "Tornar Principal"}
+                      >
+                        <Star size={18} fill={r.is_primary ? "currentColor" : "none"} />
+                      </button>
+                      <button
+                        onClick={() => handleToggleRecipient(r.id)}
+                        disabled={r.is_primary}
+                        className={`p-2 rounded-xl transition-all ${
+                          r.is_primary ? 'opacity-20 cursor-not-allowed' :
                           r.active 
                             ? 'text-slate-400 hover:text-blue-600 hover:bg-blue-50' 
                             : 'text-blue-600 hover:bg-blue-100'
