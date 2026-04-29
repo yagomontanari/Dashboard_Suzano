@@ -263,7 +263,7 @@ class MailService:
                 label_suffix = ""
                 if item_type in ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO']:
                     label_suffix = ' <span style="color: #be123c; font-size: 10px; font-weight: 700;">(BLOQUEADO A PEDIDO DO CLIENTE)</span>'
-                elif item_type == 'ZAJU_CUTOFF_MES_CORRENTE':
+                elif item_type in ['ZAJU_CUTOFF_MES_CORRENTE', 'ZAJU_AJUSTE_VERBA_NOMI', 'ZAJU_AJUSTE_VERBA_CONTRATO_NOMI']:
                     label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Integração ocorre no dia 30.)</span>'
                 elif item_type == 'ZAJU_CUTOFF_MES_ANTERIOR':
                     label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Integração ocorre a partir do dia 01 do mês seguinte)</span>'
