@@ -68,6 +68,25 @@ async def delete_recipient(
     await db.commit()
     return {"message": "Destinatário removido com sucesso"}
 
+@router.patch("/recipients/{recipient_id}/toggle", response_model=RecipientResponse)
+async def toggle_recipient(
+    recipient_id: int,
+    db: AsyncSession = Depends(get_app_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
+    
+    result = await db.execute(select(NotificationRecipient).where(NotificationRecipient.id == recipient_id))
+    recipient = result.scalar_one_or_none()
+    if not recipient:
+        raise HTTPException(status_code=404, detail="Destinatário não encontrado")
+    
+    recipient.active = not recipient.active
+    await db.commit()
+    await db.refresh(recipient)
+    return recipient
+
 @router.get("/schedules")
 async def get_schedules(
     db: AsyncSession = Depends(get_app_db),

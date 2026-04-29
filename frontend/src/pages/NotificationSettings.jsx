@@ -11,7 +11,9 @@ import {
   AlertCircle,
   Loader2,
   Calendar,
-  X
+  X,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 const NotificationSettings = () => {
@@ -73,6 +75,19 @@ const NotificationSettings = () => {
     } catch (error) {
       console.error(error);
       showToast('Erro ao remover destinatário', 'error');
+    }
+  };
+
+  const handleToggleRecipient = async (id) => {
+    try {
+      await api.patch(`/notifications/recipients/${id}/toggle`);
+      setRecipients(recipients.map(r => 
+        r.id === id ? { ...r, active: !r.active } : r
+      ));
+      showToast('Status atualizado');
+    } catch (error) {
+      console.error(error);
+      showToast('Erro ao atualizar status', 'error');
     }
   };
 
@@ -190,22 +205,42 @@ const NotificationSettings = () => {
                 </div>
               ) : (
                 recipients.map((r) => (
-                  <div key={r.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group hover:border-blue-200 hover:shadow-md transition-all">
+                  <div key={r.id} className={`flex items-center justify-between p-4 bg-white border rounded-2xl group transition-all ${
+                    r.active ? 'border-slate-100 hover:border-blue-200 hover:shadow-md' : 'opacity-60 border-slate-200 bg-slate-50'
+                  }`}>
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg ${
+                        r.active ? 'bg-blue-50 text-blue-600' : 'bg-slate-200 text-slate-500'
+                      }`}>
                         {r.email[0].toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-800 leading-tight">{r.email}</p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Informativo Ativo</p>
+                        <p className={`font-bold leading-tight ${r.active ? 'text-slate-800' : 'text-slate-500 line-through'}`}>{r.email}</p>
+                        <p className={`text-[10px] font-bold uppercase tracking-widest mt-0.5 ${r.active ? 'text-blue-500' : 'text-slate-400'}`}>
+                          {r.active ? 'Informativo Ativo' : 'Inativo / Suspenso'}
+                        </p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleDeleteRecipient(r.id)}
-                      className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleToggleRecipient(r.id)}
+                        className={`p-2 rounded-xl transition-all ${
+                          r.active 
+                            ? 'text-slate-400 hover:text-blue-600 hover:bg-blue-50' 
+                            : 'text-blue-600 hover:bg-blue-100'
+                        }`}
+                        title={r.active ? "Inativar" : "Ativar"}
+                      >
+                        {r.active ? <Eye size={18} /> : <EyeOff size={18} />}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteRecipient(r.id)}
+                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                        title="Remover"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
