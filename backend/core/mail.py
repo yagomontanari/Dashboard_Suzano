@@ -471,7 +471,7 @@ class MailService:
                 </table>
             </div>
             
-            { '<div style="margin-top: 25px; padding: 20px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);"><div style="font-size: 24px; color: #10b981;">📊</div><div><p style="margin: 0 0 2px 0; font-weight: 700; color: #0f172a; font-size: 14px;">' + filename + '</p><p style="margin: 0; color: #64748b; font-size: 12px;">Planilha Consolidada (XLSX) anexada neste e-mail.</p></div></div>' if excel_bytes else ''}
+            { '<table style="width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 25px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);"><tr><td style="padding: 20px 15px 20px 20px; width: 30px; text-align: center; vertical-align: middle;"><span style="font-size: 24px; line-height: 1;">📊</span></td><td style="padding: 20px 20px 20px 0; vertical-align: middle;"><p style="margin: 0 0 4px 0; font-weight: 700; color: #0f172a; font-size: 14px; line-height: 1.2;">' + filename + '</p><p style="margin: 0; color: #64748b; font-size: 12px; line-height: 1.2;">Planilha Consolidada (XLSX) anexada neste e-mail.</p></td></tr></table>' if excel_bytes else ''}
         </div>
         """
         
