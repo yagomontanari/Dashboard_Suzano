@@ -465,6 +465,8 @@ async def bg_generate_zaju_report(
                 "Condition Type",
                 "Moeda",
                 "Status",
+                "Numfat Integração",
+                "Numov Integração",
                 "Data Integração",
                 "Erros"
             ]

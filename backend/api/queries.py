@@ -654,6 +654,8 @@ QUERY_RELATORIO_ZAJU = text("""
         sapmc.target_qty AS "Unidade de Medida",
         sapmc.cond_type AS "Condition Type",
         sapmc.status AS "Status",
+        sapmc.numfat AS "Numfat Integração",
+        sapmc.numov AS "Numov Integração",
         sapmc.dta_integracao AS "Data Integração",
         sapmc.msg AS "Erros",
         o.id_tipo_verba -- Interno para separação de abas
