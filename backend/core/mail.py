@@ -262,11 +262,11 @@ class MailService:
             for item_type, count in items.items():
                 label_suffix = ""
                 if item_type in ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO']:
-                    label_suffix = ' <span style="color: #be123c; font-size: 10px; font-weight: 700;">(BLOQUEADO CLIENTE)</span>'
+                    label_suffix = ' <span style="color: #be123c; font-size: 10px; font-weight: 700;">(BLOQUEADO A PEDIDO DO CLIENTE)</span>'
                 elif item_type == 'ZAJU_CUTOFF_MES_CORRENTE':
-                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Ocorre dia 30)</span>'
+                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Integração ocorre no dia 30.)</span>'
                 elif item_type == 'ZAJU_CUTOFF_MES_ANTERIOR':
-                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Ocorre no próx. mês)</span>'
+                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Integração ocorre a partir do dia 01 do mês seguinte)</span>'
                 
                 zaju_rows_html += f"""
                 <tr>
