@@ -630,6 +630,53 @@ QUERY_ERRO_ZAJU_LIST = text("""
 
 QUERY_ERRO_ZAJU_LIST_PAGINATED = text(QUERY_ERRO_ZAJU_LIST.text + PAGINATION_SORT_SUFFIX)
 
+QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
+    WITH cg_marca_faturamento AS (
+        SELECT 
+            cg.id as id_cg,
+            marca.id as id_marca
+        FROM sellin s
+        INNER JOIN cliente_extensao ce ON s.id_cliente = ce.id_cliente
+        INNER JOIN extensao cg ON ce.id_extensao = cg.id AND cg.id_nivel_extensao = 2
+        INNER JOIN produto p ON s.id_produto = p.id
+        INNER JOIN v_produto_extensao_recursiva vper ON s.id_produto = vper.id_produto 
+        INNER JOIN extensao marca ON vper.id_extensao = marca.id 
+            AND marca.id_nivel_extensao = 8 
+            AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
+        WHERE s.tipo_doc_fat IN ('ZF2B', 'ZFCO')
+          AND s.dta_emissao >= :start_date - INTERVAL '3 months'
+          AND s.dta_emissao < :start_date
+          AND s.valor_total > 0
+        GROUP BY cg.id, marca.id
+    )
+    SELECT 
+        o.id_externo as "Orcamento",
+        oli.descricao as "Linha de Investimento",
+        concat(cg.id_externo, ' - ', cg.nom_extensao) as "Customer Group",
+        marca.nom_extensao as "Marca",
+        sapmc.cond_value as "Valor Provisão",
+        sapmc.dta_criacao as "Data Criação",
+        'Sem faturamento histórico no período (D-3)' as "Mensagem"
+    FROM suzano_ajuste_provisao_memoria_calculo sapmc
+    INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
+    INNER JOIN orcamento_linha_investimento oli ON sapmc.id_linha_investimento = oli.id 
+    INNER JOIN sellin s_orig ON sapmc.id_sellin = s_orig.id
+    INNER JOIN cliente_extensao ce ON s_orig.id_cliente = ce.id_cliente
+    INNER JOIN extensao cg ON ce.id_extensao = cg.id AND cg.id_nivel_extensao = 2
+    INNER JOIN produto p_orig ON s_orig.id_produto = p_orig.id
+    INNER JOIN v_produto_extensao_recursiva vper ON p_orig.id = vper.id_produto 
+    INNER JOIN extensao marca ON vper.id_extensao = marca.id 
+        AND marca.id_nivel_extensao = 8 
+        AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
+    LEFT JOIN cg_marca_faturamento f ON f.id_cg = cg.id AND f.id_marca = marca.id
+    WHERE sapmc.status = 'PENDENTE_INTEGRACAO'
+      AND f.id_cg IS NULL
+      AND sapmc.dta_alteracao >= :start_date AND sapmc.dta_alteracao < :end_date
+""")
+
+QUERY_ZAJU_PENDENTE_SEM_RATEIO_PAGINATED = text(QUERY_ZAJU_PENDENTE_SEM_RATEIO.text + PAGINATION_SORT_SUFFIX)
+
+
 # ================================
 # RELATÓRIOS (Exportação)
 # ================================

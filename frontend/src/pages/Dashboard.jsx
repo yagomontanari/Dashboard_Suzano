@@ -18,6 +18,7 @@ import {
   CheckCircle2, 
   Clock, 
   AlertCircle, 
+  AlertTriangle,
   Search,
   ChevronLeft,
   ChevronRight,
@@ -352,6 +353,12 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('geral');
   const [zajuSubTab, setZajuSubTab] = useState('promo');
 
+  useEffect(() => {
+    if (activeTab === 'zaju' && zajuSubTab === 'pending_rateio') {
+      fetchInconsistencyDetails('zaju_pending_rateio', 1, null);
+    }
+  }, [activeTab, zajuSubTab, dateRange]);
+
   const groupedVk11 = useMemo(() => {
     if (!vk11Details || vk11Details.length === 0) return { all: [] };
     
@@ -599,7 +606,8 @@ export default function Dashboard() {
       'usuarios': 'Usuários',
       'pagamentos': 'Integração de Pagamentos (ZVER)',
       'vk11': 'Integração de Preços (VK11)',
-      'zaju': 'Ajustes de Provisão (ZAJU)'
+      'zaju': 'Ajustes de Provisão (ZAJU)',
+      'zaju_pending_rateio': 'ZAJU - Rateio Pendente (Faturamento)'
     };
     return labels[category] || category;
   };
@@ -671,6 +679,15 @@ export default function Dashboard() {
         {key: 'purch_no_c', label: 'Tipo Integração', align: 'center'}, 
         {key: 'sequencial', label: 'Sequencial', align: 'center'}, 
         {key: 'data_integracao', label: 'Data Integração', align: 'center'}
+      ];
+      case 'zaju_pending_rateio': return [
+        {key: 'Orcamento', label: 'Orçamento', align: 'center'},
+        {key: 'Linha de Investimento', label: 'Linha Invest.', align: 'center'},
+        {key: 'Customer Group', label: 'Customer Group', align: 'center'},
+        {key: 'Marca', label: 'Marca', align: 'center'},
+        {key: 'Valor Provisão', label: 'Valor', align: 'center', format: (val) => formatCurrency(val)},
+        {key: 'Data Criação', label: 'Criação', align: 'center'},
+        {key: 'Mensagem', label: 'Status', align: 'center'}
       ];
       default: return [{key: 'id', label: 'ID'}];
     }
@@ -1892,7 +1909,8 @@ export default function Dashboard() {
                 {[
                   { id: 'promo', label: 'Verba Promo & Ações', icon: <HandCoins size={16} />, data: groupedZaju.promo, color: 'text-pink-500' },
                   { id: 'contrato', label: 'Verba de Contrato', icon: <FileText size={16} />, data: groupedZaju.contrato, color: 'text-blue-500' },
-                  { id: 'acordos', label: 'Acordos (Plan/Apur/Pgto)', icon: <Grip size={16} />, data: groupedZaju.acordos, color: 'text-indigo-500' }
+                  { id: 'acordos', label: 'Acordos (Plan/Apur/Pgto)', icon: <Grip size={16} />, data: groupedZaju.acordos, color: 'text-indigo-500' },
+                  { id: 'pending_rateio', label: 'Rateio Pendente (Faturamento)', icon: <AlertTriangle size={16} />, data: [], color: 'text-amber-500' }
                 ].map((sub) => {
                   const hasAlert = sub.data?.some(i => i.error > 0 || i.pending_return_critical > 0);
                   const isActive = zajuSubTab === sub.id;
@@ -1923,11 +1941,39 @@ export default function Dashboard() {
               </div>
 
               {/* Sections Switch Logic */}
-              {[
-                { id: 'promo', title: 'Verba Promo & Ações', data: groupedZaju.promo },
-                { id: 'contrato', title: 'Verba de Contrato', data: groupedZaju.contrato },
-                { id: 'acordos', title: 'Acordos (Planejamento / Apuração / Pagamento)', data: groupedZaju.acordos }
-              ].filter(section => section.id === zajuSubTab).map((section, sIdx) => (
+              {zajuSubTab === 'pending_rateio' ? (
+                <div className="bg-white p-6 min-h-[500px] flex flex-col">
+                  <div className="mb-6 p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-4">
+                    <div className="p-2 bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-200">
+                      <AlertTriangle size={20} />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-amber-800 uppercase tracking-tight text-sm">Bloqueio por Falta de Faturamento Histórico</h4>
+                      <p className="text-xs font-medium text-amber-700 mt-1 leading-relaxed">
+                        As linhas abaixo estão com a integração pendente pois não possuem faturamento histórico (janela retroativa de 3 meses) para o Customer Group e Marca correspondentes. 
+                        Isso impede o cálculo automático do rateio de verbas fixas.
+                      </p>
+                    </div>
+                  </div>
+                  <PaginatedTable 
+                      data={inconsistencyData}
+                      columns={getColumnsForCategory('zaju_pending_rateio')}
+                      loading={inconsistencyLoading}
+                      error={inconsistencyError}
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      totalCount={totalCount}
+                      onPageChange={(page) => fetchInconsistencyDetails('zaju_pending_rateio', page)}
+                      sortConfig={sortConfig}
+                      onSort={handleSort}
+                  />
+                </div>
+              ) : (
+                [
+                  { id: 'promo', title: 'Verba Promo & Ações', data: groupedZaju.promo },
+                  { id: 'contrato', title: 'Verba de Contrato', data: groupedZaju.contrato },
+                  { id: 'acordos', title: 'Acordos (Planejamento / Apuração / Pagamento)', data: groupedZaju.acordos }
+                ].filter(section => section.id === zajuSubTab).map((section, sIdx) => (
                 <div key={sIdx} className="flex flex-col">
                   
                   <div className="overflow-x-auto">
@@ -2066,7 +2112,7 @@ export default function Dashboard() {
                     </table>
                   </div>
                 </div>
-              ))}
+              )))}
             </div>
           </div>
         )}

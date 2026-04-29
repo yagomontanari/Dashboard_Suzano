@@ -313,6 +313,7 @@ async def get_inconsistencies(
             ),
             "vk11": (QUERY_ERRO_VK11_LIST_PAGINATED, QUERY_ERRO_VK11_LIST),
             "zaju": (QUERY_ERRO_ZAJU_LIST_PAGINATED, QUERY_ERRO_ZAJU_LIST),
+            "zaju_pending_rateio": (QUERY_ZAJU_PENDENTE_SEM_RATEIO_PAGINATED, QUERY_ZAJU_PENDENTE_SEM_RATEIO),
         }
 
         if category not in query_map:
