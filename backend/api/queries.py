@@ -205,16 +205,21 @@ QUERY_ORCAMENTO_INTEGRACAO = text("""
     SELECT 
         soi.id_orcamento,
         o.descricao,
+        soi.tipo_integracao,
+        COALESCE(otv.descricao, 'Não Definido') as categoria,
         count(1) FILTER (WHERE soi.status = 'INTEGRADO') AS integrado,
         count(1) FILTER (WHERE soi.status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
-        count(1) FILTER (WHERE soi.status = 'ERRO') AS erro
+        count(1) FILTER (WHERE soi.status = 'ERRO') AS erro,
+        count(1) AS total
     FROM suzano_orcamento_integracao soi
     INNER JOIN orcamento o ON o.id = soi.id_orcamento
+    LEFT JOIN orcamento_tipo_verba otv ON o.id_tipo_verba = otv.id
     WHERE TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') >= soi.valid_from 
       AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') <= soi.valid_to
-    GROUP BY soi.id_orcamento, o.descricao
-    ORDER BY soi.id_orcamento DESC;
+    GROUP BY soi.id_orcamento, o.descricao, soi.tipo_integracao, otv.descricao
+    ORDER BY soi.id_orcamento DESC, total DESC;
 """)
+
 
 QUERY_ZAJU = text("""
     SELECT 
