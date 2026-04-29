@@ -4,6 +4,14 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.11] - 2026-04-29
+### Adicionado
+- **UX/UI (Aba VK11)**: Reestruturação completa da aba de Orçamentos (VK11) para o padrão de alta fidelidade Suzano, alinhando a experiência visual com a aba ZAJU.
+- **KPIs Premium**: Implementação de novos cards de "Eficiência de Sucesso", "Meta Corporativa" e "Fila SAP" com indicadores de saúde dinâmicos e design premium.
+- **Detalhamento Técnico**: Tabela de orçamentos e ajustes agora inclui ícones contextuais, badges de status inteligentes ("Fluxo Saudável", "Processamento Crítico") e barras de progressão visual por registro.
+- **Backend**: Otimização da query de detalhamento VK11 para incluir categorização por tipo de verba e diferenciação explícita entre orçamentos e ajustes.
+- **Inteligência Operacional**: Adicionada detecção automática de cenários críticos com alertas visuais pulsantes para ação imediata.
+
 ## [2.4.10] - 2026-04-29
 ### Alterado
 - **Design**: Reestruturação completa do layout do e-mail "Status das Integrações". O design anterior, focado em blocos com fundos coloridos, foi substituído por uma estética mais "clean" e executiva.
