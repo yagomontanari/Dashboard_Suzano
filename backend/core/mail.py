@@ -105,7 +105,7 @@ class MailService:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
 
-    def _get_base_template(self, content: str):
+    def _get_base_template(self, content: str, title: str = "Dashboard Suzano"):
         frontend_url = settings.FRONTEND_URL.rstrip('/')
         logo_tradelinks = f"{frontend_url}/logo/Tradelinks_Colorida.png"
         logo_magalu = f"{frontend_url}/logo/MGCS_Logo_Colorida.png"
@@ -119,7 +119,7 @@ class MailService:
                     <div style="background-color: #0f172a; padding: 40px 20px; text-align: center;">
                         <img src="{logo_suzano}" alt="Suzano" style="height: 45px; margin-bottom: 12px; display: inline-block;">
                         <div style="height: 1px; width: 40px; background-color: #334155; margin: 15px auto;"></div>
-                        <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase;">Dashboard Suzano</h1>
+                        <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase;">{title}</h1>
                     </div>
                     
                     <!-- Content Body -->
@@ -491,7 +491,7 @@ class MailService:
             await self._send_html_email(
                 email_to, 
                 f"Status Integrações: {data['periodo']}", 
-                self._get_base_template(content),
+                self._get_base_template(content, title="Monitoria Fechamento Suzano"),
                 attachments=attachments
             )
         finally:
