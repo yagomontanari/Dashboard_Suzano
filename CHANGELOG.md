@@ -10,6 +10,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **UX (Dashboard)**: Otimização do alerta de "Inatividade de Fluxo" no Log de Integrações, que agora monitora exclusivamente as rotinas de recebimento (**SAP > Tradelinks**), eliminando alertas de inatividade para rotinas de envio (**TL > SAP**) para focar em gargalos de entrada.
 - **Monitoria (Gestão)**: Implementada a funcionalidade de seleção de **Destinatário Principal** na tela de configurações. O destinatário principal agora é enviado no campo "Para", enquanto os demais destinatários ativos são incluídos automaticamente em **Cópia (CC)**, garantindo que todos os stakeholders visualizem a mesma thread de comunicação.
 - **Relatórios**: Refinamento do layout de erros ZAJU no **Dashboard** e **Monitoria Diária**, removendo colunas técnicas (`numov_integracao` e `numfat_integracao`) para focar em dados de negócio. As colunas permanecem disponíveis no Relatório Completo sob demanda.
+- **Infra (Scheduler)**: Aumentada a tolerância de atraso (`misfire_grace_time`) para os jobs de notificação, evitando que disparos agendados sejam cancelados por pequenos atrasos no processamento ou reinicializações do servidor.
 
 ## [2.4.17] - 2026-04-29
 ### Adicionado

@@ -231,7 +231,7 @@ async def restart_scheduler():
             scheduler.remove_job(job.id)
             
     # Adicionar heartbeat
-    scheduler.add_job(heartbeat_job, 'interval', minutes=5, id='heartbeat')
+    scheduler.add_job(heartbeat_job, 'interval', minutes=5, id='heartbeat', misfire_grace_time=300)
     logger.info("Job de Heartbeat (5min) configurado.")
 
     try:
@@ -255,7 +255,8 @@ async def restart_scheduler():
                     scheduler.add_job(
                         process_notification_job,
                         CronTrigger(hour=hour, minute=minute, timezone=timezone('America/Sao_Paulo')),
-                        id=f"notif_{s.id}"
+                        id=f"notif_{s.id}",
+                        misfire_grace_time=3600 # 1 hora de tolerância
                     )
                     logger.info(f"Agendamento ATIVADO: {s.time} (ID: {s.id})")
                 except Exception as e:
