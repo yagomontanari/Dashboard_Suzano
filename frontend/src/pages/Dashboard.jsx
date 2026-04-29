@@ -1498,48 +1498,56 @@ export default function Dashboard() {
                 
                 return (
                   <>
-                    {/* Meta/Status Card */}
-                    <div className="bg-slate-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-xl group min-h-[160px]">
+                    {/* Meta/Status Card (Destaque) */}
+                    <div className="bg-slate-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-xl group min-h-[160px] flex flex-col justify-between">
                       <div className="absolute top-0 right-0 p-4 opacity-10 transition-transform group-hover:scale-110 group-hover:rotate-12">
                         <Target size={60} />
                       </div>
-                      <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div>
-                          <h5 className="font-bold text-slate-400 text-[10px] uppercase tracking-[0.2em] mb-1">Status de Entrega</h5>
-                          <p className="text-4xl font-black tracking-tighter text-white">{efficiency.toFixed(1)}%</p>
-                          <p className="text-slate-500 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
-                             <Target size={12} /> Meta Corporativa
-                          </p>
+                      <div className="relative z-10">
+                        <h5 className="font-bold text-slate-400 text-[10px] uppercase tracking-[0.2em] mb-4">Monitoria de Metas</h5>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Meta</p>
+                            <p className="text-3xl font-black text-white tracking-tighter">100%</p>
+                          </div>
+                          <div className="border-l border-slate-800 pl-4">
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Sucesso</p>
+                            <p className="text-3xl font-black text-blue-400 tracking-tighter">{data.vk11.success}</p>
+                          </div>
                         </div>
-                        <div className="mt-4 p-2 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                           <p className="text-slate-300 text-[9px] uppercase font-bold text-center tracking-wider italic">Garantia de Provisionamento</p>
+                      </div>
+                      <div className="relative z-10 mt-4">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                          Status de Entrega Suzano
                         </div>
                       </div>
                     </div>
 
-                    {/* Sucesso Card */}
+                    {/* Integrados Card */}
                     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full min-h-[160px]">
                       <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
+                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                          <CheckCircle2 size={20} />
+                        </div>
                         <div className="text-right flex-grow pl-3">
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Integrados com Sucesso</p>
-                          <div className="flex items-baseline justify-end gap-1.5 mt-1">
-                            <span className="text-2xl font-black text-emerald-600 tracking-tight">{data.vk11.success}</span>
-                            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                              {total > 0 ? ((data.vk11.success / total) * 100).toFixed(1) : 0}%
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total de Itens Integrados</p>
+                          <div className="flex items-baseline justify-end mt-1">
+                            <span className="text-4xl font-black text-emerald-600 tracking-tighter">
+                              {efficiency.toFixed(1)}%
                             </span>
                           </div>
                         </div>
                       </div>
                       <div className="mt-auto">
                         <div className="flex justify-between items-center mb-1.5">
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Taxa de Eficiência</p>
-                          <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 uppercase tracking-tighter">
-                            Meta: 100%
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Eficiência Operacional</p>
+                          <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 uppercase tracking-tighter">
+                             {data.vk11.success} Itens
                           </span>
                         </div>
-                        <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                           <div className="bg-emerald-500 h-full transition-all duration-1000" style={{ width: `${total > 0 ? (data.vk11.success / total) * 100 : 0}%` }}></div>
+                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                           <div className="bg-emerald-500 h-full transition-all duration-1000 shadow-[0_0_8px_rgba(16,185,129,0.4)]" style={{ width: `${efficiency}%` }}></div>
                         </div>
                       </div>
                     </div>
