@@ -110,7 +110,15 @@ async def process_scheduled_notifications(
 ):
     # Autenticação via CRON_SECRET
     auth_header = request.headers.get("Authorization")
+    
+    if not settings.CRON_SECRET:
+        print("AVISO: CRON_SECRET não configurado no backend!")
+        # Em desenvolvimento local, podemos permitir sem secret se for localhost
+        if "localhost" not in str(request.base_url):
+            raise HTTPException(status_code=500, detail="Configuração de segurança incompleta (CRON_SECRET)")
+
     if auth_header != f"Bearer {settings.CRON_SECRET}":
+        print(f"ERRO: Tentativa de acesso não autorizado ao scheduler. Header: {auth_header}")
         raise HTTPException(status_code=403, detail="Acesso restrito")
     
     import pytz
@@ -121,22 +129,39 @@ async def process_scheduled_notifications(
     now_br = datetime.now(tz)
     current_hour = now_br.strftime("%H")
     
-    # Busca se existe agendamento ativo para esta hora exata (HH:00 ou HH:MM)
-    # Como o Vercel Cron rodará no minuto 0, buscamos por horários que comecem com a hora atual
+    # Busca agendamentos ativos para esta hora (ex: "08:00" ou "8:00")
+    # Comparamos com e sem o zero à esquerda para ser robusto
+    hour_with_zero = current_hour
+    hour_no_zero = current_hour.lstrip('0') if current_hour.startswith('0') else current_hour
+    
+    print(f"Buscando agendamentos para a hora: {hour_with_zero}h (ou {hour_no_zero}h)")
+
     result = await db.execute(
         select(NotificationSchedule).where(
             NotificationSchedule.active == True,
-            NotificationSchedule.time.like(f"{current_hour}:%")
+            (NotificationSchedule.time.like(f"{hour_with_zero}:%")) | 
+            (NotificationSchedule.time.like(f"{hour_no_zero}:%"))
         )
     )
     schedules = result.scalars().all()
     
     if schedules:
         from core.scheduler import process_notification_job
+        print(f"Agendamentos encontrados: {[s.time for s in schedules]}. Iniciando job...")
         await process_notification_job()
-        return {"message": f"Disparado processamento para {len(schedules)} agendamentos às {current_hour}h"}
+        return {
+            "status": "success",
+            "message": f"Disparado processamento para {len(schedules)} agendamentos",
+            "hour_checked": current_hour,
+            "schedules": [s.time for s in schedules]
+        }
     
-    return {"message": f"Nenhum agendamento para a hora {current_hour}h"}
+    print(f"Nenhum agendamento ativo para a hora {current_hour}h")
+    return {
+        "status": "skipped",
+        "message": f"Nenhum agendamento ativo para a hora {current_hour}h",
+        "hour_checked": current_hour
+    }
 
 @router.post("/send-manual")
 async def trigger_manual_notification(
