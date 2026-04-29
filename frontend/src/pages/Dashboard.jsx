@@ -1504,15 +1504,15 @@ export default function Dashboard() {
                         <Target size={60} />
                       </div>
                       <div className="relative z-10">
-                        <h5 className="font-bold text-slate-400 text-[10px] uppercase tracking-[0.2em] mb-4">Monitoria de Metas</h5>
+                        <h5 className="font-bold text-slate-400 text-[10px] uppercase tracking-[0.2em] mb-4">Status da Operação</h5>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Meta</p>
                             <p className="text-3xl font-black text-white tracking-tighter">100%</p>
                           </div>
                           <div className="border-l border-slate-800 pl-4">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Sucesso</p>
-                            <p className="text-3xl font-black text-blue-400 tracking-tighter">{data.vk11.success}</p>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
+                            <p className="text-3xl font-black text-emerald-400 tracking-tighter">{efficiency.toFixed(1)}%</p>
                           </div>
                         </div>
                       </div>

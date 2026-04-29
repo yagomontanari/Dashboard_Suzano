@@ -4,6 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.16] - 2026-04-29
+### Alterado
+- **UX/UI (Card de Destaque)**: Refinamento do card principal de monitoria para exibir exclusivamente a **Meta (100%)** e a **Taxa de Eficiência** percentual lado a lado, facilitando a análise comparativa de performance executiva.
+
 ## [2.4.15] - 2026-04-29
 ### Adicionado
 - **UX/UI (Reestruturação de Cards)**: Implementação do conceito de "Monitoria de Metas" no card de destaque (Card 1), consolidando os indicadores de Meta (100%) e Sucesso (contagem absoluta) em um layout de grid executivo.
