@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.12] - 2026-04-29
+### Adicionado
+- **UX/UI (Destaque de Ajustes)**: Implementado destaque visual prioritário para o tipo `VK11_AJUSTE_ORCAMENTO_APROVADO`, sinalizando-o explicitamente como um "Ajuste do Orçamento Original" através de badges animados e cores distintas (Índigo).
+- **KPI Cards (VK11)**: Refinamento dos cards de volume para exibir a quantidade total e o percentual de forma integrada e mais legível, incluindo barras de progresso internas em cada card.
+- **Estética**: Adicionadas micro-animações de interface (`bounce-subtle`, `pulse-subtle`) para destacar elementos críticos de negócio e melhorar a interatividade.
+
 ## [2.4.11] - 2026-04-29
 ### Adicionado
 - **UX/UI (Aba VK11)**: Reestruturação completa da aba de Orçamentos (VK11) para o padrão de alta fidelidade Suzano, alinhando a experiência visual com a aba ZAJU.

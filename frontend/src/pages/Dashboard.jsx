@@ -1539,22 +1539,29 @@ export default function Dashboard() {
                     </div>
 
                     {/* Processando Card */}
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full min-h-[160px]">
                       <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={20} /></div>
                         <div className="text-right flex-grow pl-3">
-                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Fila SAP</p>
-                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{total > 0 ? ((data.vk11.pending / total) * 100).toFixed(1) : 0}% vol.</p>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fila de Processamento</p>
+                          <div className="flex items-baseline justify-end gap-1.5 mt-1">
+                            <span className="text-2xl font-black text-slate-800 tracking-tight">{data.vk11.pending}</span>
+                            <span className="text-[11px] font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">
+                              {total > 0 ? ((data.vk11.pending / total) * 100).toFixed(1) : 0}% vol.
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data.vk11.pending}</h4>
-                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Aguardando Envio</p>
+                      <div className="mt-auto">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aguardando Envio SAP</p>
+                        <div className="w-full h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+                           <div className="bg-amber-400 h-full transition-all duration-1000" style={{ width: `${total > 0 ? (data.vk11.pending / total) * 100 : 0}%` }}></div>
+                        </div>
                       </div>
                     </div>
 
                     {/* Falhas Card */}
-                    <div className={`p-6 rounded-2xl border transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px] ${
+                    <div className={`p-6 rounded-2xl border transition-all group flex flex-col justify-between h-full min-h-[160px] ${
                       (data.vk11.error || 0) > 0 
                       ? 'bg-rose-50/30 border-rose-200 shadow-rose-100 shadow-sm' 
                       : 'bg-white border-slate-200 shadow-sm hover:shadow-md'
@@ -1564,15 +1571,21 @@ export default function Dashboard() {
                           <AlertCircle size={20} />
                         </div>
                         <div className="text-right flex-grow pl-3">
-                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Inconsistências</p>
-                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{total > 0 ? ((data.vk11.error / total) * 100).toFixed(1) : 0}% vol.</p>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inconsistências</p>
+                          <div className="flex items-baseline justify-end gap-1.5 mt-1">
+                            <span className={`text-2xl font-black tracking-tight ${ (data.vk11.error || 0) > 0 ? 'text-rose-600' : 'text-slate-800' }`}>
+                              {data.vk11.error}
+                            </span>
+                            <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${
+                              (data.vk11.error || 0) > 0 ? 'text-rose-600 bg-rose-100 border-rose-200' : 'text-slate-400 bg-slate-50 border-slate-100'
+                            }`}>
+                              {total > 0 ? ((data.vk11.error / total) * 100).toFixed(1) : 0}% vol.
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <h4 className={`text-3xl font-black tracking-tighter ${ (data.vk11.error || 0) > 0 ? 'text-rose-600' : 'text-slate-600' }`}>
-                          {data.vk11.error}
-                        </h4>
-                        <div className="flex justify-between items-center mt-1">
+                      <div className="mt-auto">
+                        <div className="flex justify-between items-center">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Erros de Validação</p>
                           {data.vk11.error > 0 && (
                             <button 
@@ -1583,6 +1596,9 @@ export default function Dashboard() {
                               <Download size={14} />
                             </button>
                           )}
+                        </div>
+                        <div className="w-full h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+                           <div className="bg-rose-500 h-full transition-all duration-1000" style={{ width: `${total > 0 ? (data.vk11.error / total) * 100 : 0}%` }}></div>
                         </div>
                       </div>
                     </div>
@@ -1624,28 +1640,51 @@ export default function Dashboard() {
                        </td></tr>
                      ) : vk11Details.length > 0 ? (
                        vk11Details.map((row, idx) => {
-                         const isAdjustment = row.tipo_integracao && row.tipo_integracao.includes('AJUSTE');
+                         const isAjusteAprovado = row.tipo_integracao === 'VK11_AJUSTE_ORCAMENTO_APROVADO';
+                         const isAdjustment = isAjusteAprovado || (row.tipo_integracao && row.tipo_integracao.includes('AJUSTE'));
                          const hasError = row.erro > 0;
                          const isCritical = row.erro > row.integrado && row.total > 5;
 
                          return (
-                           <tr key={idx} className="hover:bg-slate-50/50 transition-all group">
-                             <td className="py-8 px-8">
+                           <tr key={idx} className={`hover:bg-slate-50/50 transition-all group ${isAjusteAprovado ? 'bg-indigo-50/30' : ''}`}>
+                             <td className="py-8 px-8 relative">
+                                {isAjusteAprovado && <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>}
                                 <div className="flex items-center gap-6">
-                                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-sm ${hasError ? 'bg-rose-50 text-rose-500' : 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white group-hover:rotate-12'}`}>
-                                    {isAdjustment ? <ArrowDownUp size={24} /> : <Calculator size={24} />}
+                                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
+                                    isAjusteAprovado ? 'bg-indigo-600 text-white rotate-3 scale-105' :
+                                    hasError ? 'bg-rose-50 text-rose-500' : 
+                                    'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white group-hover:rotate-12'
+                                  }`}>
+                                    {isAjusteAprovado ? <TrendingUp size={24} /> : isAdjustment ? <ArrowDownUp size={24} /> : <Calculator size={24} />}
                                   </div>
                                   <div>
                                     <div className="flex items-center gap-3">
-                                      <span className="font-black text-lg text-slate-900 group-hover:text-blue-600 transition-colors tracking-tight">{row.descricao}</span>
-                                      <span className="px-2.5 py-0.5 bg-slate-100 text-slate-500 rounded text-[9px] font-black uppercase tracking-widest border border-slate-200">
+                                      <span className={`font-black text-lg transition-colors tracking-tight ${isAjusteAprovado ? 'text-indigo-700' : 'text-slate-900 group-hover:text-blue-600'}`}>{row.descricao}</span>
+                                      <span className={`px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border ${
+                                        isAjusteAprovado ? 'bg-indigo-100 text-indigo-600 border-indigo-200' : 'bg-slate-100 text-slate-500 border-slate-200'
+                                      }`}>
                                         ID: {row.id_orcamento}
                                       </span>
+                                      {isAjusteAprovado && (
+                                        <span className="flex items-center gap-1 px-2.5 py-0.5 bg-indigo-600 text-white rounded-full text-[9px] font-black uppercase tracking-tighter shadow-md shadow-indigo-200 animate-bounce-subtle">
+                                          <Zap size={10} /> Ajuste do Orçamento Original
+                                        </span>
+                                      )}
                                     </div>
                                     <div className="flex items-center gap-3 mt-1.5">
                                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{row.categoria || 'Sem Categoria'}</p>
                                       <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                      <p className="text-[11px] font-black text-blue-500 uppercase tracking-widest">{row.tipo_integracao || 'VK11_PROVISAO'}</p>
+                                      <p className={`text-[11px] font-black uppercase tracking-widest ${isAjusteAprovado ? 'text-indigo-500' : 'text-blue-500'}`}>
+                                        {row.tipo_integracao || 'VK11_PROVISAO'}
+                                      </p>
+                                      {isAjusteAprovado && (
+                                        <>
+                                          <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic flex items-center gap-1">
+                                            <Info size={10} /> Ajuste realizado ao iniciar o período de fechamento
+                                          </p>
+                                        </>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
