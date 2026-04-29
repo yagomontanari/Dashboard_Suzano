@@ -229,52 +229,49 @@ class MailService:
             dta_str = r["dta"].strftime("%d/%m/%Y %H:%M") if r["dta"] else "---"
             last_sync_html += f"""
             <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #475569;">{cat_name}</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #0f172a; text-align: right; font-weight: 700;">{dta_str}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #475569;">{cat_name}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #0f172a; text-align: right; font-weight: 700;">{dta_str}</td>
             </tr>
             """
 
-        # Pre-gerar linhas do detalhamento ZAJU SUCESSO (Granular com Destaque)
+        # Pre-gerar linhas do detalhamento ZAJU SUCESSO
         zaju_success_rows_html = ""
         detalhe_sucesso = data['zaju'].get('detalhamento_sucesso', {})
         for item_type, count in detalhe_sucesso.items():
             zaju_success_rows_html += f"""
             <tr>
-                <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #059669; font-family: monospace;">• {item_type} <span style="color: #10b981; font-size: 9px; font-weight: 800; background: #ecfdf5; padding: 1px 4px; border-radius: 4px;">SUCESSO</span></td>
-                <td style="padding: 4px 0; font-size: 13px; font-weight: 700; color: #059669; text-align: right;">{count}</td>
+                <td style="padding: 6px 0 6px 20px; font-size: 12px; color: #475569; font-family: monospace;">• {item_type} <span style="display: inline-block; margin-left: 6px; color: #059669; font-size: 9px; font-weight: 800; background: #ecfdf5; padding: 2px 6px; border-radius: 4px; border: 1px solid #d1fae5;">SUCESSO</span></td>
+                <td style="padding: 6px 0; font-size: 13px; font-weight: 800; color: #059669; text-align: right;">{count}</td>
             </tr>
             """
 
-        # Pre-gerar linhas do detalhamento ZAJU PENDENTE (Agrupado)
+        # Pre-gerar linhas do detalhamento ZAJU PENDENTE
         zaju_rows_html = ""
         detalhamento = data['zaju'].get('detalhamento_pendentes', {})
-        
         for cat_idx, (cat_name, items) in enumerate(detalhamento.items()):
-            if not items: continue # Pula categorias sem pendências
+            if not items: continue
             
-            # Cabeçalho da Categoria
-            border_top = "border-top: 1px solid #f1f5f9;" if cat_idx > 0 else ""
+            border_top = "border-top: 1px dashed #e2e8f0;" if cat_idx > 0 else ""
             zaju_rows_html += f"""
             <tr>
-                <td colspan="2" style="padding: 12px 0 6px 0; font-size: 13px; font-weight: 800; color: #0f172a; {border_top}">
+                <td colspan="2" style="padding: 12px 0 6px 0; font-size: 12px; font-weight: 800; color: #334155; text-transform: uppercase; {border_top}">
                     {cat_name}
                 </td>
             </tr>
             """
-            # Itens da Categoria
             for item_type, count in items.items():
                 label_suffix = ""
                 if item_type in ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO']:
-                    label_suffix = ' <span style="color: #e11d48; font-size: 10px; font-weight: 800;">(BLOQUEADO A PEDIDO DO CLIENTE)</span>'
+                    label_suffix = ' <span style="color: #be123c; font-size: 10px; font-weight: 700;">(BLOQUEADO CLIENTE)</span>'
                 elif item_type == 'ZAJU_CUTOFF_MES_CORRENTE':
-                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Integração ocorre no dia 30.)</span>'
+                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Ocorre dia 30)</span>'
                 elif item_type == 'ZAJU_CUTOFF_MES_ANTERIOR':
-                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Integração ocorre a partir do dia 01 do mês seguinte)</span>'
+                    label_suffix = ' <span style="color: #4f46e5; font-size: 10px; font-weight: 700;">(Ocorre no próx. mês)</span>'
                 
                 zaju_rows_html += f"""
                 <tr>
-                    <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #64748b; font-family: monospace;">• {item_type}{label_suffix}</td>
-                    <td style="padding: 4px 0; font-size: 13px; font-weight: 700; color: #334155; text-align: right;">{count}</td>
+                    <td style="padding: 6px 0 6px 20px; font-size: 12px; color: #64748b; font-family: monospace; border-bottom: 1px solid #f8fafc;">• {item_type}{label_suffix}</td>
+                    <td style="padding: 6px 0; font-size: 13px; font-weight: 800; color: #d97706; text-align: right; border-bottom: 1px solid #f8fafc;">{count}</td>
                 </tr>
                 """
 
@@ -284,8 +281,8 @@ class MailService:
         for item_type, count in detalhe_erros.items():
             zaju_error_rows_html += f"""
             <tr>
-                <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #e11d48; font-family: monospace;">• {item_type}</td>
-                <td style="padding: 4px 0; font-size: 13px; font-weight: 700; color: #e11d48; text-align: right;">{count}</td>
+                <td style="padding: 6px 0 6px 20px; font-size: 12px; color: #64748b; font-family: monospace; border-bottom: 1px solid #fef2f2;">• {item_type}</td>
+                <td style="padding: 6px 0; font-size: 13px; font-weight: 800; color: #dc2626; text-align: right; border-bottom: 1px solid #fef2f2;">{count}</td>
             </tr>
             """
 
@@ -295,71 +292,79 @@ class MailService:
         for item_type, count in detalhe_retorno.items():
             zaju_return_rows_html += f"""
             <tr>
-                <td style="padding: 4px 0 4px 15px; font-size: 12px; color: #4f46e5; font-family: monospace;">• {item_type}</td>
-                <td style="padding: 4px 0; font-size: 13px; font-weight: 700; color: #4f46e5; text-align: right;">{count}</td>
+                <td style="padding: 6px 0 6px 20px; font-size: 12px; color: #64748b; font-family: monospace; border-bottom: 1px solid #eef2ff;">• {item_type}</td>
+                <td style="padding: 6px 0; font-size: 13px; font-weight: 800; color: #4f46e5; text-align: right; border-bottom: 1px solid #eef2ff;">{count}</td>
             </tr>
             """
 
+        # Base Card Style
+        card_style = "background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 24px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);"
+        row_style = "padding: 10px 0; border-bottom: 1px solid #f1f5f9;"
+
         content = f"""
-        <div style="text-align: center; margin-bottom: 35px;">
-            <h2 style="color: #0f172a; font-size: 28px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em;">Status das Integrações</h2>
-            <p style="font-size: 16px; color: #64748b; margin: 0;">Relatório Consolidado • {data['periodo']}</p>
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="color: #0f172a; font-size: 24px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em; text-transform: uppercase;">Status de Integrações</h2>
+            <p style="font-size: 14px; font-weight: 600; color: #64748b; margin: 0; background-color: #f1f5f9; display: inline-block; padding: 4px 12px; border-radius: 20px;">Referência: {data['periodo']}</p>
         </div>
         
-        <p style="font-size: 15px; color: #334155; margin-bottom: 30px; line-height: 1.6;">
-            Olá. Segue abaixo o resumo executivo das integrações e o status das cargas de dados referente ao período de fechamento atual.
+        <p style="font-size: 14px; color: #475569; margin-bottom: 30px; line-height: 1.6;">
+            Abaixo apresentamos o resumo executivo das rotinas de integração e o status das cargas de dados referentes ao período de fechamento ativo.
         </p>
 
         <!-- Container Flexível para os Cards -->
-        <div style="margin-bottom: 30px;">
+        <div style="margin-bottom: 40px;">
             
             <!-- VK11 -->
-            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 5px solid #059669; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                <h3 style="margin: 0 0 18px 0; font-size: 15px; font-weight: 800; color: #065f46; text-transform: uppercase; letter-spacing: 0.025em;">📊 VK11 (Orçamento)</h3>
+            <div style="{card_style} border-left: 4px solid #10b981;">
+                <h3 style="margin: 0 0 20px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; margin-right: 8px;"></span>
+                    VK11 (Orçamento)
+                </h3>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #065f46;">Registros Integrados</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #059669; text-align: right;">{data['vk11']['success']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Registros Integrados</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #059669; text-align: right;">{data['vk11']['success']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #92400e;">Aguardando Integração</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #d97706; text-align: right;">{data['vk11']['pending']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Aguardando Integração</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['vk11']['pending']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #991b1b;">Inconsistências (Erro)</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #e11d48; text-align: right;">{data['vk11']['error']}</td>
+                        <td style="padding: 10px 0; font-size: 14px; color: #475569;">Inconsistências (Erro)</td>
+                        <td style="padding: 10px 0; font-size: 15px; font-weight: 800; color: #dc2626; text-align: right;">{data['vk11']['error']}</td>
                     </tr>
                 </table>
             </div>
 
             <!-- ZAJU -->
-            <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-left: 5px solid #4f46e5; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                <h3 style="margin: 0 0 18px 0; font-size: 15px; font-weight: 800; color: #3730a3; text-transform: uppercase; letter-spacing: 0.025em;">🔄 ZAJU (Ajuste de Provisão)</h3>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+            <div style="{card_style} border-left: 4px solid #4f46e5;">
+                <h3 style="margin: 0 0 20px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #4f46e5; border-radius: 50%; margin-right: 8px;"></span>
+                    ZAJU (Ajuste de Provisão)
+                </h3>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #065f46;">Registros Integrados</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #059669; text-align: right;">{data['zaju']['total_integrado']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Total Integrado</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #059669; text-align: right;">{data['zaju']['total_integrado']}</td>
                     </tr>
                 </table>
 
                 {f'''
-                <div style="background-color: #f0fdf4; border: 1px dashed #bbf7d0; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
-                    <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; color: #065f46; text-transform: uppercase;">Integrados com Sucesso</p>
+                <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
                     <table style="width: 100%; border-collapse: collapse;">
                         {zaju_success_rows_html}
                     </table>
                 </div>
                 ''' if zaju_success_rows_html else ''}
 
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #92400e;">Aguardando Integração</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #d97706; text-align: right;">{data['zaju']['total_pendente']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Aguardando Integração</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['zaju']['total_pendente']}</td>
                     </tr>
                 </table>
 
-                <div style="background-color: #fffbeb; border: 1px dashed #fde68a; border-radius: 10px; padding: 20px; margin-bottom: 15px;">
-                    <p style="margin: 0 0 12px 0; font-size: 12px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.05em;">Detalhamento de Pendências</p>
+                <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
                     <table style="width: 100%; border-collapse: collapse;">
                         {zaju_rows_html}
                     </table>
@@ -367,14 +372,13 @@ class MailService:
 
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #991b1b;">Inconsistências (Erro)</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #e11d48; text-align: right;">{data['zaju']['total_erro']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Inconsistências (Erro)</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #dc2626; text-align: right;">{data['zaju']['total_erro']}</td>
                     </tr>
                 </table>
                 
                 {f'''
-                <div style="background-color: #fef2f2; border: 1px dashed #fecaca; border-radius: 10px; padding: 15px; margin-top: 5px; margin-bottom: 15px;">
-                    <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase;">Erros</p>
+                <div style="background-color: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
                     <table style="width: 100%; border-collapse: collapse;">
                         {zaju_error_rows_html}
                     </table>
@@ -383,14 +387,13 @@ class MailService:
                 
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #3730a3;">Aguardando Retorno SAP</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #4f46e5; text-align: right;">{data['zaju']['total_retorno']}</td>
+                        <td style="padding: 10px 0; font-size: 14px; color: #475569;">Aguardando Retorno SAP</td>
+                        <td style="padding: 10px 0; font-size: 15px; font-weight: 800; color: #4f46e5; text-align: right;">{data['zaju']['total_retorno']}</td>
                     </tr>
                 </table>
 
                 {f'''
-                <div style="background-color: #eef2ff; border: 1px dashed #c7d2fe; border-radius: 10px; padding: 15px; margin-top: 5px; margin-bottom: 10px;">
-                    <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; color: #3730a3; text-transform: uppercase;">Detalhamento de Retorno</p>
+                <div style="background-color: #eef2ff; border: 1px solid #e0e7ff; border-radius: 8px; padding: 15px; margin-top: 10px;">
                     <table style="width: 100%; border-collapse: collapse;">
                         {zaju_return_rows_html}
                     </table>
@@ -399,70 +402,76 @@ class MailService:
             </div>
             
             <!-- ZVER -->
-            <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-left: 5px solid #e11d48; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                <h3 style="margin: 0 0 18px 0; font-size: 15px; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: 0.025em;">💳 ZVER (Pagamentos)</h3>
+            <div style="{card_style} border-left: 4px solid #dc2626;">
+                <h3 style="margin: 0 0 20px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #dc2626; border-radius: 50%; margin-right: 8px;"></span>
+                    ZVER (Pagamentos)
+                </h3>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #065f46;">Pagamentos Integrados</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #059669; text-align: right;">{data['zver']['success']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Pagamentos Integrados</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #059669; text-align: right;">{data['zver']['success']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #92400e;">Aguardando Integração</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #d97706; text-align: right;">{data['zver']['pending']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Aguardando Integração</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['zver']['pending']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #3730a3;">Retorno Pendente SAP</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #4f46e5; text-align: right;">{data['zver']['pending_return']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Retorno Pendente SAP</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #4f46e5; text-align: right;">{data['zver']['pending_return']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #991b1b;">Falhas Detectadas</td>
-                        <td style="padding: 8px 0; font-size: 16px; font-weight: 800; color: #e11d48; text-align: right;">{data['zver']['error']}</td>
+                        <td style="padding: 10px 0; font-size: 14px; color: #475569;">Falhas Detectadas</td>
+                        <td style="padding: 10px 0; font-size: 15px; font-weight: 800; color: #dc2626; text-align: right;">{data['zver']['error']}</td>
                     </tr>
                 </table>
             </div>
             
             <!-- Inconsistências de Cadastro -->
-            <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-                <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 800; color: #b45309; text-transform: uppercase;">⚠️ Inconsistências de Cadastro</h3>
+            <div style="{card_style} border-left: 4px solid #f59e0b;">
+                <h3 style="margin: 0 0 20px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background-color: #f59e0b; border-radius: 50%; margin-right: 8px;"></span>
+                    Inconsistências de Cadastro
+                </h3>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 13px; color: #92400e;">Sell-In (Notas Fiscais)</td>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 14px; font-weight: 800; color: #b45309; text-align: right;">{data['inconsistencias']['SELLIN']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Sell-In (Notas Fiscais)</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['inconsistencias']['SELLIN']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 13px; color: #92400e;">Clientes</td>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 14px; font-weight: 800; color: #b45309; text-align: right;">{data['inconsistencias']['CLIENTES']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Clientes</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['inconsistencias']['CLIENTES']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 13px; color: #92400e;">Produtos</td>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 14px; font-weight: 800; color: #b45309; text-align: right;">{data['inconsistencias']['PRODUTOS']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Produtos</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['inconsistencias']['PRODUTOS']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 13px; color: #92400e;">Cutoff</td>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 14px; font-weight: 800; color: #b45309; text-align: right;">{data['inconsistencias']['CUTOFF']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Cutoff</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['inconsistencias']['CUTOFF']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 13px; color: #92400e;">Usuários</td>
-                        <td style="padding: 6px 0; border-bottom: 1px solid #fef3c7; font-size: 14px; font-weight: 800; color: #b45309; text-align: right;">{data['inconsistencias']['USUARIOS']}</td>
+                        <td style="{row_style} font-size: 14px; color: #475569;">Usuários</td>
+                        <td style="{row_style} font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['inconsistencias']['USUARIOS']}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; font-size: 13px; color: #92400e;">Pagamentos</td>
-                        <td style="padding: 6px 0; font-size: 14px; font-weight: 800; color: #b45309; text-align: right;">{data['inconsistencias']['PAGAMENTOS']}</td>
+                        <td style="padding: 10px 0; font-size: 14px; color: #475569;">Pagamentos</td>
+                        <td style="padding: 10px 0; font-size: 15px; font-weight: 800; color: #d97706; text-align: right;">{data['inconsistencias']['PAGAMENTOS']}</td>
                     </tr>
                 </table>
             </div>
         </div>
 
         <!-- Seção Últimos Recebimentos -->
-        <div style="margin-top: 30px; border-top: 2px solid #e2e8f0; padding-top: 25px;">
-            <h3 style="margin: 0 0 15px 0; font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">📡 Últimas Integrações Recebidas</h3>
-            <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px;">
+        <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 25px;">
+            <h3 style="margin: 0 0 15px 0; font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">📡 Últimas Integrações Recebidas</h3>
+            <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
                 <table style="width: 100%; border-collapse: collapse;">
                     {last_sync_html}
                 </table>
             </div>
             
-            { '<div style="margin: 25px 0; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px;"><div style="font-size: 24px;">📄</div><div><p style="margin: 0; font-weight: 700; color: #0f172a; font-size: 14px;">' + filename + '</p><p style="margin: 0; color: #94a3b8; font-size: 12px;">Planilha Consolidada (XLSX)</p></div></div><p style="font-size: 13px; color: #64748b; text-align: center;">O arquivo Excel em anexo contém o detalhamento linha a linha de todas as inconsistências listadas acima.</p>' if excel_bytes else ''}
+            { '<div style="margin-top: 25px; padding: 20px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);"><div style="font-size: 24px; color: #10b981;">📊</div><div><p style="margin: 0 0 2px 0; font-weight: 700; color: #0f172a; font-size: 14px;">' + filename + '</p><p style="margin: 0; color: #64748b; font-size: 12px;">Planilha Consolidada (XLSX) anexada neste e-mail.</p></div></div>' if excel_bytes else ''}
         </div>
         """
         

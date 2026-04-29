@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.10] - 2026-04-29
+### Alterado
+- **Design**: Reestruturação completa do layout do e-mail "Status das Integrações". O design anterior, focado em blocos com fundos coloridos, foi substituído por uma estética mais "clean" e executiva.
+- **UX/UI**: Tabelas de detalhamento agora seguem o estilo de "extrato corporativo", com cores de status pontuais (apenas nos textos e pequenos ícones) e fundos brancos, melhorando a escaneabilidade para leitura diária.
+- **UX/UI**: O bloco ZAJU foi simplificado com o uso de listas com recuo e badges compactos, removendo o excesso de bordas tracejadas.
+
 ## [2.4.9] - 2026-04-28
 ### Adicionado
 - **Funcionalidade**: Migração do sistema de agendamento para **Vercel Cron Jobs**. Isso garante que os relatórios automáticos funcionem corretamente no ambiente *serverless* do Vercel, superando as limitações do `APScheduler` em processos de curta duração.
