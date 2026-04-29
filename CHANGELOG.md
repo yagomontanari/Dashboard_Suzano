@@ -4,6 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.13] - 2026-04-29
+### Adicionado
+- **UX/UI (KPI Cards)**: Implementação de um card dedicado para "Integrados com Sucesso", permitindo a visualização direta do volume absoluto de itens processados com êxito, acompanhado da taxa de eficiência.
+- **Simplificação**: Removida a descrição textual sobre o período de fechamento nas linhas de ajuste da tabela VK11 para reduzir ruído visual e priorizar os indicadores técnicos.
+
 ## [2.4.12] - 2026-04-29
 ### Adicionado
 - **UX/UI (Destaque de Ajustes)**: Implementado destaque visual prioritário para o tipo `VK11_AJUSTE_ORCAMENTO_APROVADO`, sinalizando-o explicitamente como um "Ajuste do Orçamento Original" através de badges animados e cores distintas (Índigo).

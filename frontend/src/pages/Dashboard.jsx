@@ -1517,24 +1517,25 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    {/* Eficiência Card */}
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative flex flex-col justify-between h-full min-h-[160px]">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                      <div className="relative z-10 flex items-start justify-between mb-4">
-                        <div>
-                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Sucesso</p>
-                          <h3 className={`text-4xl font-black tracking-tighter ${efficiency >= 95 ? 'text-emerald-600' : efficiency >= 80 ? 'text-amber-500' : 'text-rose-600'}`}>
-                            {efficiency.toFixed(1)}%
-                          </h3>
-                        </div>
-                        <div className="p-3 bg-blue-100 text-blue-600 rounded-xl shadow-inner flex-shrink-0">
-                          <TrendingUp size={24} />
+                    {/* Sucesso Card */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full min-h-[160px]">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
+                        <div className="text-right flex-grow pl-3">
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Integrados com Sucesso</p>
+                          <div className="flex items-baseline justify-end gap-1.5 mt-1">
+                            <span className="text-2xl font-black text-emerald-600 tracking-tight">{data.vk11.success}</span>
+                            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                              {total > 0 ? ((data.vk11.success / total) * 100).toFixed(1) : 0}%
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className="mt-auto relative z-10">
-                         <div className="flex items-center gap-1 text-blue-500 font-bold text-[10px] uppercase">
-                           <Activity size={12} /> Saúde das Condições
-                         </div>
+                      <div className="mt-auto">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Taxa de Eficiência</p>
+                        <div className="w-full h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+                           <div className="bg-emerald-500 h-full transition-all duration-1000" style={{ width: `${total > 0 ? (data.vk11.success / total) * 100 : 0}%` }}></div>
+                        </div>
                       </div>
                     </div>
 
@@ -1677,14 +1678,6 @@ export default function Dashboard() {
                                       <p className={`text-[11px] font-black uppercase tracking-widest ${isAjusteAprovado ? 'text-indigo-500' : 'text-blue-500'}`}>
                                         {row.tipo_integracao || 'VK11_PROVISAO'}
                                       </p>
-                                      {isAjusteAprovado && (
-                                        <>
-                                          <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic flex items-center gap-1">
-                                            <Info size={10} /> Ajuste realizado ao iniciar o período de fechamento
-                                          </p>
-                                        </>
-                                      )}
                                     </div>
                                   </div>
                                 </div>
