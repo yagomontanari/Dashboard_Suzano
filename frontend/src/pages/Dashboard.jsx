@@ -1271,8 +1271,7 @@ export default function Dashboard() {
                 <div className="relative z-10 flex flex-col h-full justify-between">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Status de Integração</h5>
-                      <h2 className="text-[1.65rem] font-black text-white tracking-tighter leading-tight">Eficiência Financeira</h2>
+                      <h2 className="text-[1.75rem] font-black text-white tracking-tighter leading-tight mt-1">Eficiência Financeira</h2>
                     </div>
                     <div className="p-2.5 bg-emerald-800/50 text-emerald-400 rounded-xl border border-emerald-700/50">
                       <Activity size={24} />
@@ -1314,15 +1313,15 @@ export default function Dashboard() {
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all"><CheckCircle2 size={18} /></div>
                    <div className="text-right">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Integrados</p>
-                      <p className="text-[11px] font-bold text-slate-700 mt-1.5 leading-none">{formatCurrency(data.zver.value_success)}</p>
+                      <p className="text-[11px] font-bold text-slate-700 mt-1 leading-none">{formatCurrency(data.zver.value_success)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center">
+                <div className="flex flex-col justify-center border-l-2 border-emerald-500/20 pl-4 py-1">
                    <h4 className="text-4xl font-black text-emerald-600 tracking-tighter leading-none">{data.zver.success}</h4>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Concluídos</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50">
+                <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">Integrados</span>
                    <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1 leading-none">
                       <TrendingUp size={11} /> Fluxo Normal
                    </span>
@@ -1333,15 +1332,15 @@ export default function Dashboard() {
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-all"><Clock size={18} /></div>
                    <div className="text-right">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Processando</p>
-                      <p className="text-[11px] font-bold text-slate-700 mt-1.5 leading-none">{formatCurrency(data.zver.value_pending)}</p>
+                      <p className="text-[11px] font-bold text-slate-700 mt-1 leading-none">{formatCurrency(data.zver.value_pending)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center">
+                <div className="flex flex-col justify-center border-l-2 border-amber-500/20 pl-4 py-1">
                    <h4 className="text-4xl font-black text-amber-600 tracking-tighter leading-none">{data.zver.pending}</h4>
-                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Pendente Integração</p>
+                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Aguardando Integração</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50">
+                <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">Processando</span>
                    <span className="text-[8px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1 leading-none">
                       <Clock size={11} /> Sincronização SAP
                    </span>
@@ -1352,15 +1351,15 @@ export default function Dashboard() {
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={18} /></div>
                    <div className="text-right">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Aguardando Retorno</p>
-                      <p className="text-[11px] font-bold text-slate-700 mt-1.5 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
+                      <p className="text-[11px] font-bold text-slate-700 mt-1 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center">
+                <div className="flex flex-col justify-center border-l-2 border-indigo-500/20 pl-4 py-1">
                    <h4 className="text-4xl font-black text-indigo-600 tracking-tighter leading-none">{data?.zver?.pending_return || 0}</h4>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Pendente no SAP</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50">
+                <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">Retorno SAP</span>
                    <span className="text-[8px] font-bold text-indigo-500 uppercase tracking-widest flex items-center gap-1 leading-none">
                       <RefreshCw size={11} /> Sincronização ERP
                    </span>
@@ -1371,15 +1370,15 @@ export default function Dashboard() {
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={18} /></div>
                    <div className="text-right">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Bloqueados</p>
-                      <p className="text-[11px] font-bold text-slate-700 mt-1.5 leading-none">{formatCurrency(data?.zver?.value_error || 0)}</p>
+                      <p className="text-[11px] font-bold text-slate-700 mt-1 leading-none">{formatCurrency(data?.zver?.value_error || 0)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center">
+                <div className="flex flex-col justify-center border-l-2 border-rose-500/20 pl-4 py-1">
                    <h4 className="text-4xl font-black text-rose-600 tracking-tighter leading-none">{data?.zver?.error || 0}</h4>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Falhas de Integração</p>
                 </div>
                 <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">Bloqueados</span>
                    <span className="text-[8px] font-bold text-rose-500 uppercase tracking-widest flex items-center gap-1 leading-none">
                       <AlertCircle size={11} /> Erros Detectados
                    </span>
