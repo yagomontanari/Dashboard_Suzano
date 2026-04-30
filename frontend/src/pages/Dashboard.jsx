@@ -1263,7 +1263,7 @@ export default function Dashboard() {
             {/* Health & Efficiency Header */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {/* Executive Performance Hub - Pagamentos (Emerald Theme) */}
-              <div className="lg:col-span-2 bg-emerald-900 p-8 rounded-xl border border-emerald-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[180px]">
+              <div className="lg:col-span-2 bg-emerald-900 p-6 rounded-xl border border-emerald-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[165px]">
                 {/* Background Elements */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
@@ -1282,7 +1282,7 @@ export default function Dashboard() {
                   <div className="flex items-end justify-between mt-4">
                     <div>
                       <div className="flex items-baseline gap-2">
-                        <span className={`text-6xl font-black tracking-tighter ${getEfficiencyColor(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100)}`}>
+                        <span className={`text-5xl font-black tracking-tighter ${getEfficiencyColor(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100)}`}>
                           {(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100).toFixed(1)}
                         </span>
                         <span className="text-2xl font-bold text-emerald-500/50">%</span>
@@ -1310,7 +1310,7 @@ export default function Dashboard() {
               </div>
 
               {/* Secondary Metrics Shelf - Pagamentos */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[145px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all"><CheckCircle2 size={18} /></div>
                    <div className="text-right">
@@ -1329,7 +1329,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[145px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-all"><Clock size={18} /></div>
                    <div className="text-right">
@@ -1348,7 +1348,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[145px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={18} /></div>
                    <div className="text-right">
@@ -1357,19 +1357,19 @@ export default function Dashboard() {
                    </div>
                 </div>
                 <div className="flex flex-col justify-center">
-                   <h4 className="text-4xl font-black text-indigo-600 tracking-tighter">{data?.zver?.pending_return || 0}</h4>
+                   <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zver?.pending_return || 0}</h4>
                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Retorno Pendente SAP</p>
                 </div>
-                <div className="pt-3 border-t border-slate-50">
+                <div className="pt-2 border-t border-slate-50">
                    <span className="text-[8px] font-bold text-indigo-500 uppercase tracking-widest flex items-center gap-1">
                       <RefreshCw size={10} /> Sincronização ERP
                    </span>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-rose-100 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[145px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
-                   <div className="p-2 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={18} /></div>
+                   <div className="p-2 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={16} /></div>
                    <div className="text-right">
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Bloqueados</p>
                       <p className="text-[10px] font-bold text-slate-700 mt-1">{formatCurrency(data?.zver?.value_error || 0)}</p>
@@ -1828,7 +1828,7 @@ export default function Dashboard() {
                 return (
                   <>
                     {/* Executive Performance Hub */}
-                    <div className="lg:col-span-2 bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[180px]">
+                    <div className="lg:col-span-2 bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[165px]">
                       {/* Background Elements */}
                       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                       <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
@@ -1843,7 +1843,7 @@ export default function Dashboard() {
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Eficiência Operacional</p>
                           </div>
                           <div className="flex items-baseline gap-3">
-                            <h3 className={`text-6xl font-black tracking-tighter ${efficiency >= 99.5 ? 'text-emerald-400' : efficiency >= 95 ? 'text-amber-400' : 'text-rose-400'}`}>
+                            <h3 className={`text-5xl font-black tracking-tighter ${efficiency >= 99.5 ? 'text-emerald-400' : efficiency >= 95 ? 'text-amber-400' : 'text-rose-400'}`}>
                               {efficiency.toFixed(1)}%
                             </h3>
                             <div className="flex flex-col">
@@ -1876,7 +1876,7 @@ export default function Dashboard() {
                     </div>
 
 
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px]">
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[145px]">
                       <div className="flex justify-between items-start h-10 mb-4">
                         <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg shrink-0"><CheckCircle2 size={18} /></div>
                         <div className="text-right flex-grow pl-3 flex flex-col justify-end">
@@ -1893,7 +1893,7 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px]">
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[145px]">
                       <div className="flex justify-between items-start h-10 mb-4">
                         <div className="p-2 bg-amber-50 text-amber-600 rounded-lg shrink-0"><Clock size={18} /></div>
                         <div className="text-right flex-grow pl-3 flex flex-col justify-end">
@@ -1917,7 +1917,7 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px]">
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[145px]">
                        <div className="flex justify-between items-start h-10 mb-4">
                          <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg shrink-0"><RefreshCw size={18} /></div>
                          <div className="text-right flex-grow pl-3 flex flex-col justify-end">
@@ -1934,7 +1934,7 @@ export default function Dashboard() {
                        </div>
                     </div>
 
-                    <div className={`p-5 rounded-xl border transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px] ${
+                    <div className={`p-5 rounded-xl border transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[145px] ${
                       (data?.zaju?.error || 0) > 0 
                       ? 'bg-rose-50/30 border-rose-200 shadow-rose-100 shadow-sm' 
                       : 'bg-white border-slate-200 shadow-sm hover:shadow-md'
