@@ -1270,8 +1270,11 @@ export default function Dashboard() {
                 
                 <div className="relative z-10 flex flex-col h-full justify-between">
                   <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="text-[1.75rem] font-black text-white tracking-tighter leading-tight mt-1">Eficiência Financeira</h2>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="w-6 h-1 bg-emerald-500 rounded-full"></span>
+                        <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.25em]">Eficiência Financeira</p>
+                      </div>
                     </div>
                     <div className="p-2.5 bg-emerald-800/50 text-emerald-400 rounded-xl border border-emerald-700/50">
                       <Activity size={24} />
