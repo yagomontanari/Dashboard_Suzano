@@ -1776,51 +1776,54 @@ export default function Dashboard() {
 
                 return (
                   <>
-                    <div className="bg-emerald-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-sm hover:shadow-md transition-all group min-h-[160px]">
-                       <div className="absolute top-0 right-0 p-4 opacity-20 transition-transform group-hover:scale-110 group-hover:rotate-12">
-                          <Target size={60} />
-                       </div>
-                       <div className="relative z-10 flex flex-col justify-between h-full">
-                         <div>
-                           <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Meta do Período</h5>
-                           <p className="text-4xl font-black tracking-tighter text-white">100%</p>
-                           <p className="text-emerald-300 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
-                              <Target size={12} /> Objetivo de Excelência
-                           </p>
-                         </div>
-                         <div className="mt-4 p-2 bg-emerald-800/50 rounded-lg">
-                            <p className="text-emerald-100 text-[9px] uppercase font-bold text-center tracking-wider">Objetivo Corporativo</p>
-                         </div>
-                       </div>
-                    </div>
+                    {/* Executive Performance Hub */}
+                    <div className="lg:col-span-2 bg-slate-900 p-8 rounded-[2rem] border border-slate-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[180px]">
+                      {/* Background Elements */}
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
+                      <div className="absolute top-0 right-0 p-8 opacity-5 transition-transform group-hover:scale-110 duration-700">
+                        <Target size={140} className="text-white" />
+                      </div>
 
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative flex flex-col justify-between h-full min-h-[160px]">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                      <div className="relative z-10 flex items-start justify-between mb-4">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Taxa de Eficiência</p>
-                            <div className="group/info relative">
-                              <Info size={12} className="text-slate-300 cursor-help hover:text-emerald-500 transition-colors" />
-                              <div className="absolute bottom-full left-0 mb-2 w-56 p-2 bg-slate-800 text-white text-[10px] rounded-lg opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 font-medium leading-tight shadow-xl border border-slate-700">
-                                <p>Calculado sobre o volume acionável. <span className="text-emerald-400 font-bold">Exclui</span> fluxos suspensos (Acordos) e itens de fechamento anterior aguardando o dia 01.</p>
+                      <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="w-6 h-1 bg-emerald-500 rounded-full"></span>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Eficiência Operacional</p>
+                          </div>
+                          <div className="flex items-baseline gap-3">
+                            <h3 className={`text-6xl font-black tracking-tighter ${efficiency >= 99.5 ? 'text-emerald-400' : efficiency >= 95 ? 'text-amber-400' : 'text-rose-400'}`}>
+                              {efficiency.toFixed(1)}%
+                            </h3>
+                            <div className="flex flex-col">
+                              <span className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Meta 100%</span>
+                              <div className="w-20 h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden border border-slate-700">
+                                <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 99.5 ? 'bg-emerald-500' : 'bg-amber-500'}`} style={{ width: `${efficiency}%` }}></div>
                               </div>
                             </div>
                           </div>
-                          <h3 className={`text-4xl font-black tracking-tighter ${getEfficiencyColor(efficiency)}`}>
-                            {efficiency.toFixed(1)}%
-                          </h3>
                         </div>
-                        <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner flex-shrink-0">
-                          <Activity size={24} />
+
+                        <div className="p-4 bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-inner group-hover:border-emerald-500/30 transition-colors">
+                          <Activity size={32} className="text-emerald-500" />
                         </div>
                       </div>
-                      <div className="mt-auto relative z-10">
-                         <div className="flex items-center gap-1 text-emerald-500 font-bold text-[10px] uppercase">
-                           <Activity size={12} /> Desempenho Operacional
-                         </div>
+
+                      <div className="relative z-10 flex flex-wrap items-center gap-4 mt-6">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+                          <CheckCircle2 size={12} className="animate-pulse" />
+                          <span className="text-[10px] font-black uppercase tracking-wider">Objetivo de Excelência</span>
+                        </div>
+                        <div className="group/info relative flex items-center gap-1.5">
+                          <Info size={14} className="text-slate-500 cursor-help hover:text-emerald-400 transition-colors" />
+                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Regras de Negócio</span>
+                          <div className="absolute bottom-full left-0 mb-3 w-64 p-3 bg-slate-800 text-white text-[10px] rounded-xl opacity-0 group-hover/info:opacity-100 transition-all transform translate-y-2 group-hover/info:translate-y-0 pointer-events-none z-50 font-medium leading-relaxed shadow-2xl border border-slate-700 backdrop-blur-xl">
+                            <p>Cálculo baseado no volume acionável. <span className="text-emerald-400 font-bold">Exclui</span> fluxos suspensos (Acordos) e itens de cutoff anterior aguardando o dia 01.</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
 
                     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
                       <div className="flex justify-between items-start mb-4">
