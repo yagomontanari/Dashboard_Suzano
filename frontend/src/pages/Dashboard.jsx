@@ -1263,7 +1263,7 @@ export default function Dashboard() {
             {/* Health & Efficiency Header */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {/* Executive Performance Hub - Pagamentos (Emerald Theme) */}
-              <div className="lg:col-span-2 bg-emerald-900 p-4 rounded-xl border border-emerald-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[130px]">
+              <div className="lg:col-span-1 bg-emerald-900 p-4 rounded-xl border border-emerald-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[130px]">
                 {/* Background Elements */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
@@ -1276,37 +1276,32 @@ export default function Dashboard() {
                         <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.25em]">Eficiência Financeira</p>
                       </div>
                     </div>
-                    <div className="p-2.5 bg-emerald-800/50 text-emerald-400 rounded-xl border border-emerald-700/50">
-                      <Activity size={24} />
+                    <div className="p-2 bg-emerald-800/50 text-emerald-400 rounded-xl border border-emerald-700/50">
+                      <Activity size={20} />
                     </div>
                   </div>
 
-                    <div className="flex items-end justify-between mt-1">
+                    <div className="flex flex-col mt-2">
                       {(() => {
                         const efficiencyPct = ((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100;
                         const efficiencyColor = getEfficiencyColor(efficiencyPct);
-                        const total = (data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0)));
                         
                         return (
                           <>
-                            <div className="flex items-baseline gap-4">
+                            <div className="flex items-baseline gap-2">
                               <span className={`text-5xl font-black tracking-tighter ${efficiencyColor}`}>
                                 {efficiencyPct.toFixed(1)}
-                                <span className="text-2xl font-bold opacity-40 ml-1">%</span>
+                                <span className="text-xl font-bold opacity-40 ml-0.5">%</span>
                               </span>
-                              <div className="flex flex-col">
-                                <span className="text-emerald-500/60 font-bold text-[11px] uppercase tracking-[0.2em] leading-none mb-2">Meta 100%</span>
-                                <div className="w-24 h-1.5 bg-emerald-800/50 rounded-full overflow-hidden border border-emerald-700/30 shadow-inner">
-                                  <div 
-                                    className={`h-full transition-all duration-1000 ease-out ${efficiencyPct >= 99.5 ? 'bg-emerald-500' : efficiencyPct >= 95 ? 'bg-amber-500' : 'bg-rose-500'}`} 
-                                    style={{ width: `${efficiencyPct}%` }}
-                                  ></div>
-                                </div>
-                              </div>
                             </div>
-                            <div className="text-right">
-                              <p className="text-[10px] font-bold text-emerald-500/50 uppercase tracking-widest mb-1">Volume Processado</p>
-                              <p className="text-2xl font-black text-white leading-none">{total} <span className="text-[11px] font-bold opacity-40">REG.</span></p>
+                            <div className="flex flex-col mt-2">
+                              <span className="text-emerald-500/60 font-bold text-[10px] uppercase tracking-[0.2em] leading-none mb-1.5">Meta 100%</span>
+                              <div className="w-full h-1 bg-emerald-800/50 rounded-full overflow-hidden border border-emerald-700/30">
+                                <div 
+                                  className={`h-full transition-all duration-1000 ease-out ${efficiencyPct >= 99.5 ? 'bg-emerald-500' : efficiencyPct >= 95 ? 'bg-amber-500' : 'bg-rose-500'}`} 
+                                  style={{ width: `${efficiencyPct}%` }}
+                                ></div>
+                              </div>
                             </div>
                           </>
                         );
