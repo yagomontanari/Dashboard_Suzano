@@ -1258,13 +1258,13 @@ export default function Dashboard() {
           </div>
         )}
 
-        {activeTab === 'zver' && (
+        {activeTab === 'pagamentos' && (
           <div className="space-y-8 animate-in fade-in duration-500 pb-12">
             {/* Top Summaries - ZVER style alignment with ZAJU */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {(() => {
                 const totalZver = (data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0);
-                const efficiency = totalZver > 0 ? (data.zver.success / totalZver) * 100 : 100;
+                const efficiency = totalZver > 0 ? ((data?.zver?.success || 0) / totalZver) * 100 : 100;
                 
                 const successPct = formatVolumePct(data?.zver?.success || 0, totalZver);
                 const pendingPct = formatVolumePct(data?.zver?.pending || 0, totalZver);
@@ -1328,7 +1328,7 @@ export default function Dashboard() {
                       </div>
                       <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center justify-between">
                         <span className="text-[9px] font-bold text-slate-300 italic">Total Financeiro</span>
-                        <span className="text-[10px] font-black text-slate-600">{formatCurrency(data?.zver?.total_financeiro || 0)}</span>
+                        <span className="text-[10px] font-black text-slate-600">{formatCurrency(data?.zver?.value_success || 0)}</span>
                       </div>
                     </div>
 
@@ -1347,7 +1347,7 @@ export default function Dashboard() {
                       </div>
                       <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center justify-between">
                         <span className="text-[9px] font-bold text-slate-300 italic">Volume Financeiro</span>
-                        <span className="text-[10px] font-black text-slate-600">{formatCurrency(data?.zver?.pending_financeiro || 0)}</span>
+                        <span className="text-[10px] font-black text-slate-600">{formatCurrency((data?.zver?.value_pending || 0) + (data?.zver?.value_pending_return || 0))}</span>
                       </div>
                     </div>
 
@@ -1394,7 +1394,7 @@ export default function Dashboard() {
                        <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center justify-between">
                          <span className="text-[9px] font-bold text-slate-300 italic">Valor em Erro</span>
                          <span className={`text-[10px] font-black ${ (data?.zver?.error || 0) > 0 ? 'text-rose-600' : 'text-slate-400' }`}>
-                           {formatCurrency(data?.zver?.error_financeiro || 0)}
+                           {formatCurrency(data?.zver?.value_error || 0)}
                          </span>
                        </div>
                     </div>
