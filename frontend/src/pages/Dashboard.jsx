@@ -1274,9 +1274,9 @@ export default function Dashboard() {
                 return (
                   <>
                     {/* Executive Performance Hub - ZVER (Financeiro) */}
-                    <div className="lg:col-span-2 bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[165px]">
-                      {/* Premium Mesh Gradient for Finance */}
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_-20%,rgba(16,185,129,0.15),transparent_50%),radial-gradient(circle_at_0%_100%,rgba(20,184,166,0.1),transparent_40%)] opacity-100 group-hover:scale-110 transition-transform duration-1000"></div>
+                    <div className="lg:col-span-2 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 p-6 rounded-xl border border-emerald-500/30 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[165px]">
+                      {/* Premium Mesh Gradient overlay for depth */}
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_-20%,rgba(255,255,255,0.1),transparent_50%)] opacity-100 group-hover:scale-110 transition-transform duration-1000"></div>
                       
                       {/* Decorative Pattern */}
                       <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
@@ -1284,29 +1284,29 @@ export default function Dashboard() {
                       <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="w-6 h-1 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Eficiência Operacional</p>
+                            <span className="w-6 h-1 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.6)]"></span>
+                            <p className="text-[10px] font-black text-emerald-100 uppercase tracking-[0.25em]">Eficiência Operacional</p>
                           </div>
                           <div className="flex items-baseline gap-3">
-                            <h3 className={`text-5xl font-black tracking-tighter ${efficiency >= 99.5 ? 'text-emerald-400' : efficiency >= 95 ? 'text-amber-400' : 'text-rose-400'}`}>
+                            <h3 className={`text-5xl font-black tracking-tighter text-white drop-shadow-md`}>
                               {efficiency.toFixed(1)}%
                             </h3>
                             <div className="flex flex-col">
-                              <span className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Meta 100%</span>
-                              <div className="w-20 h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden border border-slate-700">
-                                <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 99.5 ? 'bg-emerald-500' : 'bg-amber-500'}`} style={{ width: `${efficiency}%` }}></div>
+                              <span className="text-emerald-100/70 font-bold text-[10px] uppercase tracking-widest">Meta 100%</span>
+                              <div className="w-20 h-1.5 bg-white/10 rounded-full mt-1.5 overflow-hidden border border-white/20">
+                                <div className={`h-full transition-all duration-1000 ease-out ${efficiency >= 99.5 ? 'bg-emerald-400' : 'bg-amber-400'}`} style={{ width: `${efficiency}%` }}></div>
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className="p-4 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 rounded-2xl shadow-inner group-hover:bg-emerald-500/20 transition-all duration-500">
-                          <CreditCard size={32} className="text-emerald-400" />
+                        <div className="p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-inner group-hover:bg-white/20 transition-all duration-500">
+                          <CreditCard size={32} className="text-white" />
                         </div>
                       </div>
 
                       <div className="relative z-10 flex flex-wrap items-center gap-4 mt-6">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 shadow-lg shadow-emerald-900/20">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 text-emerald-50 rounded-xl border border-white/20 shadow-lg shadow-emerald-900/20">
                           <CheckCircle2 size={12} className="animate-pulse" />
                           <span className="text-[10px] font-black uppercase tracking-wider">Monitoria de Pagamentos Ativa</span>
                         </div>
@@ -1343,7 +1343,7 @@ export default function Dashboard() {
                       </div>
                       <div className="flex flex-col justify-center border-l-2 border-amber-500/20 pl-4 py-1">
                         <h4 className="text-3xl font-black text-amber-600 tracking-tighter leading-none">{data?.zver?.pending || 0}</h4>
-                        <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">Aguardando Envio</p>
+                        <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">Aguardando Integração</p>
                       </div>
                       <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center justify-between">
                         <span className="text-[9px] font-bold text-slate-300 italic">Volume Financeiro</span>
@@ -1356,17 +1356,17 @@ export default function Dashboard() {
                        <div className="flex justify-between items-start h-10 mb-4">
                          <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg shrink-0"><RefreshCw size={18} /></div>
                          <div className="text-right flex-grow pl-3 flex flex-col justify-end">
-                           <p className="text-[10px] font-black text-slate-400 uppercase leading-tight">Retorno SAP</p>
+                           <p className="text-[10px] font-black text-slate-400 uppercase leading-tight">Aguardando Retorno</p>
                            <p className="text-base font-black text-slate-800 tracking-tight mt-1.5 leading-none">{returnPct}% vol.</p>
                          </div>
                        </div>
                        <div className="flex flex-col justify-center border-l-2 border-indigo-500/20 pl-4 py-1">
                          <h4 className="text-3xl font-black text-indigo-600 tracking-tighter leading-none">{data?.zver?.pending_return || 0}</h4>
-                         <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">Pendente Retorno</p>
+                         <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">Pendente no SAP</p>
                        </div>
                        <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center justify-between">
-                         <span className="text-[9px] font-bold text-slate-300 italic">Fluxo SAP</span>
-                         <span className="text-[10px] font-black text-slate-600">Sincronização Ativa</span>
+                         <span className="text-[9px] font-bold text-slate-300 italic">Volume Financeiro</span>
+                         <span className="text-[10px] font-black text-slate-600">{formatCurrency(data?.zver?.value_pending_return || 0)}</span>
                        </div>
                     </div>
 

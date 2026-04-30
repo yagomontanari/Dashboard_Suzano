@@ -4,19 +4,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-## [2.4.21] - 2026-04-30
-### Alterado
-- **UX/UI (Dashboard ZAJU)**: Refatoração completa da estrutura de alinhamento dos cards secundários de performance. Implementada uma arquitetura de "Grid Shelf" que garante o alinhamento horizontal perfeito dos indicadores numéricos primários, independentemente da presença de elementos dinâmicos (badges de cutoff ou botões de log).
-- **Design System**: Evolução da linguagem visual para um padrão "Technical Precision", substituindo o arredondamento excessivo (`rounded-2xl`) por um acabamento mais profissional e corporativo (`rounded-xl`).
-- **Harmonização Visual**: Padronização da tipografia e do espaçamento interno dos cards, resolvendo desalinhamentos causados por quebras de linha em rótulos como "Aguardando Retorno".
-- **UX (Interatividade)**: Renomeação estratégica do botão de ação de "Corrigir Erros" para **"Acessar Log"**, alinhando a terminologia com a função de auditoria técnica do Dashboard.
-- **KPI Consistency (Aba Geral)**: Alinhamento do card ZAJU na visão consolidada (Geral) com as novas regras de eficiência operacional. O percentual agora ignora o Cutoff Anterior, garantindo que o status de saúde da integração seja idêntico em todas as visualizações do sistema.
-- **Unificação de Indicadores (Aba Pagamentos)**: Implementação do **"Executive Performance Hub - Financeiro"**. Unificação dos cards de Meta e Eficiência em um único componente premium, adotando o tema **Emerald/Teal** solicitado para manter a identidade visual do fluxo de pagamentos.
-- **Fix**: Resolvido desalinhamento dos cards de métricas em diferentes níveis de zoom.
-- **UI/UX**: Padronização completa dos cards de Pagamentos (ZVER) com o estilo ZAJU.
-- **UI/UX**: Implementação de layout grid denso e métricas de `% vol.` alinhadas à direita.
-- **Design**: Novo Performance Hub em Pagamentos com tema premium Emerald/Slate.
-- **Normalização**: Reforço do container `w-full` garantindo que títulos e valores financeiros permaneçam ancorados na borda direita mesmo em resoluções ultra-wide.
+### [2.4.22] - 2026-04-30
+- **UI/UX (Pagamentos)**: Padronização de nomenclatura dos cards para maior clareza corporativa ("Aguardando Integração", "Pendente no SAP").
+- **UI/UX (Pagamentos)**: Harmonização visual do Efficiency Hub com o gradiente premium Emerald/Teal da seção Hero.
+- **Data Integrity**: Implementação de valores financeiros dinâmicos no card de "Aguardando Retorno", substituindo indicadores estáticos.
+- **Fix**: Correção crítica do ID de aba (`pagamentos`) e mapeamento de chaves financeiras que causavam tela em branco.
+
+### [2.4.21] - 2026-04-30
 
 ## [2.4.20] - 2026-04-30
 ### Alterado
