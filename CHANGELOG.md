@@ -9,6 +9,8 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **UX/UI (Dashboard ZAJU)**: Refatoração completa da estrutura de alinhamento dos cards secundários de performance. Implementada uma arquitetura de "Grid Shelf" que garante o alinhamento horizontal perfeito dos indicadores numéricos primários, independentemente da presença de elementos dinâmicos (badges de cutoff ou botões de log).
 - **Design System**: Evolução da linguagem visual para um padrão "Technical Precision", substituindo o arredondamento excessivo (`rounded-2xl`) por um acabamento mais profissional e corporativo (`rounded-xl`).
 - **Harmonização Visual**: Padronização da tipografia e do espaçamento interno dos cards, resolvendo desalinhamentos causados por quebras de linha em rótulos como "Aguardando Retorno".
+- **UX (Interatividade)**: Renomeação estratégica do botão de ação de "Corrigir Erros" para **"Acessar Log"**, alinhando a terminologia com a função de auditoria técnica do Dashboard.
+- **KPI Consistency (Aba Geral)**: Alinhamento do card ZAJU na visão consolidada (Geral) com as novas regras de eficiência operacional. O percentual agora ignora o Cutoff Anterior, garantindo que o status de saúde da integração seja idêntico em todas as visualizações do sistema.
 
 ## [2.4.20] - 2026-04-30
 ### Alterado
