@@ -26,13 +26,15 @@ QUERY_ZAJU_TOTAL = text("""
     SELECT 
         COALESCE(SUM(integrado), 0) as success,
         COALESCE(SUM(pendente_integracao), 0) as pending,
+        COALESCE(SUM(pendente_operacional), 0) as pending_operational,
         COALESCE(SUM(erro), 0) as error,
         COALESCE(SUM(pendente_retorno), 0) as pending_return,
         COALESCE(SUM(total_zaju), 0) as total
     FROM (
         SELECT 
             COUNT(1) FILTER (WHERE status = 'INTEGRADO') AS integrado,
-            COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO' AND purch_no_c != 'ZAJU_CUTOFF_MES_ANTERIOR') AS pendente_integracao,
+            COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+            COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO' AND purch_no_c != 'ZAJU_CUTOFF_MES_ANTERIOR') AS pendente_operacional,
             COUNT(1) FILTER (WHERE status = 'ERRO') AS erro,
             COUNT(1) FILTER (WHERE status = 'PENDENTE_RETORNO') AS pendente_retorno,
             COUNT(1) FILTER (WHERE NOT (status = 'PENDENTE_INTEGRACAO' AND purch_no_c = 'ZAJU_CUTOFF_MES_ANTERIOR')) AS total_zaju
