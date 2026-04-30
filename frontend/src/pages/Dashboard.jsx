@@ -1909,7 +1909,7 @@ export default function Dashboard() {
                              onClick={() => handleOpenModal('zaju')}
                              className="w-full py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-[8px] uppercase tracking-[0.15em] rounded shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0"
                            >
-                             Corrigir Erros
+                             Acessar Log
                            </button>
                          ) : (
                            <span className="text-[9px] font-bold text-slate-300">Sistema Estável</span>
