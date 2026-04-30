@@ -1263,7 +1263,7 @@ export default function Dashboard() {
             {/* Health & Efficiency Header */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {/* Executive Performance Hub - Pagamentos (Premium UI/UX) */}
-              <div className="lg:col-span-2 bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 p-6 rounded-2xl border border-emerald-800/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group flex flex-col justify-between min-h-[160px] transition-all duration-500 hover:shadow-emerald-500/10 hover:border-emerald-500/30 hover:-translate-y-1">
+              <div className="lg:col-span-2 bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 p-5 rounded-2xl border border-emerald-800/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group flex flex-col justify-between min-h-[135px] transition-all duration-500 hover:shadow-emerald-500/10 hover:border-emerald-500/30 hover:-translate-y-1">
                 {/* Background Decorations */}
                 <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] -mr-24 -mt-24 group-hover:bg-emerald-500/20 transition-colors duration-700"></div>
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-teal-500/10 rounded-full blur-[60px] -ml-16 -mb-16 group-hover:bg-teal-500/20 transition-colors duration-700"></div>
@@ -1271,8 +1271,8 @@ export default function Dashboard() {
                 
                 <div className="relative z-10 flex flex-col h-full justify-between">
                   <div className="flex justify-between items-start">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-3 mb-1">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-3 mb-0.5">
                         <div className="flex gap-1">
                            <span className="w-1 h-3 bg-emerald-500 rounded-full"></span>
                            <span className="w-1 h-3 bg-emerald-500/40 rounded-full"></span>
@@ -1280,12 +1280,12 @@ export default function Dashboard() {
                         <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] drop-shadow-sm">Eficiência Financeira</p>
                       </div>
                     </div>
-                    <div className="p-3 bg-white/5 backdrop-blur-xl text-emerald-400 rounded-xl border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
-                      <Activity size={22} className="drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+                    <div className="p-2 bg-white/5 backdrop-blur-xl text-emerald-400 rounded-xl border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                      <Activity size={18} className="drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                     </div>
                   </div>
 
-                    <div className="flex items-end justify-start mt-4">
+                    <div className="flex items-end justify-start mt-2">
                       {(() => {
                         const efficiencyPct = ((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100;
                         const efficiencyColor = getEfficiencyColor(efficiencyPct);
@@ -1293,14 +1293,14 @@ export default function Dashboard() {
                         return (
                           <div className="flex items-baseline gap-8">
                             <div className="relative">
-                               <span className={`text-7xl font-black tracking-tighter ${efficiencyColor} drop-shadow-2xl flex items-baseline`}>
+                               <span className={`text-6xl font-black tracking-tighter ${efficiencyColor} drop-shadow-2xl flex items-baseline`}>
                                  {efficiencyPct.toFixed(1)}
-                                 <span className="text-2xl font-bold opacity-30 ml-1.5">%</span>
+                                 <span className="text-xl font-bold opacity-30 ml-1.5">%</span>
                                </span>
                             </div>
-                            <div className="flex flex-col mb-2">
-                              <span className="text-emerald-500/60 font-black text-[10px] uppercase tracking-[0.25em] leading-none mb-3">Meta 100%</span>
-                              <div className="w-36 h-2 bg-black/40 rounded-full overflow-hidden border border-white/5 relative">
+                            <div className="flex flex-col mb-1.5">
+                              <span className="text-emerald-500/60 font-black text-[10px] uppercase tracking-[0.25em] leading-none mb-2">Meta 100%</span>
+                              <div className="w-32 h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5 relative">
                                 <div 
                                   className={`h-full transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(16,185,129,0.3)] ${efficiencyPct >= 99.5 ? 'bg-emerald-400' : efficiencyPct >= 95 ? 'bg-amber-400' : 'bg-rose-500'}`} 
                                   style={{ width: `${efficiencyPct}%` }}
@@ -1312,85 +1312,85 @@ export default function Dashboard() {
                       })()}
                     </div>
 
-                  <div className="mt-6 flex items-center justify-between pt-4 border-t border-white/5">
-                     <div className="flex items-center gap-2.5 bg-emerald-500/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-emerald-500/20 shadow-inner group-hover:bg-emerald-500/20 transition-all duration-500">
-                        <ShieldCheck size={14} className="text-emerald-400" />
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Excelência</span>
+                  <div className="mt-3 flex items-center justify-between pt-3 border-t border-white/5">
+                     <div className="flex items-center gap-2.5 bg-emerald-500/10 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-500/20 shadow-inner group-hover:bg-emerald-500/20 transition-all duration-500">
+                        <ShieldCheck size={12} className="text-emerald-400" />
+                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em]">Excelência</span>
                      </div>
-                     <div className="flex items-center gap-2 text-emerald-500/80 font-black text-[10px] uppercase tracking-widest group-hover:text-emerald-400 transition-colors">
-                        <TrendingUp size={14} />
+                     <div className="flex items-center gap-2 text-emerald-500/80 font-black text-[9px] uppercase tracking-widest group-hover:text-emerald-400 transition-colors">
+                        <TrendingUp size={12} />
                         <span>Desempenho</span>
-                        <ChevronRight size={12} className="opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-0 transition-all duration-500" />
+                        <ChevronRight size={10} className="opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-0 transition-all duration-500" />
                      </div>
                   </div>
                 </div>
               </div>
 
               {/* Secondary Metrics Shelf - Pagamentos */}
-              <div className="bg-white pl-4 pt-4 pb-4 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
-                   <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all"><CheckCircle2 size={18} /></div>
+                   <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all"><CheckCircle2 size={16} /></div>
                    <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Integrados</p>
-                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_success)}</p>
+                      <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_success)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center border-l-2 border-emerald-500/20 pl-4 py-1">
-                   <h4 className="text-4xl font-black text-emerald-600 tracking-tighter leading-none">{data.zver.success}</h4>
-                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Concluídos</p>
+                <div className="flex flex-col justify-center border-l-2 border-emerald-500/20 pl-4 py-0.5">
+                   <h4 className="text-3xl font-black text-emerald-600 tracking-tighter leading-none">{data.zver.success}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1.5 leading-none">Concluídos</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex items-center">
+                <div className="pt-1.5 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Monitoramento Ativo</span>
                 </div>
               </div>
 
-              <div className="bg-white pl-4 pt-4 pb-4 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
-                   <div className="p-2 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-all"><Clock size={18} /></div>
+                   <div className="p-1.5 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-all"><Clock size={16} /></div>
                    <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Processando</p>
-                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_pending)}</p>
+                      <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_pending)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center border-l-2 border-amber-500/20 pl-4 py-1">
-                   <h4 className="text-4xl font-black text-amber-600 tracking-tighter leading-none">{data.zver.pending}</h4>
-                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Aguardando Integração</p>
+                <div className="flex flex-col justify-center border-l-2 border-amber-500/20 pl-4 py-0.5">
+                   <h4 className="text-3xl font-black text-amber-600 tracking-tighter leading-none">{data.zver.pending}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1.5 leading-none">Aguardando Integração</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex items-center">
+                <div className="pt-1.5 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Sincronização SAP</span>
                 </div>
               </div>
 
-              <div className="bg-white pl-4 pt-4 pb-4 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
-                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={18} /></div>
+                   <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={16} /></div>
                    <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Aguardando Retorno</p>
-                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
+                      <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center border-l-2 border-indigo-500/20 pl-4 py-1">
-                   <h4 className="text-4xl font-black text-indigo-600 tracking-tighter leading-none">{data?.zver?.pending_return || 0}</h4>
-                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Pendente no SAP</p>
+                <div className="flex flex-col justify-center border-l-2 border-indigo-500/20 pl-4 py-0.5">
+                   <h4 className="text-3xl font-black text-indigo-600 tracking-tighter leading-none">{data?.zver?.pending_return || 0}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1.5 leading-none">Pendente no SAP</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex items-center">
+                <div className="pt-1.5 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Retorno SAP</span>
                 </div>
               </div>
 
-              <div className="bg-white pl-4 pt-4 pb-4 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-2 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
-                   <div className="p-2 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={18} /></div>
+                   <div className="p-1.5 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={16} /></div>
                    <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Bloqueados</p>
-                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_error || 0)}</p>
+                      <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_error || 0)}</p>
                    </div>
                 </div>
-                <div className="flex flex-col justify-center border-l-2 border-rose-500/20 pl-4 py-1">
-                   <h4 className="text-4xl font-black text-rose-600 tracking-tighter leading-none">{data?.zver?.error || 0}</h4>
-                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Falhas de Integração</p>
+                <div className="flex flex-col justify-center border-l-2 border-rose-500/20 pl-4 py-0.5">
+                   <h4 className="text-3xl font-black text-rose-600 tracking-tighter leading-none">{data?.zver?.error || 0}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1.5 leading-none">Falhas de Integração</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex items-center">
+                <div className="pt-1.5 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Erros Detectados</span>
                 </div>
               </div>
