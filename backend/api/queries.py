@@ -40,6 +40,7 @@ QUERY_ZAJU_TOTAL = text("""
         WHERE cond_value != 0
           AND dta_alteracao >= :start_date AND dta_alteracao < :end_date
           AND status NOT IN ('PENDENTE_INTEGRACAO1', 'STATUS_INVALIDO', 'INVALIDO')
+          AND purch_no_c NOT IN ('ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO')
           AND purch_no_c IS NOT NULL
         GROUP BY purch_no_c
     ) as sub;

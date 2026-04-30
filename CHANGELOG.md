@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.20] - 2026-04-30
+### Alterado
+- **KPI de Eficiência ZAJU (Ajuste de Negócio)**: Refatorada a query de resumo (`QUERY_ZAJU_TOTAL`) para excluir tipos de **"Fluxo Bloqueado"** (`ZAJU_AJUSTE_PGTO`, `ZAJU_APUR_REPROVADA`, `ZAJU_PGTO_REPROVADO`) dos KPIs de performance. Esta alteração garante que a Taxa de Eficiência e os contadores de pendências reflitam apenas o volume operacional acionável, eliminando penalidades indevidas por bloqueios solicitados pelo cliente.
+- **UX (Dashboard)**: Adicionado tooltip informativo no card de Taxa de Eficiência do ZAJU, esclarecendo que o cálculo desconsidera fluxos suspensos para uma medição mais precisa da saúde do sistema.
+- **Transparência Operacional**: Itens bloqueados permanecem visíveis com o status "INTEGRAÇÃO SUSPENSA" nas tabelas de detalhamento (sub-aba Acordos), garantindo rastreabilidade total sem comprometer os indicadores executivos.
+
 ## [2.4.19] - 2026-04-29
 ### Adicionado
 - **ZAJU (Visibilidade Operacional)**: Implementada nova sub-aba **"Rateio Pendente (Faturamento)"** no dashboard de ZAJU. Esta funcionalidade identifica automaticamente linhas de investimento com integração pendente devido à ausência de faturamento histórico (janela retroativa de 3 meses), permitindo uma triagem proativa de itens que impedem o rateio automático.

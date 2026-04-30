@@ -1800,7 +1800,15 @@ export default function Dashboard() {
                       <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
                       <div className="relative z-10 flex items-start justify-between mb-4">
                         <div>
-                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Taxa de Eficiência</p>
+                            <div className="group/info relative">
+                              <Info size={12} className="text-slate-300 cursor-help hover:text-emerald-500 transition-colors" />
+                              <div className="absolute bottom-full left-0 mb-2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded-lg opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 font-medium leading-tight shadow-xl border border-slate-700">
+                                <p>Calculado sobre o volume acionável. <span className="text-emerald-400 font-bold">Exclui</span> fluxos suspensos a pedido do cliente (Acordos).</p>
+                              </div>
+                            </div>
+                          </div>
                           <h3 className={`text-4xl font-black tracking-tighter ${getEfficiencyColor(efficiency)}`}>
                             {efficiency.toFixed(1)}%
                           </h3>
