@@ -56,7 +56,7 @@ import PaginatedTable from '../components/PaginatedTable';
 import DashboardSkeleton from '../components/DashboardSkeleton';
 
 
-const IntegrationHealthCard = React.memo(({ title, success, pending, error, pendingReturn = null }) => {
+const IntegrationHealthCard = React.memo(({ title, success, pending, error, pendingReturn = null, efficiency = null }) => {
   const total = success + pending + error + (pendingReturn || 0);
   
   const data = useMemo(() => [
@@ -68,7 +68,7 @@ const IntegrationHealthCard = React.memo(({ title, success, pending, error, pend
 
   const displayData = data.length > 0 ? data : [{ name: 'Vazio', value: 1, color: '#f1f5f9' }];
   
-  const rate = total > 0 ? (success / total) * 100 : 0;
+  const rate = efficiency !== null ? efficiency : (total > 0 ? (success / total) * 100 : 0);
   
   const getStatusColor = (val) => {
     if (val >= 99.5) return 'text-emerald-600';
@@ -1152,7 +1152,19 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  <IntegrationHealthCard title="ZAJU" success={data?.zaju?.success || 0} pending={data?.zaju?.pending || 0} error={data?.zaju?.error || 0} pendingReturn={data?.zaju?.pending_return || 0} />
+                  {(() => {
+                    const zajuEfficiency = data?.zaju?.total > 0 ? (data.zaju.success / data.zaju.total) * 100 : null;
+                    return (
+                      <IntegrationHealthCard 
+                        title="ZAJU" 
+                        success={data?.zaju?.success || 0} 
+                        pending={data?.zaju?.pending || 0} 
+                        error={data?.zaju?.error || 0} 
+                        pendingReturn={data?.zaju?.pending_return || 0} 
+                        efficiency={zajuEfficiency}
+                      />
+                    );
+                  })()}
                   <IntegrationHealthCard title="VK11" success={data?.vk11?.success || 0} pending={data?.vk11?.pending || 0} error={data?.vk11?.error || 0} />
                   <IntegrationHealthCard title="ZVER" success={data?.zver?.success || 0} pending={data?.zver?.pending || 0} error={data?.zver?.error || 0} pendingReturn={data?.zver?.pending_return || 0} />
                 </div>
