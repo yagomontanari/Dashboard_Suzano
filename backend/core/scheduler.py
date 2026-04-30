@@ -115,28 +115,59 @@ async def process_notification_job(schedule_id: int = None):
             zaju_erros_det = await fetch_data(db_metrics, QUERY_ERRO_ZAJU_LIST, params)
             vk11_erros_det = await fetch_data(db_metrics, QUERY_ERRO_VK11_LIST, params)
 
-            # Processamento de DataFrames
+            # Processamento de DataFrames para o Excel (ZAJU)
+            zaju_df = pd.DataFrame(zaju_erros_det) if zaju_erros_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Ajustes (ZAJU) no período."}])
+            if not zaju_df.empty and "Aviso" not in zaju_df.columns:
+                zaju_df = zaju_df.rename(columns={
+                    "mensagem_retorno_integracao": "Erro / Mensagem SAP",
+                    "purch_no_c": "Tipo Integração",
+                    "orcamento": "Orçamento",
+                    "linha_investimento": "Linha de Investimento",
+                    "tipo_linha_investimento": "Tipo de Linha",
+                    "cod_cliente": "Cód. Cliente",
+                    "nome_cliente": "Cliente",
+                    "nro_nota_fiscal": "Nota Fiscal",
+                    "nro_documento": "Doc. Faturamento",
+                    "valor_bruto": "Valor Bruto",
+                    "valor_liquido": "Valor Líquido",
+                    "valor_provisao": "Valor Provisão",
+                    "dta_criacao": "Data de Criação",
+                    "status": "Status",
+                    "data_integracao": "Data de Integração"
+                })
+                # Reorganizar colunas principais para o início
+                cols_ord = ["Erro / Mensagem SAP", "Tipo Integração", "Orçamento", "Cliente", "Nota Fiscal", "Valor Provisão", "Status"]
+                existing_cols = [c for c in cols_ord if c in zaju_df.columns]
+                other_cols = [c for c in zaju_df.columns if c not in existing_cols]
+                zaju_df = zaju_df[existing_cols + other_cols]
+
+            # Processamento de DataFrames para o Excel (VK11)
+            vk11_df = pd.DataFrame(vk11_erros_det) if vk11_erros_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Orçamentos (VK11) no período."}])
+            if not vk11_df.empty and "Aviso" not in vk11_df.columns:
+                vk11_df = vk11_df.rename(columns={
+                    "id_orcamento": "ID Orçamento",
+                    "descricao": "Descrição",
+                    "tipo_integracao": "Tipo de Integração",
+                    "status": "Status",
+                    "msg": "Erro / Mensagem SAP",
+                    "valid_from": "Válido De"
+                })
+                # Reorganizar colunas principais para o início
+                cols_ord_vk = ["Erro / Mensagem SAP", "ID Orçamento", "Descrição", "Tipo de Integração", "Status"]
+                existing_cols_vk = [c for c in cols_ord_vk if c in vk11_df.columns]
+                other_cols_vk = [c for c in vk11_df.columns if c not in existing_cols_vk]
+                vk11_df = vk11_df[existing_cols_vk + other_cols_vk]
+
+            # Criar os DataFrames com nomes originais
             dfs = {
-                "Resumo Geral": pd.DataFrame([{
-                    "Mês Ref": f"{now.month}/{now.year}",
-                    "VK11 Sucesso": vk11["success"],
-                    "VK11 Pendente": vk11["pending"],
-                    "VK11 Erro": vk11["error"],
-                    "ZAJU Sucesso": zaju["success"],
-                    "ZAJU Pendente": zaju["pending"],
-                    "ZAJU Erro": zaju["error"],
-                    "ZVER Sucesso": zver["success"],
-                    "ZVER Pendente": zver["pending"],
-                    "ZVER Erro": zver["error"]
-                }]),
-                "Inconst_SellIn": pd.DataFrame(sellin_det) if sellin_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
-                "Inconst_Clientes": pd.DataFrame(clientes_det) if clientes_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
-                "Inconst_Produtos": pd.DataFrame(produtos_det) if produtos_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
-                "Inconst_Cutoff": pd.DataFrame(cutoff_det) if cutoff_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
-                "Inconst_Usuarios": pd.DataFrame(usuarios_det) if usuarios_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
-                "Inconst_Pagamentos": pd.DataFrame(pagamentos_det) if pagamentos_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
-                "Inconst_ZAJU": pd.DataFrame(zaju_erros_det) if zaju_erros_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
-                "Inconst_VK11": pd.DataFrame(vk11_erros_det) if vk11_erros_det else pd.DataFrame([{"Aviso": "Sem dados"}])
+                "Sell-In": pd.DataFrame(sellin_det) if sellin_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Sell-In no período."}]),
+                "Clientes": pd.DataFrame(clientes_det) if clientes_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Clientes no período."}]),
+                "Produtos": pd.DataFrame(produtos_det) if produtos_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Produtos no período."}]),
+                "Cutoff": pd.DataFrame(cutoff_det) if cutoff_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Cutoff no período."}]),
+                "Usuarios": pd.DataFrame(usuarios_det) if usuarios_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Usuários no período."}]),
+                "Pagamentos": pd.DataFrame(pagamentos_det) if pagamentos_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Pagamentos no período."}]),
+                "ZAJU": zaju_df,
+                "VK11": vk11_df
             }
 
             excel_buffer = io.BytesIO()
