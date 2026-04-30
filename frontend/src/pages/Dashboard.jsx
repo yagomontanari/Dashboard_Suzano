@@ -1825,75 +1825,73 @@ export default function Dashboard() {
                     </div>
 
 
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px]">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={18} /></div>
                         <div className="text-right flex-grow pl-3">
-                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Integrados</p>
-                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{successPct}% vol.</p>
+                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end">Integrados</p>
+                          <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{successPct}% vol.</p>
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-3xl font-black text-emerald-600 tracking-tighter">{data?.zaju?.success || 0}</h4>
-                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">ZAJUS</p>
+                        <h4 className="text-2xl font-black text-emerald-600 tracking-tighter">{data?.zaju?.success || 0}</h4>
+                        <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">ZAJUS</p>
                       </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={20} /></div>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px]">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={18} /></div>
                         <div className="text-right flex-grow pl-3">
-                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Processando</p>
-                          <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{pendingPct}% vol.</p>
+                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end">Processando</p>
+                          <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{pendingPct}% vol.</p>
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data?.zaju?.pending || 0}</h4>
-                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Aguardando Integração</p>
+                        <h4 className="text-2xl font-black text-amber-600 tracking-tighter">{data?.zaju?.pending || 0}</h4>
+                        <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Aguardando Integração</p>
                         {isOnlyCutoffPending && (
-                          <div className="mt-3 p-2.5 bg-amber-50/80 rounded-xl border border-amber-100 flex items-start gap-2.5 animate-in fade-in zoom-in duration-500 shadow-sm shadow-amber-100/50">
-                             <Info size={14} className="text-amber-600 mt-0.5 shrink-0" />
-                             <p className="text-[9px] font-black text-amber-700 uppercase leading-tight tracking-wider">
-                                Pendências restritas ao ciclo de Cutoff Anterior (Dia 01)
-                             </p>
+                          <div className="flex items-center gap-2 px-2.5 py-1.5 bg-amber-500/10 text-amber-600 rounded-xl border border-amber-500/20 mt-3 animate-in fade-in zoom-in duration-500 shadow-sm shadow-amber-100/30 w-fit">
+                             <Clock size={12} className="shrink-0" />
+                             <span className="text-[9px] font-black uppercase tracking-wider">Ciclo de Cutoff Anterior (Dia 01)</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px]">
-                       <div className="flex justify-between items-start mb-4">
-                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px]">
+                       <div className="flex justify-between items-start mb-3">
+                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={18} /></div>
                          <div className="text-right flex-grow pl-3">
-                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
-                           <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{returnPct}% vol.</p>
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
+                           <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{returnPct}% vol.</p>
                          </div>
                        </div>
                        <div>
-                         <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h4>
-                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Retorno Pendente SAP</p>
+                         <h4 className="text-2xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h4>
+                         <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Retorno Pendente SAP</p>
                        </div>
                     </div>
 
-                    <div className={`p-6 rounded-2xl border transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[160px] ${
+                    <div className={`p-5 rounded-2xl border transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px] ${
                       (data?.zaju?.error || 0) > 0 
                       ? 'bg-rose-50/30 border-rose-200 shadow-rose-100 shadow-sm' 
                       : 'bg-white border-slate-200 shadow-sm hover:shadow-md'
                     }`}>
-                       <div className="flex justify-between items-start mb-4">
+                       <div className="flex justify-between items-start mb-3">
                          <div className={`p-2 rounded-lg ${ (data?.zaju?.error || 0) > 0 ? 'bg-rose-100 text-rose-600' : 'bg-rose-50 text-rose-400' }`}>
-                           <AlertCircle size={20} />
+                           <AlertCircle size={18} />
                          </div>
                          <div className="text-right flex-grow pl-3">
-                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Bloqueados</p>
-                           <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{errorPct}% vol.</p>
+                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end">Bloqueados</p>
+                           <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{errorPct}% vol.</p>
                          </div>
                        </div>
                        <div>
-                         <h4 className={`text-3xl font-black tracking-tighter ${ (data?.zaju?.error || 0) > 0 ? 'text-rose-600' : 'text-slate-600' }`}>
+                         <h4 className={`text-2xl font-black tracking-tighter ${ (data?.zaju?.error || 0) > 0 ? 'text-rose-600' : 'text-slate-600' }`}>
                            {data?.zaju?.error || 0}
                          </h4>
-                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Falhas Detectadas</p>
+                         <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Falhas Detectadas</p>
                          
                          {(data?.zaju?.error || 0) > 0 && (
                            <button 
