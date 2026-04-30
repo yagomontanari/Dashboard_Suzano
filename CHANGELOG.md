@@ -4,6 +4,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.27] - 2026-04-30
+- **ZAJU (Rateio Pendente)**: Atualizada a lógica da aba e exportação de "Rateio Pendente (Faturamento)" para considerar exclusivamente as verbas de tipo **VERBAS FIXAS PROMO & AÇÕES** (ID 6) e **VERBAS FIXAS DE CONTRATO** (ID 9). Esta alteração garante que itens de verbas percentuais sejam corretamente filtrados, alinhando o painel às regras de negócio de rateio fixo.
+
 ### [2.4.26] - 2026-04-30
 - **ZAJU (Exportação)**: Implementada funcionalidade de exportação para Excel do relatório de "Rateio Pendente (Faturamento)". O relatório utiliza o padrão visual premium da Suzano e permite a extração detalhada das linhas de investimento sem histórico de faturamento diretamente da sub-aba correspondente.
 

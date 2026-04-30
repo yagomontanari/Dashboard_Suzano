@@ -648,6 +648,7 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         INNER JOIN orcamento_linha_investimento oli ON oli.id = sapmc.id_linha_investimento
         WHERE sapmc.status = 'PENDENTE_INTEGRACAO'
           AND sapmc.purch_no_c IS NOT NULL
+          AND o.id_tipo_verba IN (6, 9)
           AND sapmc.dta_alteracao >= CAST(:start_date AS TIMESTAMP) AND sapmc.dta_alteracao <= CAST(:end_date AS TIMESTAMP)
     ),
     zaju_products AS (
