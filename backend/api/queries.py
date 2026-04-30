@@ -704,13 +704,13 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
           AND s.valor_total > 0
     )
     SELECT 
-        zd.orc_desc as "Orcamento",
-        zd.linha_desc as "Linha de Investimento",
-        zd."Customer Group",
-        zd."Marca",
-        zd.cond_value as "Valor Provisão",
-        TO_CHAR(zd.dta_criacao, 'DD/MM/YYYY') as "Data Criação",
-        'Sem faturamento histórico no período (D-3)' as "Mensagem"
+        zd.orc_desc as orcamento,
+        zd.linha_desc as linha_investimento,
+        zd."Customer Group" as customer_group,
+        zd."Marca" as marca,
+        zd.cond_value as valor_provisao,
+        TO_CHAR(zd.dta_criacao, 'DD/MM/YYYY') as data_criacao,
+        'Sem faturamento histórico no período (D-3)' as mensagem
     FROM zaju_details zd
     LEFT JOIN history_faturamento h ON h.id_cg = zd.id_cg AND h.id_marca = zd.id_marca
     WHERE h.id_cg IS NULL

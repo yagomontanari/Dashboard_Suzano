@@ -681,13 +681,13 @@ export default function Dashboard() {
         {key: 'data_integracao', label: 'Data Integração', align: 'center'}
       ];
       case 'zaju_pending_rateio': return [
-        {key: 'Orcamento', label: 'Orçamento', align: 'center'},
-        {key: 'Linha de Investimento', label: 'Linha Invest.', align: 'center'},
-        {key: 'Customer Group', label: 'Customer Group', align: 'center'},
-        {key: 'Marca', label: 'Marca', align: 'center'},
-        {key: 'Valor Provisão', label: 'Valor', align: 'center', format: (val) => formatCurrency(val)},
-        {key: 'Data Criação', label: 'Criação', align: 'center'},
-        {key: 'Mensagem', label: 'Status', align: 'center'}
+        {key: 'orcamento', label: 'Orçamento', align: 'center'},
+        {key: 'linha_investimento', label: 'Linha Invest.', align: 'center'},
+        {key: 'customer_group', label: 'Customer Group', align: 'center'},
+        {key: 'marca', label: 'Marca', align: 'center'},
+        {key: 'valor_provisao', label: 'Valor', align: 'center', format: (val) => formatCurrency(val)},
+        {key: 'data_criacao', label: 'Criação', align: 'center'},
+        {key: 'mensagem', label: 'Status', align: 'center'}
       ];
       default: return [{key: 'id', label: 'ID'}];
     }
