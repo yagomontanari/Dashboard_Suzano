@@ -8,6 +8,7 @@ import {
   exportRelatorioCgElegiveis,
   exportRelatorioSellinDetalhado,
   exportRelatorioClientesDetalhado,
+  exportRelatorioRateioPendente,
   exportStyledData
 } from '../services/api';
 
@@ -1003,6 +1004,19 @@ export default function Dashboard() {
       return;
     }
     return exportCategory(selectedInconsistency, totalCount);
+  };
+
+  const handleExportRateioPendente = async () => {
+    try {
+      setInconsistencyLoading(true);
+      const blob = await exportRelatorioRateioPendente(dateRange.startDate, dateRange.endDate);
+      handleDownload(blob, `Rateio_Pendente_Faturamento_${new Date().toISOString().split('T')[0]}.xlsx`);
+    } catch (err) {
+      console.error("Erro ao exportar rateio pendente", err);
+      alert("Não foi possível gerar a exportação.");
+    } finally {
+      setInconsistencyLoading(false);
+    }
   };
 
   const totalErrors = useMemo(() => {
@@ -2020,6 +2034,21 @@ export default function Dashboard() {
               {/* Sections Switch Logic */}
               {zajuSubTab === 'pending_rateio' ? (
                 <div className="bg-white p-6 min-h-[500px] flex flex-col">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-50">
+                    <div>
+                      <h3 className="font-black text-slate-800 uppercase tracking-tight text-lg">Detalhamento de Rateios Pendentes</h3>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Itens sem histórico de faturamento para Customer Group / Marca</p>
+                    </div>
+                    <button 
+                      onClick={handleExportRateioPendente}
+                      disabled={inconsistencyLoading}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl shadow-slate-200 transition-all hover:-translate-y-1 active:translate-y-0 disabled:opacity-50"
+                    >
+                      <Download size={16} /> 
+                      {inconsistencyLoading ? 'Gerando...' : 'Exportar Excel'}
+                    </button>
+                  </div>
+
                   <div className="mb-6 p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-4">
                     <div className="p-2 bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-200">
                       <AlertTriangle size={20} />

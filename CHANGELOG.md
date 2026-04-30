@@ -4,6 +4,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.26] - 2026-04-30
+- **ZAJU (Exportação)**: Implementada funcionalidade de exportação para Excel do relatório de "Rateio Pendente (Faturamento)". O relatório utiliza o padrão visual premium da Suzano e permite a extração detalhada das linhas de investimento sem histórico de faturamento diretamente da sub-aba correspondente.
+
 ### [2.4.25] - 2026-04-30
 - **Monitoria (Excel)**: Retorno ao modelo original de layout da planilha de monitoria. Nomes das abas e colunas restaurados para o padrão profissional anterior (Sell-In, Clientes, Produtos, etc.) e remoção da aba de resumo consolidado no arquivo.
 

@@ -967,6 +967,72 @@ async def export_clientes_detailed(
         )
 
 
+@router.get("/export/rateio-pendente")
+@limiter.limit("10/minute")
+async def export_rateio_pendente(
+    request: Request,
+    start_date: str = None,
+    end_date: str = None,
+    user: dict = Depends(get_current_user),
+):
+    try:
+        start_dt, end_dt = parse_date_range(start_date, end_date)
+
+        async with AsyncSessionLocal() as db:
+            params = {"start_date": start_dt, "end_date": end_dt}
+
+            result = await db.execute(QUERY_ZAJU_PENDENTE_SEM_RATEIO, params)
+            rows = [dict(row) for row in result.mappings().all()]
+
+            if not rows:
+                df = pd.DataFrame(
+                    [{"Aviso": "Nenhum dado encontrado para o período selecionado"}]
+                )
+            else:
+                df = pd.DataFrame(rows)
+                # Rename for display
+                df = df.rename(
+                    columns={
+                        "orcamento": "Orçamento",
+                        "linha_investimento": "Linha de Investimento",
+                        "customer_group": "Customer Group",
+                        "marca": "Marca",
+                        "valor_provisao": "Valor Provisão",
+                        "data_criacao": "Data Criação",
+                        "mensagem": "Motivo / Bloqueio",
+                    }
+                )
+                # Drop dta_alteracao if exists (internal)
+                if "dta_alteracao" in df.columns:
+                    df = df.drop(columns=["dta_alteracao"])
+
+            output = io.BytesIO()
+            with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                sheet_name = "Rateio Pendente"
+                df.to_excel(writer, index=False, sheet_name=sheet_name)
+                apply_excel_premium_style(writer, sheet_name)
+
+            output.seek(0)
+            filename = f"Rateio_Pendente_Faturamento_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+
+            return StreamingResponse(
+                output,
+                media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                headers={"Content-Disposition": f"attachment; filename={filename}"},
+            )
+    except Exception as e:
+        logger.error(f"Erro ao exportar Rateio Pendente: {e}")
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": "Erro tecnico ao processar exportacao de rateio pendente",
+            },
+        )
+
+
 @router.post("/export/styled")
 @limiter.limit("20/minute")
 async def export_styled_json(

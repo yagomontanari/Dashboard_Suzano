@@ -154,6 +154,14 @@ export const exportRelatorioSaldos = async (startDate, endDate) => {
     return response.data;
 }
 
+export const exportRelatorioRateioPendente = async (startDate, endDate) => {
+    const response = await api.get('/data/export/rateio-pendente', {
+        params: { start_date: startDate, end_date: endDate },
+        responseType: 'blob'
+    });
+    return response.data;
+}
+
 export const exportStyledData = async (data, title) => {
     // Se data já for o objeto completo com sheets, espalha ele. 
     // Caso contrário, trata como dados de aba única via fallback 'data'.
