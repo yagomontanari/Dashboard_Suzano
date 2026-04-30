@@ -1262,96 +1262,135 @@ export default function Dashboard() {
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Health & Efficiency Header */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              <div className="bg-emerald-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-sm hover:shadow-md transition-all group">
-                 <div className="absolute top-0 right-0 p-4 opacity-20 transition-transform group-hover:scale-110 group-hover:rotate-12">
-                    <Target size={60} />
-                 </div>
-                 <div className="relative z-10 flex flex-col justify-between h-full">
-                   <div>
-                     <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Meta do Período</h5>
-                     <p className="text-4xl font-black tracking-tighter text-white">100%</p>
-                     <p className="text-emerald-300 text-[10px] mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
-                        <Target size={12} /> Objetivo de Excelência
-                     </p>
-                   </div>
-                   <div className="mt-4 p-2 bg-emerald-800/50 rounded-lg">
-                      <p className="text-emerald-100 text-[9px] uppercase font-bold text-center tracking-wider">Objetivo Corporativo</p>
-                   </div>
-                 </div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group overflow-hidden relative flex flex-col justify-between h-full">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                <div className="relative z-10 flex items-start justify-between mb-4">
-                  <div>
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Taxa de Eficiência</p>
-                    <h3 className={`text-4xl font-black tracking-tighter ${getEfficiencyColor(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100)}`}>
-                      {(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100).toFixed(1)}%
-                    </h3>
+              {/* Executive Performance Hub - Pagamentos (Emerald Theme) */}
+              <div className="lg:col-span-2 bg-emerald-900 p-8 rounded-xl border border-emerald-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[180px]">
+                {/* Background Elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
+                
+                <div className="relative z-10 flex flex-col h-full justify-between">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h5 className="font-bold text-emerald-400 text-[10px] uppercase tracking-[0.2em] mb-1">Status de Integração</h5>
+                      <h2 className="text-3xl font-black text-white tracking-tighter">Eficiência Financeira</h2>
+                    </div>
+                    <div className="p-3 bg-emerald-800/50 text-emerald-400 rounded-xl border border-emerald-700/50">
+                      <Activity size={24} />
+                    </div>
                   </div>
-                  <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner flex-shrink-0">
-                    <Activity size={24} />
-                  </div>
-                </div>
-                <div className="mt-auto">
-                   <div className="flex items-center gap-1 text-emerald-500 font-bold text-[10px] uppercase">
-                     <TrendingUp size={12} /> Desempenho Operacional
-                   </div>
-                </div>
-              </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={20} /></div>
-                  <div className="text-right flex-grow pl-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest min-h-[24px] flex items-end justify-end">Integrados</p>
-                    <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data.zver.value_success)}</p>
+                  <div className="flex items-end justify-between mt-4">
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className={`text-6xl font-black tracking-tighter ${getEfficiencyColor(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100)}`}>
+                          {(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100).toFixed(1)}
+                        </span>
+                        <span className="text-2xl font-bold text-emerald-500/50">%</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest mt-1">
+                        <Target size={12} /> Meta 100%
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-emerald-500/50 uppercase tracking-widest mb-1">Volume Processado</p>
+                      <p className="text-xl font-black text-white">{(data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0)))} <span className="text-xs font-bold opacity-40">REG.</span></p>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <h4 className="text-3xl font-black text-emerald-600 tracking-tighter">{data.zver.success}</h4>
-                  <p className="text-xs font-bold text-slate-400 mt-1 uppercase">Pagamentos</p>
+
+                  <div className="mt-6 flex items-center justify-between pt-4 border-t border-emerald-800/50">
+                     <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                        <ShieldCheck size={14} className="text-emerald-400" />
+                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Objetivo de Excelência</span>
+                     </div>
+                     <div className="flex items-center gap-1.5 text-emerald-500 font-bold text-[10px] uppercase tracking-wider">
+                        <TrendingUp size={12} /> Desempenho Operacional
+                     </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={20} /></div>
-                  <div className="text-right flex-grow pl-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Processando</p>
-                    <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data.zver.value_pending)}</p>
-                  </div>
+              {/* Secondary Metrics Shelf - Pagamentos */}
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+                <div className="flex justify-between items-start">
+                   <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all"><CheckCircle2 size={18} /></div>
+                   <div className="text-right">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Integrados</p>
+                      <p className="text-[10px] font-bold text-slate-700 mt-1">{formatCurrency(data.zver.value_success)}</p>
+                   </div>
                 </div>
-                <div>
-                  <h4 className="text-3xl font-black text-amber-600 tracking-tighter">{data.zver.pending}</h4>
-                  <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Aguardando Integração</p>
+                <div className="flex flex-col justify-center">
+                   <h4 className="text-4xl font-black text-emerald-600 tracking-tighter">{data.zver.success}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Pagamentos Concluídos</p>
+                </div>
+                <div className="pt-3 border-t border-slate-50">
+                   <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1">
+                      <TrendingUp size={10} /> Fluxo Normal
+                   </span>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest">
-                 <div className="flex justify-between items-start mb-4">
-                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={20} /></div>
-                   <div className="text-right flex-grow pl-3">
-                     <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
-                     <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+                <div className="flex justify-between items-start">
+                   <div className="p-2 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-all"><Clock size={18} /></div>
+                   <div className="text-right">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Processando</p>
+                      <p className="text-[10px] font-bold text-slate-700 mt-1">{formatCurrency(data.zver.value_pending)}</p>
                    </div>
-                 </div>
-                 <div>
-                   <h4 className="text-3xl font-black text-indigo-600 tracking-tighter">{data?.zver?.pending_return || 0}</h4>
-                   <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Retorno Pendente SAP</p>
-                 </div>
-               </div>
-
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2 bg-rose-50 text-rose-600 rounded-lg"><AlertCircle size={20} /></div>
-                  <div className="text-right flex-grow pl-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase min-h-[24px] flex items-end justify-end">Bloqueados</p>
-                    <p className="text-lg font-black text-slate-800 tracking-tight mt-1">{formatCurrency(data?.zver?.value_error || 0)}</p>
-                  </div>
                 </div>
-                <div>
-                  <h4 className="text-3xl font-black text-rose-600 tracking-tighter">{data?.zver?.error || 0}</h4>
-                  <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest text-[10px]">Falhas Detectadas</p>
+                <div className="flex flex-col justify-center">
+                   <h4 className="text-4xl font-black text-amber-600 tracking-tighter">{data.zver.pending}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Aguardando Integração</p>
+                </div>
+                <div className="pt-3 border-t border-slate-50">
+                   <span className="text-[8px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1">
+                      <Clock size={10} /> Sincronização SAP
+                   </span>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+                <div className="flex justify-between items-start">
+                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={18} /></div>
+                   <div className="text-right">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Aguardando Retorno</p>
+                      <p className="text-[10px] font-bold text-slate-700 mt-1">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
+                   </div>
+                </div>
+                <div className="flex flex-col justify-center">
+                   <h4 className="text-4xl font-black text-indigo-600 tracking-tighter">{data?.zver?.pending_return || 0}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Retorno Pendente SAP</p>
+                </div>
+                <div className="pt-3 border-t border-slate-50">
+                   <span className="text-[8px] font-bold text-indigo-500 uppercase tracking-widest flex items-center gap-1">
+                      <RefreshCw size={10} /> Sincronização ERP
+                   </span>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-rose-100 shadow-sm flex flex-col justify-between group min-h-[180px] grid grid-rows-[auto_1fr_auto]">
+                <div className="flex justify-between items-start">
+                   <div className="p-2 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={18} /></div>
+                   <div className="text-right">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Bloqueados</p>
+                      <p className="text-[10px] font-bold text-slate-700 mt-1">{formatCurrency(data?.zver?.value_error || 0)}</p>
+                   </div>
+                </div>
+                <div className="flex flex-col justify-center">
+                   <h4 className="text-4xl font-black text-rose-600 tracking-tighter">{data?.zver?.error || 0}</h4>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Falhas de Integração</p>
+                </div>
+                <div className="pt-3 border-t border-slate-50 flex justify-between items-center">
+                   <span className="text-[8px] font-bold text-rose-500 uppercase tracking-widest flex items-center gap-1">
+                      <AlertCircle size={10} /> Erros Detectados
+                   </span>
+                   {data?.zver?.error > 0 && (
+                     <button 
+                       onClick={() => handleOpenModal('pagamentos')}
+                       className="px-2 py-1 bg-rose-600 text-white font-black text-[7px] uppercase tracking-wider rounded shadow-sm hover:bg-rose-700 transition-all"
+                     >
+                       Acessar Log
+                     </button>
+                   )}
                 </div>
               </div>
             </div>
