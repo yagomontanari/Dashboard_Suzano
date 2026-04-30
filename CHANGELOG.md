@@ -4,6 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.24] - 2026-04-30
+- **Monitoria (Controle)**: Implementada trava mestra (Master Toggle) para o envio automático de notificações. Agora é possível pausar e reativar globalmente os agendamentos através da tela de "Configurações de Notificação".
+- **Backend (Configurações)**: Criação da tabela `system_settings` para armazenamento de parâmetros globais do sistema.
+
 ### [2.4.23] - 2026-04-30
 - **Bug Fix (ZAJU)**: Resolvido erro de `UndefinedColumnError` na consulta de "Rateio Pendente (Faturamento)". A coluna `dta_alteracao` foi incluída nas projeções da CTE para permitir a ordenação correta na paginação.
 - **Bug Fix (Monitoria)**: Corrigido erro de `TypeError` ao disparar notificações manualmente ("Disparar Agora"). O job agora lida corretamente com a ausência de um `schedule_id` e ignora a trava de execução diária para disparos sob demanda.

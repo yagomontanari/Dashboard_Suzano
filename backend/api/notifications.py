@@ -24,6 +24,13 @@ class RecipientResponse(BaseModel):
 class ScheduleUpdate(BaseModel):
     times: List[str] # ["08:00", "16:00"]
 
+class SystemSettingResponse(BaseModel):
+    key: str
+    value: str
+
+class SystemSettingUpdate(BaseModel):
+    value: str
+
 # Endpoints
 @router.get("/recipients", response_model=List[RecipientResponse])
 async def get_recipients(
@@ -172,6 +179,18 @@ async def process_scheduled_notifications(
         print(f"ERRO: Tentativa de acesso não autorizado ao scheduler. Header: {auth_header}")
         raise HTTPException(status_code=403, detail="Acesso restrito")
     
+    # Verificação de trava global de notificações
+    from core.models_app import SystemSetting
+    res_setting = await db.execute(select(SystemSetting).where(SystemSetting.key == "notifications_enabled"))
+    setting_enabled = res_setting.scalar_one_or_none()
+    
+    if setting_enabled and setting_enabled.value.lower() != "true":
+        print("Envio automático de notificações desabilitado globalmente.")
+        return {
+            "status": "disabled",
+            "message": "Envio automático desabilitado globalmente nas configurações do sistema."
+        }
+    
     import pytz
     from datetime import datetime
     
@@ -234,5 +253,42 @@ async def trigger_manual_notification(
     await process_notification_job()
     
     return {"message": "Notificações processadas com sucesso!"}
+
+@router.get("/settings/{key}", response_model=SystemSettingResponse)
+async def get_system_setting(
+    key: str,
+    db: AsyncSession = Depends(get_app_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Acesso restrito")
+    
+    from core.models_app import SystemSetting
+    result = await db.execute(select(SystemSetting).where(SystemSetting.key == key))
+    setting = result.scalar_one_or_none()
+    if not setting:
+        raise HTTPException(status_code=404, detail="Configuração não encontrada")
+    return setting
+
+@router.patch("/settings/{key}", response_model=SystemSettingResponse)
+async def update_system_setting(
+    key: str,
+    data: SystemSettingUpdate,
+    db: AsyncSession = Depends(get_app_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Acesso restrito")
+    
+    from core.models_app import SystemSetting
+    result = await db.execute(select(SystemSetting).where(SystemSetting.key == key))
+    setting = result.scalar_one_or_none()
+    if not setting:
+        raise HTTPException(status_code=404, detail="Configuração não encontrada")
+    
+    setting.value = data.value
+    await db.commit()
+    await db.refresh(setting)
+    return setting
 
 from sqlalchemy import text

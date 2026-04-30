@@ -24,6 +24,8 @@ const NotificationSettings = () => {
   const [newTime, setNewTime] = useState('08:00');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [isAutoEnabled, setIsAutoEnabled] = useState(true);
+  const [isUpdatingToggle, setIsUpdatingToggle] = useState(false);
   
   // Custom Toast State
   const [toastMessage, setToastMessage] = useState(null);
@@ -35,12 +37,14 @@ const NotificationSettings = () => {
 
   const fetchData = async () => {
     try {
-      const [recRes, schRes] = await Promise.all([
+      const [recRes, schRes, setRes] = await Promise.all([
         api.get('/notifications/recipients'),
-        api.get('/notifications/schedules')
+        api.get('/notifications/schedules'),
+        api.get('/notifications/settings/notifications_enabled')
       ]);
       setRecipients(recRes.data);
       setSchedules(schRes.data);
+      setIsAutoEnabled(setRes.data.value === 'true');
     } catch (error) {
       console.error('Erro ao buscar configurações:', error);
       showToast('Erro ao carregar configurações', 'error');
@@ -136,6 +140,20 @@ const NotificationSettings = () => {
     }
   };
 
+  const handleToggleAuto = async () => {
+    setIsUpdatingToggle(true);
+    try {
+      const newValue = !isAutoEnabled;
+      await api.patch('/notifications/settings/notifications_enabled', { value: String(newValue) });
+      setIsAutoEnabled(newValue);
+      showToast(newValue ? 'Envio automático reativado' : 'Envio automático pausado');
+    } catch (error) {
+      showToast('Erro ao atualizar configuração', 'error');
+    } finally {
+      setIsUpdatingToggle(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
@@ -160,7 +178,7 @@ const NotificationSettings = () => {
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-start mb-8">
         <div>
           <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
             <Bell className="text-blue-600" size={32} />
@@ -169,18 +187,33 @@ const NotificationSettings = () => {
           <p className="text-slate-500 mt-1 font-medium">Gerencie destinatários e horários dos informativos automáticos.</p>
         </div>
         
-        <button
-          onClick={handleSendManual}
-          disabled={isSending || recipients.length === 0}
-          className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-400 text-white rounded-2xl font-black transition-all shadow-xl shadow-blue-200 active:scale-95 disabled:shadow-none"
-        >
-          {isSending ? (
-            <Loader2 size={20} className="animate-spin" />
-          ) : (
-            <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          )}
-          Disparar Agora
-        </button>
+        <div className="flex flex-col items-end gap-3">
+            <button
+            onClick={handleSendManual}
+            disabled={isSending || recipients.length === 0}
+            className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-400 text-white rounded-2xl font-black transition-all shadow-xl shadow-blue-200 active:scale-95 disabled:shadow-none"
+            >
+            {isSending ? (
+                <Loader2 size={20} className="animate-spin" />
+            ) : (
+                <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            )}
+            Disparar Agora
+            </button>
+
+            <div className="flex items-center gap-3 bg-white p-2 px-4 rounded-2xl border border-slate-100 shadow-sm">
+                <span className={`text-xs font-black uppercase tracking-widest ${isAutoEnabled ? 'text-green-600' : 'text-red-500'}`}>
+                    {isAutoEnabled ? 'Envio Automático: Ativo' : 'Envio Automático: Pausado'}
+                </span>
+                <button 
+                    onClick={handleToggleAuto}
+                    disabled={isUpdatingToggle}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isAutoEnabled ? 'bg-green-500' : 'bg-slate-300'}`}
+                >
+                    <span className={`${isAutoEnabled ? 'translate-x-6' : 'translate-x-1'} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`} />
+                </button>
+            </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -367,8 +400,12 @@ const NotificationSettings = () => {
             <CheckCircle2 size={24} />
           </div>
           <div>
-            <p className="font-bold text-lg">Layout Premium Ativo</p>
-            <p className="text-slate-400 text-sm">Os e-mails seguem o padrão visual executivo da Suzano.</p>
+            <p className="font-bold text-lg">{isAutoEnabled ? 'Envio Automático Habilitado' : 'Envio Automático Pausado'}</p>
+            <p className="text-slate-400 text-sm">
+                {isAutoEnabled 
+                    ? 'Os e-mails serão enviados nos horários programados seguindo o padrão Suzano.' 
+                    : 'Nenhum e-mail será enviado automaticamente até que o serviço seja reativado.'}
+            </p>
           </div>
         </div>
       </div>
