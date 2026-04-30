@@ -32,10 +32,10 @@ QUERY_ZAJU_TOTAL = text("""
     FROM (
         SELECT 
             COUNT(1) FILTER (WHERE status = 'INTEGRADO') AS integrado,
-            COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO') AS pendente_integracao,
+            COUNT(1) FILTER (WHERE status = 'PENDENTE_INTEGRACAO' AND purch_no_c != 'ZAJU_CUTOFF_MES_ANTERIOR') AS pendente_integracao,
             COUNT(1) FILTER (WHERE status = 'ERRO') AS erro,
             COUNT(1) FILTER (WHERE status = 'PENDENTE_RETORNO') AS pendente_retorno,
-            COUNT(1) AS total_zaju
+            COUNT(1) FILTER (WHERE NOT (status = 'PENDENTE_INTEGRACAO' AND purch_no_c = 'ZAJU_CUTOFF_MES_ANTERIOR')) AS total_zaju
         FROM suzano_ajuste_provisao_memoria_calculo
         WHERE cond_value != 0
           AND dta_alteracao >= :start_date AND dta_alteracao < :end_date
