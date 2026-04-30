@@ -1281,23 +1281,36 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="flex items-end justify-between mt-1">
-                    <div>
-                      <div className="flex items-baseline gap-2">
-                        <span className={`text-5xl font-black tracking-tighter ${getEfficiencyColor(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100)}`}>
-                          {(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100).toFixed(1)}
-                          <span className="text-2xl font-bold opacity-40 ml-1">%</span>
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest mt-0.5">
-                        <Target size={12} /> Meta 100%
+                    <div className="flex items-end justify-between mt-1">
+                      {(() => {
+                        const efficiencyPct = ((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100;
+                        const efficiencyColor = getEfficiencyColor(efficiencyPct);
+                        
+                        return (
+                          <div>
+                            <div className="flex items-baseline gap-3">
+                              <span className={`text-5xl font-black tracking-tighter ${efficiencyColor}`}>
+                                {efficiencyPct.toFixed(1)}
+                                <span className="text-2xl font-bold opacity-40 ml-1">%</span>
+                              </span>
+                              <div className="flex flex-col">
+                                <span className="text-emerald-500/50 font-bold text-[10px] uppercase tracking-widest leading-none">Meta 100%</span>
+                                <div className="w-20 h-1 bg-emerald-800/50 rounded-full mt-2 overflow-hidden border border-emerald-700/30">
+                                  <div 
+                                    className={`h-full transition-all duration-1000 ease-out ${efficiencyPct >= 99.5 ? 'bg-emerald-500' : efficiencyPct >= 95 ? 'bg-amber-500' : 'bg-rose-500'}`} 
+                                    style={{ width: `${efficiencyPct}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      <div className="text-right">
+                        <p className="text-[10px] font-bold text-emerald-500/50 uppercase tracking-widest mb-1">Volume Processado</p>
+                        <p className="text-2xl font-black text-white leading-none">{(data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0)))} <span className="text-[11px] font-bold opacity-40">REG.</span></p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-emerald-500/50 uppercase tracking-widest mb-1">Volume Processado</p>
-                      <p className="text-2xl font-black text-white leading-none">{(data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0)))} <span className="text-[11px] font-bold opacity-40">REG.</span></p>
-                    </div>
-                  </div>
 
                   <div className="mt-3 flex items-center justify-between pt-2.5 border-t border-emerald-800/50">
                      <div className="flex items-center gap-2 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
