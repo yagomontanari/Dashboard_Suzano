@@ -12,7 +12,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **UX (Interatividade)**: Renomeação estratégica do botão de ação de "Corrigir Erros" para **"Acessar Log"**, alinhando a terminologia com a função de auditoria técnica do Dashboard.
 - **KPI Consistency (Aba Geral)**: Alinhamento do card ZAJU na visão consolidada (Geral) com as novas regras de eficiência operacional. O percentual agora ignora o Cutoff Anterior, garantindo que o status de saúde da integração seja idêntico em todas as visualizações do sistema.
 - **Unificação de Indicadores (Aba Pagamentos)**: Implementação do **"Executive Performance Hub - Financeiro"**. Unificação dos cards de Meta e Eficiência em um único componente premium, adotando o tema **Emerald/Teal** solicitado para manter a identidade visual do fluxo de pagamentos.
-- **Normalização de Layout (Aba Pagamentos)**: Otimização extrema do Hub e cards de métricas. Remoção da métrica redundante "Volume Processado", redução da largura do Hub para 1 coluna e ajuste assimétrico de padding nos cards secundários (`pr-2`). Isso posiciona os títulos e valores monetários mais próximos à borda direita, maximizando a densidade de dados e a clareza visual para executivos.
+- **Normalização de Layout (Aba Pagamentos)**: Reestruturação final para alinhamento com o card de "Fluxo Financeiro". Ampliação do Hub de Eficiência para 2 colunas (`lg:col-span-2`), permitindo que a linha superior de métricas preencha exatamente a mesma largura da seção principal abaixo. Refinamento dos indicadores de meta e eficiência para máxima visibilidade e destaque executivo.
 
 ## [2.4.20] - 2026-04-30
 ### Alterado
