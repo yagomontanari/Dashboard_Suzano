@@ -1262,41 +1262,47 @@ export default function Dashboard() {
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Health & Efficiency Header */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {/* Executive Performance Hub - Pagamentos (Emerald Theme) */}
-              <div className="lg:col-span-2 bg-emerald-900 p-5 rounded-xl border border-emerald-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[140px]">
-                {/* Background Elements */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
+              {/* Executive Performance Hub - Pagamentos (Premium UI/UX) */}
+              <div className="lg:col-span-2 bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 p-6 rounded-2xl border border-emerald-800/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group flex flex-col justify-between min-h-[160px] transition-all duration-500 hover:shadow-emerald-500/10 hover:border-emerald-500/30 hover:-translate-y-1">
+                {/* Background Decorations */}
+                <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px] -mr-24 -mt-24 group-hover:bg-emerald-500/20 transition-colors duration-700"></div>
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-teal-500/10 rounded-full blur-[60px] -ml-16 -mb-16 group-hover:bg-teal-500/20 transition-colors duration-700"></div>
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
                 
                 <div className="relative z-10 flex flex-col h-full justify-between">
                   <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="w-6 h-1 bg-emerald-500 rounded-full"></span>
-                        <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.25em]">Eficiência Financeira</p>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-3 mb-1">
+                        <div className="flex gap-1">
+                           <span className="w-1 h-3 bg-emerald-500 rounded-full"></span>
+                           <span className="w-1 h-3 bg-emerald-500/40 rounded-full"></span>
+                        </div>
+                        <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] drop-shadow-sm">Eficiência Financeira</p>
                       </div>
                     </div>
-                    <div className="p-2.5 bg-emerald-800/50 text-emerald-400 rounded-xl border border-emerald-700/50">
-                      <Activity size={24} />
+                    <div className="p-3 bg-white/5 backdrop-blur-xl text-emerald-400 rounded-xl border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                      <Activity size={22} className="drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                     </div>
                   </div>
 
-                    <div className="flex items-end justify-start mt-2">
+                    <div className="flex items-end justify-start mt-4">
                       {(() => {
                         const efficiencyPct = ((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100;
                         const efficiencyColor = getEfficiencyColor(efficiencyPct);
                         
                         return (
-                          <div className="flex items-baseline gap-6">
-                            <span className={`text-6xl font-black tracking-tighter ${efficiencyColor}`}>
-                              {efficiencyPct.toFixed(1)}
-                              <span className="text-2xl font-bold opacity-40 ml-1">%</span>
-                            </span>
-                            <div className="flex flex-col">
-                              <span className="text-emerald-500/60 font-bold text-[11px] uppercase tracking-[0.25em] leading-none mb-2">Meta 100%</span>
-                              <div className="w-32 h-1.5 bg-emerald-800/50 rounded-full overflow-hidden border border-emerald-700/30 shadow-inner">
+                          <div className="flex items-baseline gap-8">
+                            <div className="relative">
+                               <span className={`text-7xl font-black tracking-tighter ${efficiencyColor} drop-shadow-2xl flex items-baseline`}>
+                                 {efficiencyPct.toFixed(1)}
+                                 <span className="text-2xl font-bold opacity-30 ml-1.5">%</span>
+                               </span>
+                            </div>
+                            <div className="flex flex-col mb-2">
+                              <span className="text-emerald-500/60 font-black text-[10px] uppercase tracking-[0.25em] leading-none mb-3">Meta 100%</span>
+                              <div className="w-36 h-2 bg-black/40 rounded-full overflow-hidden border border-white/5 relative">
                                 <div 
-                                  className={`h-full transition-all duration-1000 ease-out ${efficiencyPct >= 99.5 ? 'bg-emerald-500' : efficiencyPct >= 95 ? 'bg-amber-500' : 'bg-rose-500'}`} 
+                                  className={`h-full transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(16,185,129,0.3)] ${efficiencyPct >= 99.5 ? 'bg-emerald-400' : efficiencyPct >= 95 ? 'bg-amber-400' : 'bg-rose-500'}`} 
                                   style={{ width: `${efficiencyPct}%` }}
                                 ></div>
                               </div>
@@ -1306,13 +1312,15 @@ export default function Dashboard() {
                       })()}
                     </div>
 
-                  <div className="mt-3 flex items-center justify-between pt-2.5 border-t border-emerald-800/50">
-                     <div className="flex items-center gap-2 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                  <div className="mt-6 flex items-center justify-between pt-4 border-t border-white/5">
+                     <div className="flex items-center gap-2.5 bg-emerald-500/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-emerald-500/20 shadow-inner group-hover:bg-emerald-500/20 transition-all duration-500">
                         <ShieldCheck size={14} className="text-emerald-400" />
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Excelência</span>
+                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Excelência</span>
                      </div>
-                     <div className="flex items-center gap-1.5 text-emerald-500 font-bold text-[10px] uppercase tracking-wider">
-                        <TrendingUp size={12} /> Desempenho
+                     <div className="flex items-center gap-2 text-emerald-500/80 font-black text-[10px] uppercase tracking-widest group-hover:text-emerald-400 transition-colors">
+                        <TrendingUp size={14} />
+                        <span>Desempenho</span>
+                        <ChevronRight size={12} className="opacity-0 -ml-1 group-hover:opacity-100 group-hover:ml-0 transition-all duration-500" />
                      </div>
                   </div>
                 </div>
