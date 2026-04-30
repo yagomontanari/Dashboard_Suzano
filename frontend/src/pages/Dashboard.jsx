@@ -1286,8 +1286,8 @@ export default function Dashboard() {
                       <div className="flex items-baseline gap-2">
                         <span className={`text-5xl font-black tracking-tighter ${getEfficiencyColor(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100)}`}>
                           {(((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100).toFixed(1)}
+                          <span className="text-2xl font-bold opacity-40 ml-1">%</span>
                         </span>
-                        <span className="text-2xl font-bold text-emerald-500/50">%</span>
                       </div>
                       <div className="flex items-center gap-2 text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest mt-0.5">
                         <Target size={12} /> Meta 100%
