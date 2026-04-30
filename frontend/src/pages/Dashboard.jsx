@@ -1327,10 +1327,10 @@ export default function Dashboard() {
               </div>
 
               {/* Secondary Metrics Shelf - Pagamentos */}
-              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm min-h-[105px] grid grid-rows-[auto_1fr_auto] group">
                 <div className="flex justify-between items-start w-full">
                    <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all"><CheckCircle2 size={16} /></div>
-                   <div className="text-right flex flex-col items-end ml-auto">
+                   <div className="text-right flex flex-col items-end flex-grow">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Integrados</p>
                       <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_success)}</p>
                    </div>
@@ -1344,10 +1344,10 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm min-h-[105px] grid grid-rows-[auto_1fr_auto] group">
                 <div className="flex justify-between items-start w-full">
                    <div className="p-1.5 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-all"><Clock size={16} /></div>
-                   <div className="text-right flex flex-col items-end ml-auto">
+                   <div className="text-right flex flex-col items-end flex-grow">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Processando</p>
                       <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_pending)}</p>
                    </div>
@@ -1361,10 +1361,10 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm min-h-[105px] grid grid-rows-[auto_1fr_auto] group">
                 <div className="flex justify-between items-start w-full">
                    <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={16} /></div>
-                   <div className="text-right flex flex-col items-end ml-auto">
+                   <div className="text-right flex flex-col items-end flex-grow">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Aguardando Retorno</p>
                       <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
@@ -1378,10 +1378,10 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[105px] grid grid-rows-[auto_1fr_auto]">
+              <div className="bg-white pl-4 pt-3 pb-3 pr-1 rounded-xl border border-slate-200 shadow-sm min-h-[105px] grid grid-rows-[auto_1fr_auto] group">
                 <div className="flex justify-between items-start w-full">
                    <div className="p-1.5 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={16} /></div>
-                   <div className="text-right flex flex-col items-end ml-auto">
+                   <div className="text-right flex flex-col items-end flex-grow">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Bloqueados</p>
                       <p className="text-[14px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_error || 0)}</p>
                    </div>
