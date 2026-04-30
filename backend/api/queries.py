@@ -641,7 +641,8 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
             o.descricao as orc_desc,
             oli.descricao as linha_desc,
             sapmc.cond_value,
-            sapmc.dta_criacao
+            sapmc.dta_criacao,
+            sapmc.dta_alteracao
         FROM suzano_ajuste_provisao_memoria_calculo sapmc
         INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
         INNER JOIN orcamento_linha_investimento oli ON oli.id = sapmc.id_linha_investimento
@@ -713,7 +714,8 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         zd."Marca" as marca,
         zd.cond_value as valor_provisao,
         TO_CHAR(zd.dta_criacao, 'DD/MM/YYYY') as data_criacao,
-        'Sem faturamento histórico no período (D-3)' as mensagem
+        'Sem faturamento histórico no período (D-3)' as mensagem,
+        zd.dta_alteracao
     FROM zaju_details zd
     LEFT JOIN history_faturamento h ON h.id_cg = zd.id_cg AND h.id_marca = zd.id_marca
     WHERE h.id_cg IS NULL

@@ -199,7 +199,8 @@ async def process_scheduled_notifications(
     if schedules:
         from core.scheduler import process_notification_job
         print(f"Agendamentos encontrados: {[s.time for s in schedules]}. Iniciando job...")
-        await process_notification_job()
+        # Executa o job (usando o ID do primeiro agendamento para controle de trava)
+        await process_notification_job(schedule_id=schedules[0].id)
         return {
             "status": "success",
             "message": f"Disparado processamento para {len(schedules)} agendamentos",

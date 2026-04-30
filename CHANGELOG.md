@@ -4,6 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.23] - 2026-04-30
+- **Bug Fix (ZAJU)**: Resolvido erro de `UndefinedColumnError` na consulta de "Rateio Pendente (Faturamento)". A coluna `dta_alteracao` foi incluída nas projeções da CTE para permitir a ordenação correta na paginação.
+- **Bug Fix (Monitoria)**: Corrigido erro de `TypeError` ao disparar notificações manualmente ("Disparar Agora"). O job agora lida corretamente com a ausência de um `schedule_id` e ignora a trava de execução diária para disparos sob demanda.
+
 ### [2.4.22] - 2026-04-30
 - **UI/UX (Pagamentos)**: Padronização de nomenclatura dos cards para maior clareza corporativa ("Aguardando Integração", "Pendente no SAP").
 - **UI/UX (Pagamentos)**: Harmonização visual do Efficiency Hub com o gradiente premium Emerald/Teal da seção Hero.

@@ -23,38 +23,42 @@ async def fetch_data(session, q, p):
     res = await session.execute(q, p)
     return [dict(row) for row in res.mappings().all()]
 
-async def process_notification_job(schedule_id: int):
+async def process_notification_job(schedule_id: int = None):
     """
     Coleta dados consolidados do dashboard e envia por e-mail para todos os destinatários ativos.
     Inclui trava de execução para evitar duplicidade entre workers.
     """
-    logger.info(f"Iniciando job de notificação operacional (ID Agendamento: {schedule_id})...")
+    if schedule_id:
+        logger.info(f"Iniciando job de notificação operacional (ID Agendamento: {schedule_id})...")
+    else:
+        logger.info("Iniciando job de notificação operacional (Disparo Manual)...")
     
     try:
         # 0. Trava de Execução (Evitar duplicidade entre workers)
         async with AsyncSessionLocalApp() as db_app:
-            # Selecionar o agendamento e verificar se já rodou hoje
-            res = await db_app.execute(select(NotificationSchedule).where(NotificationSchedule.id == schedule_id))
-            schedule = res.scalar_one_or_none()
-            
-            if not schedule:
-                logger.error(f"Agendamento {schedule_id} não encontrado.")
-                return
-
-            now_sp = datetime.now(timezone('America/Sao_Paulo'))
-            
-            if schedule.last_run_at:
-                # Converter last_run_at para o timezone de SP para comparação segura
-                last_run = schedule.last_run_at
-                if last_run.tzinfo is None:
-                    last_run = timezone('UTC').localize(last_run).astimezone(timezone('America/Sao_Paulo'))
-                else:
-                    last_run = last_run.astimezone(timezone('America/Sao_Paulo'))
-
-                # Se já rodou hoje (mesmo dia, mês e ano), abortar
-                if last_run.date() == now_sp.date():
-                    logger.warning(f"Job {schedule_id} já executado hoje em {last_run}. Abortando para evitar duplicidade.")
+            if schedule_id:
+                # Selecionar o agendamento e verificar se já rodou hoje
+                res = await db_app.execute(select(NotificationSchedule).where(NotificationSchedule.id == schedule_id))
+                schedule = res.scalar_one_or_none()
+                
+                if not schedule:
+                    logger.error(f"Agendamento {schedule_id} não encontrado.")
                     return
+
+                now_sp = datetime.now(timezone('America/Sao_Paulo'))
+                
+                if schedule.last_run_at:
+                    # Converter last_run_at para o timezone de SP para comparação segura
+                    last_run = schedule.last_run_at
+                    if last_run.tzinfo is None:
+                        last_run = timezone('UTC').localize(last_run).astimezone(timezone('America/Sao_Paulo'))
+                    else:
+                        last_run = last_run.astimezone(timezone('America/Sao_Paulo'))
+
+                    # Se já rodou hoje (mesmo dia, mês e ano), abortar
+                    if last_run.date() == now_sp.date():
+                        logger.warning(f"Job {schedule_id} já executado hoje em {last_run}. Abortando para evitar duplicidade.")
+                        return
 
             # 1. Obter Destinatários
             result = await db_app.execute(select(NotificationRecipient).where(NotificationRecipient.active == True))
@@ -187,13 +191,14 @@ async def process_notification_job(schedule_id: int):
             # 5. Enviar E-mail
             await mail_service.send_operational_summary_email(email_to, summary_data, excel_bytes, arquivo_nome, cc_list=cc_list)
             
-            # 6. Atualizar trava no banco
-            async with AsyncSessionLocalApp() as db_app_update:
-                await db_app_update.execute(
-                    text("UPDATE notification_schedules SET last_run_at = :now WHERE id = :id"),
-                    {"now": datetime.now(timezone('America/Sao_Paulo')), "id": schedule_id}
-                )
-                await db_app_update.commit()
+            # 6. Atualizar trava no banco (Somente se for job agendado)
+            if schedule_id:
+                async with AsyncSessionLocalApp() as db_app_update:
+                    await db_app_update.execute(
+                        text("UPDATE notification_schedules SET last_run_at = :now WHERE id = :id"),
+                        {"now": datetime.now(timezone('America/Sao_Paulo')), "id": schedule_id}
+                    )
+                    await db_app_update.commit()
                 
         logger.info(f"Job de notificação operacional (ID: {schedule_id}) concluído com sucesso.")
 
