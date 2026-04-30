@@ -1281,21 +1281,21 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                    <div className="flex items-end justify-between mt-1">
+                    <div className="flex items-end justify-end mt-1">
                       {(() => {
                         const efficiencyPct = ((data?.zver?.success || 0) / ((data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0))) || 1)) * 100;
                         const efficiencyColor = getEfficiencyColor(efficiencyPct);
                         
                         return (
-                          <div>
-                            <div className="flex items-baseline gap-3">
-                              <span className={`text-5xl font-black tracking-tighter ${efficiencyColor}`}>
+                          <div className="text-right">
+                            <div className="flex items-baseline justify-end gap-4">
+                              <span className={`text-6xl font-black tracking-tighter ${efficiencyColor}`}>
                                 {efficiencyPct.toFixed(1)}
                                 <span className="text-2xl font-bold opacity-40 ml-1">%</span>
                               </span>
-                              <div className="flex flex-col">
-                                <span className="text-emerald-500/50 font-bold text-[10px] uppercase tracking-widest leading-none">Meta 100%</span>
-                                <div className="w-20 h-1 bg-emerald-800/50 rounded-full mt-2 overflow-hidden border border-emerald-700/30">
+                              <div className="flex flex-col items-end">
+                                <span className="text-emerald-500/60 font-bold text-[11px] uppercase tracking-[0.2em] leading-none mb-2">Meta 100%</span>
+                                <div className="w-28 h-1.5 bg-emerald-800/50 rounded-full overflow-hidden border border-emerald-700/30 shadow-inner">
                                   <div 
                                     className={`h-full transition-all duration-1000 ease-out ${efficiencyPct >= 99.5 ? 'bg-emerald-500' : efficiencyPct >= 95 ? 'bg-amber-500' : 'bg-rose-500'}`} 
                                     style={{ width: `${efficiencyPct}%` }}
@@ -1306,10 +1306,6 @@ export default function Dashboard() {
                           </div>
                         );
                       })()}
-                      <div className="text-right">
-                        <p className="text-[10px] font-bold text-emerald-500/50 uppercase tracking-widest mb-1">Volume Processado</p>
-                        <p className="text-2xl font-black text-white leading-none">{(data?.zver?.total || ((data?.zver?.success || 0) + (data?.zver?.pending || 0) + (data?.zver?.pending_return || 0) + (data?.zver?.error || 0)))} <span className="text-[11px] font-bold opacity-40">REG.</span></p>
-                      </div>
                     </div>
 
                   <div className="mt-3 flex items-center justify-between pt-2.5 border-t border-emerald-800/50">
@@ -1328,9 +1324,9 @@ export default function Dashboard() {
               <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-all"><CheckCircle2 size={18} /></div>
-                   <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                   <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Integrados</p>
-                      <p className="text-sm font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_success)}</p>
+                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_success)}</p>
                    </div>
                 </div>
                 <div className="flex flex-col justify-center border-l-2 border-emerald-500/20 pl-4 py-1">
@@ -1345,9 +1341,9 @@ export default function Dashboard() {
               <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-all"><Clock size={18} /></div>
-                   <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                   <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Processando</p>
-                      <p className="text-sm font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_pending)}</p>
+                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data.zver.value_pending)}</p>
                    </div>
                 </div>
                 <div className="flex flex-col justify-center border-l-2 border-amber-500/20 pl-4 py-1">
@@ -1362,9 +1358,9 @@ export default function Dashboard() {
               <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={18} /></div>
-                   <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                   <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Aguardando Retorno</p>
-                      <p className="text-sm font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
+                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
                 </div>
                 <div className="flex flex-col justify-center border-l-2 border-indigo-500/20 pl-4 py-1">
@@ -1379,9 +1375,9 @@ export default function Dashboard() {
               <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between group min-h-[120px] grid grid-rows-[auto_1fr_auto]">
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-all"><AlertCircle size={18} /></div>
-                   <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                   <div className="text-right flex-grow flex flex-col items-end">
                       <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Bloqueados</p>
-                      <p className="text-sm font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_error || 0)}</p>
+                      <p className="text-[15px] font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_error || 0)}</p>
                    </div>
                 </div>
                 <div className="flex flex-col justify-center border-l-2 border-rose-500/20 pl-4 py-1">
