@@ -23,15 +23,40 @@ async def fetch_data(session, q, p):
     res = await session.execute(q, p)
     return [dict(row) for row in res.mappings().all()]
 
-async def process_notification_job():
+async def process_notification_job(schedule_id: int):
     """
     Coleta dados consolidados do dashboard e envia por e-mail para todos os destinatários ativos.
+    Inclui trava de execução para evitar duplicidade entre workers.
     """
-    logger.info("Iniciando job de notificação operacional...")
+    logger.info(f"Iniciando job de notificação operacional (ID Agendamento: {schedule_id})...")
     
     try:
-        # 1. Obter Destinatários
+        # 0. Trava de Execução (Evitar duplicidade entre workers)
         async with AsyncSessionLocalApp() as db_app:
+            # Selecionar o agendamento e verificar se já rodou hoje
+            res = await db_app.execute(select(NotificationSchedule).where(NotificationSchedule.id == schedule_id))
+            schedule = res.scalar_one_or_none()
+            
+            if not schedule:
+                logger.error(f"Agendamento {schedule_id} não encontrado.")
+                return
+
+            now_sp = datetime.now(timezone('America/Sao_Paulo'))
+            
+            if schedule.last_run_at:
+                # Converter last_run_at para o timezone de SP para comparação segura
+                last_run = schedule.last_run_at
+                if last_run.tzinfo is None:
+                    last_run = timezone('UTC').localize(last_run).astimezone(timezone('America/Sao_Paulo'))
+                else:
+                    last_run = last_run.astimezone(timezone('America/Sao_Paulo'))
+
+                # Se já rodou hoje (mesmo dia, mês e ano), abortar
+                if last_run.date() == now_sp.date():
+                    logger.warning(f"Job {schedule_id} já executado hoje em {last_run}. Abortando para evitar duplicidade.")
+                    return
+
+            # 1. Obter Destinatários
             result = await db_app.execute(select(NotificationRecipient).where(NotificationRecipient.active == True))
             recipients = result.scalars().all()
             
@@ -40,7 +65,6 @@ async def process_notification_job():
                 return
             
             # Lógica para separar destinatário principal e cópia
-            # Se ninguém for marcado como is_primary, o primeiro da lista assume o "Para"
             primary_recipient = next((r for r in recipients if r.is_primary), recipients[0])
             cc_list = [r.email for r in recipients if r.email != primary_recipient.email]
             email_to = primary_recipient.email
@@ -57,7 +81,6 @@ async def process_notification_job():
         }
 
         async with AsyncSessionLocal() as db_metrics:
-            # Sessões do SQLAlchemy não são thread/concurrency-safe para rodar no mesmo context em asyncio.gather
             # Executando de forma sequencial
             vk11_res = await fetch_data(db_metrics, QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str)
             zaju_res = await fetch_data(db_metrics, QUERY_ZAJU_TOTAL, params)
@@ -68,18 +91,12 @@ async def process_notification_job():
 
             # Processamento de Dados
             counts = counts_res[0] if counts_res else {}
-            
-            # VK11
             vk11 = vk11_res[0] if vk11_res else {"success": 0, "pending": 0, "error": 0}
-            
-            # ZAJU
             zaju = zaju_res[0] if zaju_res else {"success": 0, "pending": 0, "error": 0, "pending_return": 0}
             zaju_details = zaju_by_type_res or []
-            
-            # ZVER
             zver = zver_res[0] if zver_res else {"success": 0, "pending": 0, "error": 0, "pending_return": 0}
 
-            # 3. Gerar Arquivo Excel Consolidado com as Inconsistências
+            # 3. Gerar Arquivo Excel Consolidado
             import pandas as pd
             import io
             from api.data import apply_excel_premium_style
@@ -94,58 +111,28 @@ async def process_notification_job():
             zaju_erros_det = await fetch_data(db_metrics, QUERY_ERRO_ZAJU_LIST, params)
             vk11_erros_det = await fetch_data(db_metrics, QUERY_ERRO_VK11_LIST, params)
 
-            # Processamento de DataFrames para o Excel
-            zaju_df = pd.DataFrame(zaju_erros_det) if zaju_erros_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Ajustes (ZAJU) no período."}])
-            if not zaju_df.empty and "Aviso" not in zaju_df.columns:
-                zaju_df = zaju_df.rename(columns={
-                    "mensagem_retorno_integracao": "Erro / Mensagem SAP",
-                    "purch_no_c": "Tipo Integração",
-                    "orcamento": "Orçamento",
-                    "linha_investimento": "Linha de Investimento",
-                    "tipo_linha_investimento": "Tipo de Linha",
-                    "cod_cliente": "Cód. Cliente",
-                    "nome_cliente": "Cliente",
-                    "nro_nota_fiscal": "Nota Fiscal",
-                    "nro_documento": "Doc. Faturamento",
-                    "valor_bruto": "Valor Bruto",
-                    "valor_liquido": "Valor Líquido",
-                    "valor_provisao": "Valor Provisão",
-                    "dta_criacao": "Data de Criação",
-                    "status": "Status",
-                    "data_integracao": "Data de Integração"
-                })
-                # Reorganizar colunas principais para o início
-                cols_ord = ["Erro / Mensagem SAP", "Tipo Integração", "Orçamento", "Cliente", "Nota Fiscal", "Valor Provisão", "Status"]
-                existing_cols = [c for c in cols_ord if c in zaju_df.columns]
-                other_cols = [c for c in zaju_df.columns if c not in existing_cols]
-                zaju_df = zaju_df[existing_cols + other_cols]
-
-            vk11_df = pd.DataFrame(vk11_erros_det) if vk11_erros_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Orçamentos (VK11) no período."}])
-            if not vk11_df.empty and "Aviso" not in vk11_df.columns:
-                vk11_df = vk11_df.rename(columns={
-                    "id_orcamento": "ID Orçamento",
-                    "descricao": "Descrição",
-                    "tipo_integracao": "Tipo de Integração",
-                    "status": "Status",
-                    "msg": "Erro / Mensagem SAP",
-                    "valid_from": "Válido De"
-                })
-                # Reorganizar colunas principais para o início
-                cols_ord_vk = ["Erro / Mensagem SAP", "ID Orçamento", "Descrição", "Tipo de Integração", "Status"]
-                existing_cols_vk = [c for c in cols_ord_vk if c in vk11_df.columns]
-                other_cols_vk = [c for c in vk11_df.columns if c not in existing_cols_vk]
-                vk11_df = vk11_df[existing_cols_vk + other_cols_vk]
-
-            # Criar os DataFrames
+            # Processamento de DataFrames
             dfs = {
-                "Sell-In": pd.DataFrame(sellin_det) if sellin_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Sell-In no período."}]),
-                "Clientes": pd.DataFrame(clientes_det) if clientes_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Clientes no período."}]),
-                "Produtos": pd.DataFrame(produtos_det) if produtos_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Produtos no período."}]),
-                "Cutoff": pd.DataFrame(cutoff_det) if cutoff_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Cutoff no período."}]),
-                "Usuarios": pd.DataFrame(usuarios_det) if usuarios_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Usuários no período."}]),
-                "Pagamentos": pd.DataFrame(pagamentos_det) if pagamentos_det else pd.DataFrame([{"Aviso": "Nenhuma inconsistência de Pagamentos no período."}]),
-                "ZAJU": zaju_df,
-                "VK11": vk11_df
+                "Resumo Geral": pd.DataFrame([{
+                    "Mês Ref": f"{now.month}/{now.year}",
+                    "VK11 Sucesso": vk11["success"],
+                    "VK11 Pendente": vk11["pending"],
+                    "VK11 Erro": vk11["error"],
+                    "ZAJU Sucesso": zaju["success"],
+                    "ZAJU Pendente": zaju["pending"],
+                    "ZAJU Erro": zaju["error"],
+                    "ZVER Sucesso": zver["success"],
+                    "ZVER Pendente": zver["pending"],
+                    "ZVER Erro": zver["error"]
+                }]),
+                "Inconst_SellIn": pd.DataFrame(sellin_det) if sellin_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
+                "Inconst_Clientes": pd.DataFrame(clientes_det) if clientes_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
+                "Inconst_Produtos": pd.DataFrame(produtos_det) if produtos_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
+                "Inconst_Cutoff": pd.DataFrame(cutoff_det) if cutoff_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
+                "Inconst_Usuarios": pd.DataFrame(usuarios_det) if usuarios_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
+                "Inconst_Pagamentos": pd.DataFrame(pagamentos_det) if pagamentos_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
+                "Inconst_ZAJU": pd.DataFrame(zaju_erros_det) if zaju_erros_det else pd.DataFrame([{"Aviso": "Sem dados"}]),
+                "Inconst_VK11": pd.DataFrame(vk11_erros_det) if vk11_erros_det else pd.DataFrame([{"Aviso": "Sem dados"}])
             }
 
             excel_buffer = io.BytesIO()
@@ -156,32 +143,17 @@ async def process_notification_job():
 
             excel_bytes = excel_buffer.getvalue()
 
-            # 4. Montar Resumo para o E-mail
+            # 4. Montar Resumo
             meses = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
             periodo_nome = f"{meses[start_dt.month]} {start_dt.year}"
             arquivo_nome = f"Inconsistencias_{meses[start_dt.month]}_{start_dt.year}.xlsx"
 
-            # Categorias permitidas para Últimos Registros Recebidos
             allowed_sync_cats = ["SELLIN", "CUTOFF", "PRODUTO", "CLIENTE", "PAGAMENTO_LIQUIDADO", "PRE_CADASTRO_USUARIO"]
             filtered_last_sync = [r for r in last_sync_res if r["categoria"] in allowed_sync_cats]
 
-            # Tipos do ZAJU baseados no Frontend
             promo_types = ['ZAJU_AJUSTE_VERBA_PERC', 'ZAJU_AJUSTE_VERBA_NOMI', 'ZAJU_CUTOFF_MES_ANTERIOR', 'ZAJU_CUTOFF_MES_CORRENTE']
             contrato_types = ['ZAJU_AJUSTE_VERBA_CONTRATO_NOMI', 'ZAJU_AJUSTE_VERBA_CT_PERC_CRE', 'ZAJU_AJUSTE_VERBA_CT_PERC_COM', 'ZAJU_AJUSTE_VERBA_CT_PERC_LOG']
             acordos_types = ['ZAJU_AJUSTE_PGTO', 'ZAJU_APUR_REPROVADA', 'ZAJU_PGTO_REPROVADO', 'ZAJU_AJUSTE_DEV_OFF']
-
-            # Detalhamentos Granulares por Tipo
-            zaju_success_det = {i["type"]: i["success"] for i in zaju_details if i["success"] > 0}
-            zaju_pending_det = {i["type"]: i["pending"] for i in zaju_details if i["pending"] > 0}
-            zaju_error_det = {i["type"]: i["error"] for i in zaju_details if i["error"] > 0}
-            zaju_return_det = {i["type"]: i["pending_return"] for i in zaju_details if i["pending_return"] > 0}
-
-            # Agrupamento de Pendências (para manter a estrutura por categorias)
-            zaju_pending_groups = {
-                "Verba Promo & Ações": {k: v for k, v in zaju_pending_det.items() if k in promo_types},
-                "Verbas de contrato": {k: v for k, v in zaju_pending_det.items() if k in contrato_types},
-                "Acordos": {k: v for k, v in zaju_pending_det.items() if k in acordos_types}
-            }
 
             summary_data = {
                 "periodo": periodo_nome,
@@ -191,10 +163,14 @@ async def process_notification_job():
                     "total_pendente": zaju["pending"],
                     "total_erro": zaju["error"],
                     "total_retorno": zaju["pending_return"],
-                    "detalhamento_sucesso": zaju_success_det,
-                    "detalhamento_pendentes": zaju_pending_groups,
-                    "detalhamento_erros": zaju_error_det,
-                    "detalhamento_retorno": zaju_return_det
+                    "detalhamento_sucesso": {i["type"]: i["success"] for i in zaju_details if i["success"] > 0},
+                    "detalhamento_pendentes": {
+                        "Verba Promo & Ações": {i["type"]: i["pending"] for i in zaju_details if i["pending"] > 0 and i["type"] in promo_types},
+                        "Verbas de contrato": {i["type"]: i["pending"] for i in zaju_details if i["pending"] > 0 and i["type"] in contrato_types},
+                        "Acordos": {i["type"]: i["pending"] for i in zaju_details if i["pending"] > 0 and i["type"] in acordos_types}
+                    },
+                    "detalhamento_erros": {i["type"]: i["error"] for i in zaju_details if i["error"] > 0},
+                    "detalhamento_retorno": {i["type"]: i["pending_return"] for i in zaju_details if i["pending_return"] > 0}
                 },
                 "zver": zver,
                 "inconsistencias": {
@@ -208,13 +184,21 @@ async def process_notification_job():
                 "last_sync": filtered_last_sync
             }
 
-            # 5. Enviar E-mail único com CC para todos os interessados
+            # 5. Enviar E-mail
             await mail_service.send_operational_summary_email(email_to, summary_data, excel_bytes, arquivo_nome, cc_list=cc_list)
+            
+            # 6. Atualizar trava no banco
+            async with AsyncSessionLocalApp() as db_app_update:
+                await db_app_update.execute(
+                    text("UPDATE notification_schedules SET last_run_at = :now WHERE id = :id"),
+                    {"now": datetime.now(timezone('America/Sao_Paulo')), "id": schedule_id}
+                )
+                await db_app_update.commit()
                 
-        logger.info("Job de notificação operacional concluído com sucesso.")
+        logger.info(f"Job de notificação operacional (ID: {schedule_id}) concluído com sucesso.")
 
     except Exception as e:
-        logger.error(f"Erro ao processar job de notificação: {e}")
+        logger.error(f"Erro ao processar job de notificação {schedule_id}: {e}")
 
 async def heartbeat_job():
     logger.info(f"--- Scheduler Heartbeat: {datetime.now()} ---")
@@ -256,7 +240,8 @@ async def restart_scheduler():
                         process_notification_job,
                         CronTrigger(hour=hour, minute=minute, timezone=timezone('America/Sao_Paulo')),
                         id=f"notif_{s.id}",
-                        misfire_grace_time=3600 # 1 hora de tolerância
+                        args=[s.id],
+                        misfire_grace_time=600 # Reduzido para 10 minutos
                     )
                     logger.info(f"Agendamento ATIVADO: {s.time} (ID: {s.id})")
                 except Exception as e:

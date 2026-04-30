@@ -6,9 +6,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ## [2.4.20] - 2026-04-30
 ### Alterado
-- **KPI de Eficiência ZAJU (Ajuste de Negócio)**: Refatorada a query de resumo (`QUERY_ZAJU_TOTAL`) para excluir tipos de **"Fluxo Bloqueado"** (`ZAJU_AJUSTE_PGTO`, `ZAJU_APUR_REPROVADA`, `ZAJU_PGTO_REPROVADO`) e itens **pendentes** de fechamento anterior (`ZAJU_CUTOFF_MES_ANTERIOR`) do cálculo da Taxa de Eficiência. Esta alteração garante que os indicadores reflitam apenas o volume operacional acionável.
+- **Bug Fix (Monitoria)**: Resolvido problema de envio de e-mails duplicados. Implementada uma trava de execução (Distributed Lock) via banco de dados utilizando o novo campo `last_run_at` na tabela de agendamentos. Agora, o sistema valida se a notificação para um determinado horário já foi disparada no dia atual antes de processar o envio, prevenindo duplicidade em ambientes com múltiplos workers ou reinicializações de container.
+- **Scheduler**: Redução do `misfire_grace_time` de 60 para 10 minutos para evitar disparos acumulados após quedas ou reinícios prolongados do servidor.
 - **UX/UI (Dashboard)**: Unificação dos cards de "Meta" e "Eficiência" em um novo **"Executive Performance Hub"**. O design consolidado utiliza um tema premium, ocupa espaço estratégico na grade e elimina redundâncias visuais, proporcionando uma leitura mais executiva dos resultados operacionais.
-- **UX/UI (Dashboard)**: Refinamento da hierarquia visual com o redimensionamento dos cards secundários (Integrados, Processando, Retorno e Bloqueados) para destacar o hub principal de performance.
 - **UX (Dashboard)**: O card de **"Aguardando Integração"** agora exibe o volume total de pendências (incluindo Cutoff), mas sua porcentagem e impacto na eficiência ignoram o Cutoff Anterior. Implementada notificação inteligente em formato de **Badge Premium** que sinaliza visualmente o ciclo de Cutoff Anterior (Dia 01).
 - **Transparência Operacional**: Itens bloqueados permanecem visíveis com o status "INTEGRAÇÃO SUSPENSA" nas tabelas de detalhamento (sub-aba Acordos), garantindo rastreabilidade total sem comprometer os indicadores executivos.
 

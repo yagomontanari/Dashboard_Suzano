@@ -61,4 +61,5 @@ class NotificationSchedule(Base):
     id = Column(Integer, primary_key=True, index=True)
     time = Column(String, nullable=False) # Formato HH:MM
     active = Column(Boolean, default=True)
+    last_run_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
