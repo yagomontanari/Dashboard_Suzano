@@ -10,6 +10,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 - **Backend (Inteligência de Dados)**: Criação da query `QUERY_ZAJU_PENDENTE_SEM_RATEIO` com validação de Sell-In retroativo por Customer Group e Marca, integrada ao endpoint de inconsistências com suporte total a paginação e exportação.
 - **UX (Banner Informativo)**: Adicionado banner explicativo contextual na nova aba para orientar o usuário sobre a causa do bloqueio e a regra de negócio aplicada.
 
+### Corrigido
+- **ZAJU (Performance)**: Otimização crítica da query de rateio pendente. Redução do tempo de carregamento de ~4 minutos para <10 segundos através de filtragem seletiva de produtos e Customer Groups, eliminando travamentos na interface (Loading infinito).
+- **Backend (Estabilidade)**: Correção de nomes de colunas e inclusão de type-casts necessários para compatibilidade com o driver asyncpg, garantindo o retorno correto dos dados.
+
 ## [2.4.18] - 2026-04-29
 ### Adicionado
 - **Monitoria (E-mail)**: Refinamento das abas de erros no relatório Excel, agora nomeadas como **ZAJU** e **VK11** para maior concisão. Implementada reordenação de colunas na aba VK11 para priorizar mensagens de erro e IDs de orçamento.
