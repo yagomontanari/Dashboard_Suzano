@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+## [2.4.21] - 2026-04-30
+### Alterado
+- **UX/UI (Dashboard ZAJU)**: Refatoração completa da estrutura de alinhamento dos cards secundários de performance. Implementada uma arquitetura de "Grid Shelf" que garante o alinhamento horizontal perfeito dos indicadores numéricos primários, independentemente da presença de elementos dinâmicos (badges de cutoff ou botões de log).
+- **Design System**: Evolução da linguagem visual para um padrão "Technical Precision", substituindo o arredondamento excessivo (`rounded-2xl`) por um acabamento mais profissional e corporativo (`rounded-xl`).
+- **Harmonização Visual**: Padronização da tipografia e do espaçamento interno dos cards, resolvendo desalinhamentos causados por quebras de linha em rótulos como "Aguardando Retorno".
+
 ## [2.4.20] - 2026-04-30
 ### Alterado
 - **Bug Fix (Monitoria)**: Resolvido problema de envio de e-mails duplicados. Implementada uma trava de execução (Distributed Lock) via banco de dados utilizando o novo campo `last_run_at` na tabela de agendamentos. Agora, o sistema valida se a notificação para um determinado horário já foi disparada no dia atual antes de processar o envio, prevenindo duplicidade em ambientes com múltiplos workers ou reinicializações de container.

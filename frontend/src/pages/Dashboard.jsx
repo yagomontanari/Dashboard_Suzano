@@ -1777,7 +1777,7 @@ export default function Dashboard() {
                 return (
                   <>
                     {/* Executive Performance Hub */}
-                    <div className="lg:col-span-2 bg-slate-900 p-8 rounded-[2rem] border border-slate-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[180px]">
+                    <div className="lg:col-span-2 bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-2xl relative overflow-hidden group flex flex-col justify-between min-h-[180px]">
                       {/* Background Elements */}
                       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                       <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
@@ -1825,81 +1825,94 @@ export default function Dashboard() {
                     </div>
 
 
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px]">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><CheckCircle2 size={18} /></div>
-                        <div className="text-right flex-grow pl-3">
-                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end">Integrados</p>
-                          <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{successPct}% vol.</p>
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px]">
+                      <div className="flex justify-between items-start h-10 mb-4">
+                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg shrink-0"><CheckCircle2 size={18} /></div>
+                        <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                          <p className="text-[10px] font-black text-slate-400 uppercase leading-none">Integrados</p>
+                          <p className="text-base font-black text-slate-800 tracking-tight mt-1.5 leading-none">{successPct}% vol.</p>
                         </div>
                       </div>
-                      <div>
-                        <h4 className="text-2xl font-black text-emerald-600 tracking-tighter">{data?.zaju?.success || 0}</h4>
-                        <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">ZAJUS</p>
+                      <div className="flex flex-col justify-center border-l-2 border-emerald-500/20 pl-4 py-1">
+                        <h4 className="text-3xl font-black text-emerald-600 tracking-tighter leading-none">{data?.zaju?.success || 0}</h4>
+                        <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">ZAJUS Concluídos</p>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center">
+                        <span className="text-[9px] font-bold text-slate-300">Fluxo Normal</span>
                       </div>
                     </div>
 
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px]">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock size={18} /></div>
-                        <div className="text-right flex-grow pl-3">
-                          <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end">Processando</p>
-                          <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{pendingPct}% vol.</p>
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px]">
+                      <div className="flex justify-between items-start h-10 mb-4">
+                        <div className="p-2 bg-amber-50 text-amber-600 rounded-lg shrink-0"><Clock size={18} /></div>
+                        <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                          <p className="text-[10px] font-black text-slate-400 uppercase leading-none">Processando</p>
+                          <p className="text-base font-black text-slate-800 tracking-tight mt-1.5 leading-none">{pendingPct}% vol.</p>
                         </div>
                       </div>
-                      <div>
-                        <h4 className="text-2xl font-black text-amber-600 tracking-tighter">{data?.zaju?.pending || 0}</h4>
-                        <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Aguardando Integração</p>
-                        {isOnlyCutoffPending && (
-                          <div className="flex items-center gap-2 px-2.5 py-1.5 bg-amber-500/10 text-amber-600 rounded-xl border border-amber-500/20 mt-3 animate-in fade-in zoom-in duration-500 shadow-sm shadow-amber-100/30 w-fit">
+                      <div className="flex flex-col justify-center border-l-2 border-amber-500/20 pl-4 py-1">
+                        <h4 className="text-3xl font-black text-amber-600 tracking-tighter leading-none">{data?.zaju?.pending || 0}</h4>
+                        <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">Aguardando Integração</p>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center">
+                        {isOnlyCutoffPending ? (
+                          <div className="flex items-center gap-2 px-2.5 py-1.5 bg-amber-500/10 text-amber-600 rounded-lg border border-amber-500/20 shadow-sm shadow-amber-100/30">
                              <Clock size={12} className="shrink-0" />
-                             <span className="text-[9px] font-black uppercase tracking-wider">Ciclo de Cutoff Anterior (Dia 01)</span>
+                             <span className="text-[8px] font-black uppercase tracking-wider">Ciclo Cutoff (Dia 01)</span>
                           </div>
+                        ) : (
+                          <span className="text-[9px] font-bold text-slate-300">Monitoramento Ativo</span>
                         )}
                       </div>
                     </div>
 
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px]">
-                       <div className="flex justify-between items-start mb-3">
-                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><RefreshCw size={18} /></div>
-                         <div className="text-right flex-grow pl-3">
-                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end leading-tight">Aguardando Retorno</p>
-                           <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{returnPct}% vol.</p>
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px]">
+                       <div className="flex justify-between items-start h-10 mb-4">
+                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg shrink-0"><RefreshCw size={18} /></div>
+                         <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                           <p className="text-[10px] font-black text-slate-400 uppercase leading-tight">Aguardando Retorno</p>
+                           <p className="text-base font-black text-slate-800 tracking-tight mt-1.5 leading-none">{returnPct}% vol.</p>
                          </div>
                        </div>
-                       <div>
-                         <h4 className="text-2xl font-black text-indigo-600 tracking-tighter">{data?.zaju?.pending_return || 0}</h4>
-                         <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Retorno Pendente SAP</p>
+                       <div className="flex flex-col justify-center border-l-2 border-indigo-500/20 pl-4 py-1">
+                         <h4 className="text-3xl font-black text-indigo-600 tracking-tighter leading-none">{data?.zaju?.pending_return || 0}</h4>
+                         <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">Pendente no SAP</p>
+                       </div>
+                       <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center">
+                         <span className="text-[9px] font-bold text-slate-300">Sincronização ERP</span>
                        </div>
                     </div>
 
-                    <div className={`p-5 rounded-2xl border transition-all group flex flex-col justify-between h-full uppercase tracking-widest min-h-[140px] ${
+                    <div className={`p-5 rounded-xl border transition-all group grid grid-rows-[auto_1fr_auto] h-full uppercase tracking-widest min-h-[160px] ${
                       (data?.zaju?.error || 0) > 0 
                       ? 'bg-rose-50/30 border-rose-200 shadow-rose-100 shadow-sm' 
                       : 'bg-white border-slate-200 shadow-sm hover:shadow-md'
                     }`}>
-                       <div className="flex justify-between items-start mb-3">
-                         <div className={`p-2 rounded-lg ${ (data?.zaju?.error || 0) > 0 ? 'bg-rose-100 text-rose-600' : 'bg-rose-50 text-rose-400' }`}>
+                       <div className="flex justify-between items-start h-10 mb-4">
+                         <div className={`p-2 rounded-lg shrink-0 ${ (data?.zaju?.error || 0) > 0 ? 'bg-rose-100 text-rose-600' : 'bg-rose-50 text-rose-400' }`}>
                            <AlertCircle size={18} />
                          </div>
-                         <div className="text-right flex-grow pl-3">
-                           <p className="text-[10px] font-black text-slate-400 uppercase min-h-[20px] flex items-end justify-end">Bloqueados</p>
-                           <p className="text-base font-black text-slate-800 tracking-tight mt-0.5">{errorPct}% vol.</p>
+                         <div className="text-right flex-grow pl-3 flex flex-col justify-end">
+                           <p className="text-[10px] font-black text-slate-400 uppercase leading-none">Bloqueados</p>
+                           <p className="text-base font-black text-slate-800 tracking-tight mt-1.5 leading-none">{errorPct}% vol.</p>
                          </div>
                        </div>
-                       <div>
-                         <h4 className={`text-2xl font-black tracking-tighter ${ (data?.zaju?.error || 0) > 0 ? 'text-rose-600' : 'text-slate-600' }`}>
+                       <div className={`flex flex-col justify-center border-l-2 pl-4 py-1 ${ (data?.zaju?.error || 0) > 0 ? 'border-rose-500/40' : 'border-slate-200' }`}>
+                         <h4 className={`text-3xl font-black tracking-tighter leading-none ${ (data?.zaju?.error || 0) > 0 ? 'text-rose-600' : 'text-slate-600' }`}>
                            {data?.zaju?.error || 0}
                          </h4>
-                         <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Falhas Detectadas</p>
-                         
-                         {(data?.zaju?.error || 0) > 0 && (
+                         <p className="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-widest leading-none">Falhas de Integração</p>
+                       </div>
+                       <div className="mt-4 pt-4 border-t border-slate-50 min-h-[24px] flex items-center justify-between gap-2">
+                         {(data?.zaju?.error || 0) > 0 ? (
                            <button 
                              onClick={() => handleOpenModal('zaju')}
-                             className="w-full mt-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-[0.15em] rounded-xl shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                             className="w-full py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-[8px] uppercase tracking-[0.15em] rounded shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0"
                            >
-                             Acessar Log
+                             Corrigir Erros
                            </button>
+                         ) : (
+                           <span className="text-[9px] font-bold text-slate-300">Sistema Estável</span>
                          )}
                        </div>
                     </div>
@@ -1909,7 +1922,7 @@ export default function Dashboard() {
             </div>
 
             {/* Main Content: ZAJU Tables Card with Integrated Tabs Header */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-500">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-500">
               
               {/* Card Header: Integrated Navigation Tabs */}
               <div className="flex flex-wrap border-b border-slate-200 bg-slate-50/50 px-4 pt-4 gap-2">
