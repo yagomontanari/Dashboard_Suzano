@@ -1321,11 +1321,8 @@ export default function Dashboard() {
                    <h4 className="text-4xl font-black text-emerald-600 tracking-tighter leading-none">{data.zver.success}</h4>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Concluídos</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                <div className="pt-2 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Monitoramento Ativo</span>
-                   <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1 leading-none">
-                      <TrendingUp size={11} /> Fluxo Normal
-                   </span>
                 </div>
               </div>
 
@@ -1341,11 +1338,8 @@ export default function Dashboard() {
                    <h4 className="text-4xl font-black text-amber-600 tracking-tighter leading-none">{data.zver.pending}</h4>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Aguardando Integração</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                <div className="pt-2 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Sincronização SAP</span>
-                   <span className="text-[8px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1 leading-none">
-                      <Clock size={11} /> Fila de Processamento
-                   </span>
                 </div>
               </div>
 
@@ -1353,7 +1347,7 @@ export default function Dashboard() {
                 <div className="flex justify-between items-start">
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-all"><RefreshCw size={18} /></div>
                    <div className="text-right flex-grow pl-3 flex flex-col justify-end">
-                      <p className="text-[9px] font-black text-slate-400 uppercase leading-tight">Aguardando Retorno</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase leading-none">Aguardando Retorno</p>
                       <p className="text-sm font-black text-slate-800 tracking-tight mt-1 leading-none">{formatCurrency(data?.zver?.value_pending_return || 0)}</p>
                    </div>
                 </div>
@@ -1361,11 +1355,8 @@ export default function Dashboard() {
                    <h4 className="text-4xl font-black text-indigo-600 tracking-tighter leading-none">{data?.zver?.pending_return || 0}</h4>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Pendente no SAP</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                <div className="pt-2 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Retorno SAP</span>
-                   <span className="text-[8px] font-bold text-indigo-500 uppercase tracking-widest flex items-center gap-1 leading-none">
-                      <RefreshCw size={11} /> Sincronização ERP
-                   </span>
                 </div>
               </div>
 
@@ -1381,11 +1372,8 @@ export default function Dashboard() {
                    <h4 className="text-4xl font-black text-rose-600 tracking-tighter leading-none">{data?.zver?.error || 0}</h4>
                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2 leading-none">Falhas de Integração</p>
                 </div>
-                <div className="pt-2 border-t border-slate-50 flex justify-between items-center">
+                <div className="pt-2 border-t border-slate-50 flex items-center">
                    <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">Erros Detectados</span>
-                   <span className="text-[8px] font-bold text-rose-500 uppercase tracking-widest flex items-center gap-1 leading-none">
-                      <AlertCircle size={11} /> Bloqueio SAP
-                   </span>
                 </div>
               </div>
             </div>
