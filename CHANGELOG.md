@@ -4,6 +4,12 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.30] - 2026-05-01
+- **Filtro de Período (Dashboard)**: Implementada a funcionalidade de filtro global por mês ("Competência") no cabeçalho do dashboard. Agora os usuários podem navegar por meses anteriores para consultar dados históricos de integrações.
+- **Backend (Queries)**: Atualizadas as consultas SQL de VK11 e contagens consolidadas para suportar filtragem dinâmica por intervalo de datas, garantindo precisão nos dados históricos.
+- **UX/UI (Dashboard)**: Novo componente de seletor de mês com atalho para "Mês Atual" e integração visual premium.
+- **Exportação (Consistência)**: Ajustadas as exportações detalhadas de Sell-in e Clientes para respeitarem o período selecionado globalmente no painel.
+
 ### [2.4.29] - 2026-05-01
 - **ZAJU (Rateio Pendente)**: Alterada a origem do valor de provisão exibido no dashboard. Agora o sistema utiliza a soma dos valores da tabela `orcamento_desdobramento` (`vlr_desdobramento`) em vez do valor fracionário da memória de cálculo ou do valor total da linha de investimento, garantindo maior precisão financeira no relatório.
 

@@ -50,7 +50,8 @@ import {
   Zap,
   XCircle,
   Grip,
-  Info
+  Info,
+  Calendar
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import PaginatedTable from '../components/PaginatedTable';
@@ -297,6 +298,63 @@ const IntegrationLog = React.memo(({ updates, className = "" }) => {
     </div>
   );
 });
+
+const MonthFilter = ({ dateRange, setDateRange }) => {
+  const [selectedMonth, setSelectedMonth] = useState(dateRange.startDate.substring(0, 7));
+
+  // Sincronizar com o estado externo se necessário (ex: botão Mes Atual)
+  useEffect(() => {
+    setSelectedMonth(dateRange.startDate.substring(0, 7));
+  }, [dateRange.startDate]);
+
+  const handleMonthChange = (e) => {
+    const monthStr = e.target.value;
+    if (!monthStr) return;
+    
+    setSelectedMonth(monthStr);
+    
+    const [year, month] = monthStr.split('-').map(Number);
+    const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    const lastDay = new Date(year, month, 0).getDate();
+    const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+    
+    setDateRange({ startDate, endDate });
+  };
+
+  const handleSetCurrentMonth = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    const lastDay = new Date(year, month, 0).getDate();
+    const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+    
+    setDateRange({ startDate, endDate });
+  };
+
+  return (
+    <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex items-center gap-2 pl-3 pr-2 border-r border-slate-200">
+        <Calendar size={18} className="text-blue-500" />
+        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest whitespace-nowrap">Competência</span>
+      </div>
+      <div className="relative group">
+        <input 
+          type="month" 
+          value={selectedMonth}
+          onChange={handleMonthChange}
+          className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer hover:border-slate-300"
+        />
+      </div>
+      <button 
+        onClick={handleSetCurrentMonth}
+        className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all active:scale-95"
+      >
+        Mês Atual
+      </button>
+    </div>
+  );
+};
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -983,7 +1041,7 @@ export default function Dashboard() {
         const exportFn = isSellin ? exportRelatorioSellinDetalhado : exportRelatorioClientesDetalhado;
         const filename = isSellin ? 'Sellin_Detalhado' : 'Clientes_Detalhado';
         
-        const blob = await exportFn(null, null);
+        const blob = await exportFn(dateRange.startDate, dateRange.endDate);
         const url = window.URL.createObjectURL(blob); 
         const link = document.createElement('a');
         link.href = url;
@@ -1040,10 +1098,13 @@ export default function Dashboard() {
       <div className="bg-white border-b border-slate-200 px-8 py-6 sticky top-0 z-10 w-full">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Painel de Performance e Dados</h1>
-            <p className="text-slate-500 mt-1 font-medium text-sm">Visão geral da integração de dados</p>
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Painel de Performance e Dados</h1>
+            <p className="text-slate-500 mt-1 font-medium text-sm flex items-center gap-2">
+              Visão geral da integração de dados — <span className="text-blue-600 font-bold">{referenceMonth}</span>
+            </p>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
+            <MonthFilter dateRange={dateRange} setDateRange={setDateRange} />
             <div className="flex flex-col items-end">
               <div className="flex items-center gap-2 text-slate-400 group">
                 <RefreshCw 

@@ -16,8 +16,8 @@ QUERY_ORCAMENTO_INTEGRACAO_TOTAL = text("""
             count(1) FILTER (WHERE soi.status = 'ERRO') AS erro
         FROM suzano_orcamento_integracao soi
         INNER JOIN orcamento o ON o.id = soi.id_orcamento
-        WHERE TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') >= soi.valid_from 
-          AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') <= soi.valid_to
+        WHERE soi.valid_from <= SUBSTRING(:end_date FROM 1 FOR 10)
+          AND soi.valid_to >= SUBSTRING(:start_date FROM 1 FOR 10)
         GROUP BY soi.id_orcamento
     ) as sub;
 """)
@@ -176,7 +176,7 @@ QUERY_DASHBOARD_COUNTS_CONSOLIDATED = text("""
         (
             SELECT COUNT(DISTINCT soi.id_orcamento)
             FROM suzano_orcamento_integracao soi
-            WHERE soi.status = 'ERRO' AND (TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') BETWEEN soi.valid_from AND soi.valid_to)
+            WHERE soi.status = 'ERRO' AND soi.valid_from <= SUBSTRING(:end_date FROM 1 FOR 10) AND soi.valid_to >= SUBSTRING(:start_date FROM 1 FOR 10)
         ) as vk11
 """)
 
@@ -217,8 +217,8 @@ QUERY_ORCAMENTO_INTEGRACAO = text("""
     FROM suzano_orcamento_integracao soi
     INNER JOIN orcamento o ON o.id = soi.id_orcamento
     LEFT JOIN orcamento_tipo_verba otv ON o.id_tipo_verba = otv.id
-    WHERE TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') >= soi.valid_from 
-      AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') <= soi.valid_to
+    WHERE soi.valid_from <= SUBSTRING(:end_date FROM 1 FOR 10) 
+      AND soi.valid_to >= SUBSTRING(:start_date FROM 1 FOR 10)
     GROUP BY soi.id_orcamento, o.descricao, soi.tipo_integracao, otv.descricao
     ORDER BY soi.id_orcamento DESC, total DESC;
 """)
@@ -587,8 +587,8 @@ QUERY_ERRO_VK11_LIST = text("""
     FROM suzano_orcamento_integracao soi
     INNER JOIN orcamento o ON o.id = soi.id_orcamento
     WHERE soi.status = 'ERRO'
-      AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') >= soi.valid_from 
-      AND TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD') <= soi.valid_to
+      AND soi.valid_from <= SUBSTRING(:end_date FROM 1 FOR 10) 
+      AND soi.valid_to >= SUBSTRING(:start_date FROM 1 FOR 10)
 """)
 
 
