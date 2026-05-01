@@ -4,6 +4,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.28] - 2026-05-01
+- **ZAJU (Rateio Pendente)**: Expansão da lógica de busca para incluir linhas de investimento "órfãs" (sem registros na tabela de memória de cálculo). Agora o sistema utiliza a tabela `orcamento_linha_investimento_extensao` para identificar o **Customer Group** e a **Marca** vinculados, garantindo que itens travados por falta total de histórico (como o ID 1182244) sejam devidamente exibidos no dashboard.
+
 ### [2.4.27] - 2026-04-30
 - **ZAJU (Rateio Pendente)**: Atualizada a lógica da aba e exportação de "Rateio Pendente (Faturamento)" para considerar exclusivamente as verbas de tipo **VERBAS FIXAS PROMO & AÇÕES** (ID 6) e **VERBAS FIXAS DE CONTRATO** (ID 9). Esta alteração garante que itens de verbas percentuais sejam corretamente filtrados, alinhando o painel às regras de negócio de rateio fixo.
 

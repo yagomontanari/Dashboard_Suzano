@@ -634,91 +634,92 @@ QUERY_ERRO_ZAJU_LIST = text("""
 QUERY_ERRO_ZAJU_LIST_PAGINATED = text(QUERY_ERRO_ZAJU_LIST.text + PAGINATION_SORT_SUFFIX)
 
 QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
-    WITH pending_zajus AS (
+    WITH pending_memory AS (
         SELECT 
             sapmc.id,
-            sapmc.id_sellin,
+            sapmc.id_orcamento,
+            sapmc.id_linha_investimento,
             o.descricao as orc_desc,
             oli.descricao as linha_desc,
             sapmc.cond_value,
             sapmc.dta_criacao,
-            sapmc.dta_alteracao
+            sapmc.dta_alteracao,
+            ce.id_extensao as id_cg,
+            concat(cg.id_externo, ' - ', cg.nom_extensao) as cg_name,
+            vper.id_extensao as id_marca,
+            marca.nom_extensao as marca_name
         FROM suzano_ajuste_provisao_memoria_calculo sapmc
         INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
         INNER JOIN orcamento_linha_investimento oli ON oli.id = sapmc.id_linha_investimento
+        JOIN sellin s ON sapmc.id_sellin = s.id
+        JOIN cliente_extensao ce ON s.id_cliente = ce.id_cliente
+        JOIN extensao cg ON ce.id_extensao = cg.id AND cg.id_nivel_extensao = 2
+        INNER JOIN v_produto_extensao_recursiva vper ON s.id_produto = vper.id_produto
+        INNER JOIN extensao marca ON vper.id_extensao = marca.id 
+            AND marca.id_nivel_extensao = 8 
+            AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
         WHERE sapmc.status = 'PENDENTE_INTEGRACAO'
           AND sapmc.purch_no_c IS NOT NULL
           AND o.id_tipo_verba IN (6, 9)
           AND sapmc.dta_alteracao >= CAST(:start_date AS TIMESTAMP) AND sapmc.dta_alteracao <= CAST(:end_date AS TIMESTAMP)
     ),
-    zaju_products AS (
-        SELECT DISTINCT s.id_produto 
-        FROM pending_zajus p
-        JOIN sellin s ON p.id_sellin = s.id
-    ),
-    history_products AS (
-        SELECT DISTINCT id_produto 
-        FROM sellin 
-        WHERE dta_emissao >= CAST(:start_date AS TIMESTAMP) - INTERVAL '3 months'
-          AND dta_emissao < CAST(:start_date AS TIMESTAMP)
-          AND tipo_doc_fat IN ('ZF2B', 'ZFCO')
-          AND valor_total > 0
-    ),
-    all_relevant_prods AS (
-        SELECT id_produto FROM zaju_products
-        UNION
-        SELECT id_produto FROM history_products
-    ),
-    prod_marca_map AS (
-        SELECT arp.id_produto, vper.id_extensao as id_marca, marca.nom_extensao as nom_marca
-        FROM all_relevant_prods arp
-        INNER JOIN v_produto_extensao_recursiva vper ON arp.id_produto = vper.id_produto
-        INNER JOIN extensao marca ON vper.id_extensao = marca.id 
-            AND marca.id_nivel_extensao = 8 
-            AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
-    ),
-    zaju_details AS (
+    orphaned_lines AS (
         SELECT 
-            p.*,
-            s.id_cliente,
-            s.id_produto,
-            ce.id_extensao as id_cg,
-            concat(cg.id_externo, ' - ', cg.nom_extensao) as "Customer Group",
-            pm.id_marca,
-            pm.nom_marca as "Marca"
-        FROM pending_zajus p
-        JOIN sellin s ON p.id_sellin = s.id
-        JOIN cliente_extensao ce ON s.id_cliente = ce.id_cliente
-        JOIN extensao cg ON ce.id_extensao = cg.id AND cg.id_nivel_extensao = 2
-        JOIN prod_marca_map pm ON s.id_produto = pm.id_produto
+            oli.id,
+            oli.id_orcamento,
+            oli.id as id_linha_investimento,
+            o.descricao as orc_desc,
+            oli.descricao as linha_desc,
+            oli.vlr_investimento as cond_value,
+            oli.dta_criacao,
+            oli.dta_alteracao,
+            cg.id as id_cg,
+            concat(cg.id_externo, ' - ', cg.nom_extensao) as cg_name,
+            marca.id as id_marca,
+            marca.nom_extensao as marca_name
+        FROM orcamento_linha_investimento oli
+        JOIN orcamento o ON o.id = oli.id_orcamento
+        LEFT JOIN suzano_ajuste_provisao_memoria_calculo sapmc ON sapmc.id_linha_investimento = oli.id
+        JOIN orcamento_linha_investimento_extensao olie_cg ON oli.id = olie_cg.id_linha_investimento
+        JOIN extensao cg ON olie_cg.id_extensao = cg.id AND cg.id_nivel_extensao = 2
+        JOIN orcamento_linha_investimento_extensao olie_marca ON oli.id = olie_marca.id_linha_investimento
+        JOIN extensao marca ON olie_marca.id_extensao = marca.id AND marca.id_nivel_extensao = 8
+        WHERE o.id_tipo_verba IN (6, 9)
+          AND oli.status = 'LIBERADO'
+          AND sapmc.id IS NULL
+          AND oli.dta_alteracao >= CAST(:start_date AS TIMESTAMP) AND oli.dta_alteracao <= CAST(:end_date AS TIMESTAMP)
     ),
-    relevant_cgs AS (
-        SELECT DISTINCT id_cg FROM zaju_details
+    all_pending AS (
+        SELECT * FROM pending_memory
+        UNION ALL
+        SELECT * FROM orphaned_lines
     ),
     history_faturamento AS (
         SELECT DISTINCT 
             ce.id_extensao as id_cg,
-            pm.id_marca
+            vper.id_extensao as id_marca
         FROM sellin s
         JOIN cliente_extensao ce ON s.id_cliente = ce.id_cliente
-        JOIN relevant_cgs rc ON ce.id_extensao = rc.id_cg
-        JOIN prod_marca_map pm ON s.id_produto = pm.id_produto
+        INNER JOIN v_produto_extensao_recursiva vper ON s.id_produto = vper.id_produto
+        INNER JOIN extensao marca ON vper.id_extensao = marca.id 
+            AND marca.id_nivel_extensao = 8 
+            AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
         WHERE s.dta_emissao >= CAST(:start_date AS TIMESTAMP) - INTERVAL '3 months'
           AND s.dta_emissao < CAST(:start_date AS TIMESTAMP)
           AND s.tipo_doc_fat IN ('ZF2B', 'ZFCO')
           AND s.valor_total > 0
     )
     SELECT 
-        zd.orc_desc as orcamento,
-        zd.linha_desc as linha_investimento,
-        zd."Customer Group" as customer_group,
-        zd."Marca" as marca,
-        zd.cond_value as valor_provisao,
-        TO_CHAR(zd.dta_criacao, 'DD/MM/YYYY') as data_criacao,
+        ap.orc_desc as orcamento,
+        ap.linha_desc as linha_investimento,
+        ap.cg_name as customer_group,
+        ap.marca_name as marca,
+        ap.cond_value as valor_provisao,
+        TO_CHAR(ap.dta_criacao, 'DD/MM/YYYY') as data_criacao,
         'Sem faturamento histórico no período (D-3)' as mensagem,
-        zd.dta_alteracao
-    FROM zaju_details zd
-    LEFT JOIN history_faturamento h ON h.id_cg = zd.id_cg AND h.id_marca = zd.id_marca
+        ap.dta_alteracao
+    FROM all_pending ap
+    LEFT JOIN history_faturamento h ON h.id_cg = ap.id_cg AND h.id_marca = ap.id_marca
     WHERE h.id_cg IS NULL
 """)
 
