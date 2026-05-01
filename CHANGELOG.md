@@ -4,6 +4,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.29] - 2026-05-01
+- **ZAJU (Rateio Pendente)**: Alterada a origem do valor de provisão exibido no dashboard. Agora o sistema utiliza a soma dos valores da tabela `orcamento_desdobramento` (`vlr_desdobramento`) em vez do valor fracionário da memória de cálculo ou do valor total da linha de investimento, garantindo maior precisão financeira no relatório.
+
 ### [2.4.28] - 2026-05-01
 - **ZAJU (Rateio Pendente)**: Expansão da lógica de busca para incluir linhas de investimento "órfãs" (sem registros na tabela de memória de cálculo). Agora o sistema utiliza a tabela `orcamento_linha_investimento_extensao` para identificar o **Customer Group** e a **Marca** vinculados, garantindo que itens travados por falta total de histórico (como o ID 1182244) sejam devidamente exibidos no dashboard.
 
