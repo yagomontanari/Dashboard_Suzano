@@ -123,7 +123,7 @@ async def get_dashboard_metrics(
             fetch_data(QUERY_ZAJU_BY_TYPE, params),
             fetch_data(QUERY_PAGAMENTOS_TOTAL, params),
             fetch_data(QUERY_TOP_CLIENTES, params),
-            fetch_data(QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params), # 7 contagens em 1 única conexão
+            fetch_data(QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params_str), # 7 contagens em 1 única conexão
             fetch_data(QUERY_LAST_SYNC, {}),
         )
 
