@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FileText, Download, Calendar, AlertCircle, Users, Calculator, ChevronLeft, ChevronRight } from 'lucide-react';
 import { exportRelatorioZaju, exportRelatorioCgElegiveis, exportRelatorioSaldos } from '../services/api';
 
-const MonthFilter = ({ value, onChange, iconColor = "text-blue-500", activeColor = "bg-blue-600", label = "Período" }) => {
+const MonthFilter = ({ value, onChange, iconColor = "text-blue-500", activeColor = "bg-blue-600", label = "Competência" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [viewYear, setViewYear] = useState(parseInt(value.split('-')[0]));
   
@@ -38,25 +38,27 @@ const MonthFilter = ({ value, onChange, iconColor = "text-blue-500", activeColor
   };
 
   return (
-    <div className="space-y-2">
-      <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-        <Calendar size={14} className={iconColor} /> {label}
-      </label>
-      <div className="relative">
+    <div className="relative flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm w-full">
+      <div className="flex items-center gap-2 pl-3 pr-2 border-r border-slate-100 shrink-0">
+        <Calendar size={16} className={iconColor} />
+        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">{label}</span>
+      </div>
+      
+      <div className="relative flex-1">
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all border border-slate-200 group"
+          className="w-full flex items-center gap-3 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all border border-slate-100 group min-w-[140px]"
         >
           <span className="text-sm font-bold text-slate-700 capitalize">
             {fullMonths[currentMonthIdx]} <span className="text-slate-400 font-bold ml-1">{currentYear}</span>
           </span>
-          <ChevronRight size={16} className={`ml-auto text-slate-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+          <ChevronRight size={14} className={`ml-auto text-slate-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
         </button>
 
         {isOpen && (
           <>
             <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)}></div>
-            <div className="absolute top-full mt-3 left-0 w-full min-w-[280px] bg-white border border-slate-200 rounded-3xl shadow-2xl z-30 p-5 animate-in fade-in zoom-in-95 duration-200 origin-top">
+            <div className="absolute top-full mt-3 right-0 w-72 bg-white border border-slate-200 rounded-3xl shadow-2xl z-30 p-5 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
               <div className="flex items-center justify-between mb-6 px-1">
                 <button onClick={() => setViewYear(v => v - 1)} className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-blue-600 transition-colors">
                   <ChevronLeft size={18} />
@@ -105,6 +107,78 @@ const MonthFilter = ({ value, onChange, iconColor = "text-blue-500", activeColor
   );
 };
 
+const YearFilter = ({ value, onChange, iconColor = "text-blue-500", activeColor = "bg-blue-600", label = "Anos" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const availableYears = Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - 2 + i).toString());
+  
+  const handleToggle = (year) => {
+    // value is an array like ['2024', '2025']
+    let newValue;
+    if (value.includes(year)) {
+      newValue = value.filter(v => v !== year);
+    } else {
+      if (value.length >= 2) {
+        newValue = [value[1], year].sort();
+      } else {
+        newValue = [...value, year].sort();
+      }
+    }
+    onChange(newValue);
+  };
+
+  return (
+    <div className="relative flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm w-full">
+      <div className="flex items-center gap-2 pl-3 pr-2 border-r border-slate-100 shrink-0">
+        <Calendar size={16} className={iconColor} />
+        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">{label}</span>
+      </div>
+      
+      <div className="relative flex-1">
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex items-center gap-3 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all border border-slate-100 group min-w-[140px]"
+        >
+          <span className="text-sm font-bold text-slate-700">
+            {value.length > 0 ? value.join(' - ') : 'Selecionar Período'}
+          </span>
+          <ChevronRight size={14} className={`ml-auto text-slate-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+        </button>
+
+        {isOpen && (
+          <>
+            <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)}></div>
+            <div className="absolute top-full mt-3 right-0 w-64 bg-white border border-slate-200 rounded-3xl shadow-2xl z-30 p-5 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+              <div className="space-y-2">
+                {availableYears.map(year => (
+                  <button
+                    key={year}
+                    onClick={() => handleToggle(year)}
+                    className={`w-full py-3 px-4 rounded-2xl text-xs font-black transition-all flex items-center justify-between ${
+                      value.includes(year)
+                        ? `${activeColor} text-white shadow-lg` 
+                        : 'hover:bg-slate-50 text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    {year}
+                    {value.includes(year) && <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between">
+                <button onClick={() => setIsOpen(false)} className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600">
+                  Fechar
+                </button>
+                <span className="text-[10px] font-black text-slate-400 uppercase">Máx: 2 anos</span>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function Relatorios() {
   // State for ZAJU report
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
@@ -122,8 +196,7 @@ export default function Relatorios() {
   const [saldosMode, setSaldosMode] = useState('mensal'); // 'mensal' ou 'anual'
   const [saldosStartMonth, setSaldosStartMonth] = useState(new Date().toISOString().slice(0, 7));
   const [saldosEndMonth, setSaldosEndMonth] = useState(new Date().toISOString().slice(0, 7));
-  const [saldosStartYear, setSaldosStartYear] = useState(new Date().getFullYear().toString());
-  const [saldosEndYear, setSaldosEndYear] = useState(new Date().getFullYear().toString());
+  const [saldosYears, setSaldosYears] = useState([new Date().getFullYear().toString()]);
   const [loadingSaldos, setLoadingSaldos] = useState(false);
   const [errorSaldos, setErrorSaldos] = useState(null);
   const [successSaldos, setSuccessSaldos] = useState(null);
@@ -209,20 +282,16 @@ export default function Relatorios() {
         endDate = new Date(endYear, endMonth, 0).toISOString().split('T')[0];
         filename_suffix = `mensal_${saldosStartMonth}_a_${saldosEndMonth}`;
       } else {
-        const startY = parseInt(saldosStartYear);
-        const endY = parseInt(saldosEndYear);
-
-        if (endY < startY) {
-          throw new Error('O ano final não pode ser anterior ao inicial.');
+        if (saldosYears.length === 0) {
+          throw new Error('Selecione ao menos um ano para exportar.');
         }
-
-        if (endY - startY >= 2) {
-          throw new Error('O limite máximo de exportação anual é de 2 anos.');
-        }
+        
+        const startY = saldosYears[0];
+        const endY = saldosYears[saldosYears.length - 1];
 
         startDate = `${startY}-01-01`;
         endDate = `${endY}-12-31`;
-        filename_suffix = `anual_${saldosStartYear}_a_${saldosEndYear}`;
+        filename_suffix = `anual_${saldosYears.join('_')}`;
       }
 
       const blob = await exportRelatorioSaldos(startDate, endDate);
@@ -270,7 +339,7 @@ export default function Relatorios() {
                 <MonthFilter 
                   value={selectedMonth} 
                   onChange={setSelectedMonth} 
-                  label="Período de Atividade"
+                  label="Competência"
                   iconColor="text-blue-500"
                   activeColor="bg-blue-600"
                 />
@@ -337,7 +406,7 @@ export default function Relatorios() {
                 <MonthFilter 
                   value={selectedCgMonth} 
                   onChange={setSelectedCgMonth} 
-                  label="Mês de Avaliação (Busca D-3)"
+                  label="Avaliação"
                   iconColor="text-emerald-500"
                   activeColor="bg-emerald-600"
                 />
@@ -429,49 +498,26 @@ export default function Relatorios() {
                       <MonthFilter 
                         value={saldosStartMonth} 
                         onChange={setSaldosStartMonth} 
-                        label="Mês Inicial"
+                        label="Início"
                         iconColor="text-orange-500"
                         activeColor="bg-orange-600"
                       />
                       <MonthFilter 
                         value={saldosEndMonth} 
                         onChange={setSaldosEndMonth} 
-                        label="Mês Final"
+                        label="Fim"
                         iconColor="text-orange-500"
                         activeColor="bg-orange-600"
                       />
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                          <Calendar size={14} className="text-orange-500" /> Ano Inicial
-                        </label>
-                        <select
-                          value={saldosStartYear}
-                          onChange={(e) => setSaldosStartYear(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all appearance-none cursor-pointer"
-                        >
-                          {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
-                            <option key={year} value={year}>{year}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                          <Calendar size={14} className="text-orange-500" /> Ano Final
-                        </label>
-                        <select
-                          value={saldosEndYear}
-                          onChange={(e) => setSaldosEndYear(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all appearance-none cursor-pointer"
-                        >
-                          {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
-                            <option key={year} value={year}>{year}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
+                    <YearFilter 
+                      value={saldosYears} 
+                      onChange={setSaldosYears} 
+                      label="Exercício"
+                      iconColor="text-orange-500"
+                      activeColor="bg-orange-600"
+                    />
                   )}
                 </div>
 
