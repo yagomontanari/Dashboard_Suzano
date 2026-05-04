@@ -223,8 +223,8 @@ export default function Relatorios() {
       <div className="flex-1 p-8 max-w-5xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* ZAJU Report Card */}
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60 duration-300">
-            <div className="bg-slate-900 p-6 flex items-center gap-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60 duration-300">
+            <div className="bg-slate-900 p-6 flex items-center gap-4 rounded-t-2xl">
               <div className="p-2.5 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-600/20">
                 <FileText size={22} strokeWidth={2.5} />
               </div>
@@ -280,7 +280,7 @@ export default function Relatorios() {
                 )}
               </button>
             </div>
-            <div className="bg-slate-50/50 px-8 py-4 border-t border-slate-100 flex justify-between items-center group">
+            <div className="bg-slate-50/50 px-8 py-4 border-t border-slate-100 flex justify-between items-center group rounded-b-2xl">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">PostgreSQL Optimized</span>
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -290,9 +290,8 @@ export default function Relatorios() {
           </div>
 
           {/* CGs Elegiveis Report Card */}
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60 duration-300">
-            {/* ... existente ... */}
-            <div className="bg-slate-900 p-6 flex items-center gap-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60 duration-300">
+            <div className="bg-slate-900 p-6 flex items-center gap-4 rounded-t-2xl">
               <div className="p-2.5 bg-emerald-600 rounded-xl text-white shadow-lg shadow-emerald-600/20">
                 <Users size={22} strokeWidth={2.5} />
               </div>
@@ -348,7 +347,7 @@ export default function Relatorios() {
                 )}
               </button>
             </div>
-            <div className="bg-slate-50/50 px-8 py-4 border-t border-slate-100 flex justify-between items-center group">
+            <div className="bg-slate-50/50 px-8 py-4 border-t border-slate-100 flex justify-between items-center group rounded-b-2xl">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">PostgreSQL Optimized</span>
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -358,8 +357,8 @@ export default function Relatorios() {
           </div>
 
           {/* New Saldos Disponíveis Report Card */}
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60 duration-300 md:col-span-2">
-            <div className="bg-slate-900 p-6 flex items-center justify-between">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60 duration-300 md:col-span-2">
+            <div className="bg-slate-900 p-6 flex items-center justify-between rounded-t-2xl">
               <div className="flex items-center gap-4">
                 <div className="p-2.5 bg-orange-600 rounded-xl text-white shadow-lg shadow-orange-600/20">
                   <Calculator size={22} strokeWidth={2.5} />
@@ -456,7 +455,7 @@ export default function Relatorios() {
                 </button>
               </div>
             </div>
-            <div className="bg-slate-50/50 px-8 py-4 border-t border-slate-100 flex justify-between items-center group">
+            <div className="bg-slate-50/50 px-8 py-4 border-t border-slate-100 flex justify-between items-center group rounded-b-2xl">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Saldos Disponíveis Analítico</span>
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
