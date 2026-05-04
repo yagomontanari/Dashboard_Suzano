@@ -2114,32 +2114,32 @@ export default function Dashboard() {
                   </div>
 
                   {totalValue > 0 && (
-                    <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-top-4 duration-500">
-                      <div className="md:col-span-2 bg-slate-900 p-8 rounded-[2rem] text-white shadow-2xl flex items-center gap-8 border border-slate-800 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                        <div className="p-5 bg-rose-500/20 text-rose-400 rounded-3xl border border-rose-500/30 shadow-lg shadow-rose-900/20 group-hover:scale-110 transition-transform duration-500">
-                          <TrendingDown size={40} strokeWidth={2.5} />
+                    <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4 animate-in slide-in-from-top-4 duration-500">
+                      <div className="md:col-span-3 bg-slate-900 p-5 rounded-2xl text-white shadow-lg flex items-center gap-6 border border-slate-800 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-rose-500/5 rounded-full blur-3xl -mr-24 -mt-24"></div>
+                        <div className="p-3.5 bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/30 shadow-lg shadow-rose-900/20 group-hover:scale-105 transition-transform duration-500">
+                          <TrendingDown size={28} strokeWidth={2.5} />
                         </div>
                         <div className="relative z-10">
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Impacto Financeiro Bloqueado</p>
+                          <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.25em] mb-1">Impacto Financeiro Bloqueado</p>
                           <div className="flex items-baseline gap-2">
-                            <p className="text-5xl font-black text-white tracking-tighter">{formatCurrency(totalValue)}</p>
-                            <span className="text-rose-400 font-bold text-sm bg-rose-400/10 px-3 py-1 rounded-full border border-rose-400/20 animate-pulse">TOTAL</span>
+                            <p className="text-3xl font-black text-white tracking-tighter">{formatCurrency(totalValue)}</p>
+                            <span className="text-[10px] font-black text-rose-400 bg-rose-400/10 px-2 py-0.5 rounded-full border border-rose-400/20">TOTAL</span>
                           </div>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-3 flex items-center gap-2">
-                            <AlertCircle size={14} className="text-rose-500" />
-                            Montante que deixará de ser provisionado por falta de histórico
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 flex items-center gap-1.5 opacity-80">
+                            <AlertCircle size={12} className="text-rose-500" />
+                            Montante sem provisionamento por falta de histórico
                           </p>
                         </div>
-                        <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none">
-                           <FileX2 size={120} />
+                        <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none">
+                           <FileX2 size={80} />
                         </div>
                       </div>
                       
-                      <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col justify-center gap-2">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Itens Impactados</p>
-                        <p className="text-4xl font-black text-slate-800 tracking-tighter">{totalCount}</p>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Linhas de Investimento</p>
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Itens Impactados</p>
+                        <p className="text-2xl font-black text-slate-800 tracking-tighter">{totalCount}</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Linhas de Investimento</p>
                       </div>
                     </div>
                   )}
