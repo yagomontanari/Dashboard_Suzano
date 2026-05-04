@@ -5,8 +5,8 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 ---
 
 ### [2.4.32] - 2026-05-04
-- **Otimização (Dashboard)**: Refatoração da consulta de "Rateios Pendentes (Faturamento)" para melhorar significativamente a performance. Agora a busca foca apenas em orçamentos aprovados (`id_status = 2`) e exclui linhas de investimento que já possuam rateios integrados com sucesso.
-- **Backend (Performance)**: Otimização da verificação de histórico de faturamento (janela de 3 meses) utilizando `NOT EXISTS` correlacionado, reduzindo o processamento de grandes volumes de dados de faturamento.
+- **Otimização (Dashboard)**: Refatoração profunda da consulta de "Rateios Pendentes (Faturamento)" para máxima precisão e performance. Agora utiliza as tabelas `orcamento_desdobramento` e `ano_fiscal_periodo` para filtrar os dados exatamente pelo mês selecionado no Dashboard, focando em orçamentos aprovados (`id_status = 2`) e linhas sem rateios integrados.
+- **Backend (Performance)**: Implementação de filtros correlacionados via `NOT EXISTS` para verificação de histórico de faturamento (janela retroativa de 3 meses), eliminando scans desnecessários e melhorando o tempo de resposta do dashboard.
 - **Bug Fix (Backend)**: Resolvido erro de `DataError` e `AmbiguousFunctionError` no driver `asyncpg` utilizando `TO_CHAR(CAST(:date AS TIMESTAMP), 'YYYY-MM-DD')`.
 
 ### [2.4.30] - 2026-05-01

@@ -641,7 +641,7 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
             sapmc.id_linha_investimento,
             o.descricao as orc_desc,
             oli.descricao as linha_desc,
-            (SELECT SUM(vlr_desdobramento) FROM orcamento_desdobramento WHERE id_linha_investimento = oli.id) as cond_value,
+            od.vlr_desdobramento as cond_value,
             sapmc.dta_criacao,
             sapmc.dta_alteracao,
             ce.id_extensao as id_cg,
@@ -651,6 +651,8 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         FROM suzano_ajuste_provisao_memoria_calculo sapmc
         INNER JOIN orcamento o ON o.id = sapmc.id_orcamento
         INNER JOIN orcamento_linha_investimento oli ON oli.id = sapmc.id_linha_investimento
+        INNER JOIN orcamento_desdobramento od ON od.id_linha_investimento = oli.id
+        INNER JOIN ano_fiscal_periodo afp ON afp.id = od.id_periodo_orcamentario
         JOIN sellin s ON sapmc.id_sellin = s.id
         JOIN cliente_extensao ce ON s.id_cliente = ce.id_cliente
         JOIN extensao cg ON ce.id_extensao = cg.id AND cg.id_nivel_extensao = 2
@@ -661,9 +663,8 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         WHERE sapmc.status = 'PENDENTE_INTEGRACAO'
           AND sapmc.purch_no_c IS NOT NULL
           AND o.id_tipo_verba IN (6, 9)
-          AND o.id_status = 2 -- Apenas orçamentos aprovados
-          AND sapmc.dta_alteracao >= CAST(:start_date AS TIMESTAMP) AND sapmc.dta_alteracao <= CAST(:end_date AS TIMESTAMP)
-          -- Apenas linhas que não houveram rateios integrados (nenhum INTEGRADO)
+          AND o.id_status = 2 -- Aprovado
+          AND afp.data_inicio >= CAST(:start_date AS DATE) AND afp.data_fim <= CAST(:end_date AS DATE)
           AND NOT EXISTS (
               SELECT 1 FROM suzano_ajuste_provisao_memoria_calculo s2 
               WHERE s2.id_linha_investimento = sapmc.id_linha_investimento AND s2.status = 'INTEGRADO'
@@ -676,7 +677,7 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
             oli.id as id_linha_investimento,
             o.descricao as orc_desc,
             oli.descricao as linha_desc,
-            (SELECT SUM(vlr_desdobramento) FROM orcamento_desdobramento WHERE id_linha_investimento = oli.id) as cond_value,
+            od.vlr_desdobramento as cond_value,
             oli.dta_criacao,
             oli.dta_alteracao,
             cg.id as id_cg,
@@ -685,20 +686,20 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
             marca.nom_extensao as marca_name
         FROM orcamento_linha_investimento oli
         JOIN orcamento o ON o.id = oli.id_orcamento
+        INNER JOIN orcamento_desdobramento od ON od.id_linha_investimento = oli.id
+        INNER JOIN ano_fiscal_periodo afp ON afp.id = od.id_periodo_orcamentario
         JOIN orcamento_linha_investimento_extensao olie_cg ON oli.id = olie_cg.id_linha_investimento
         JOIN extensao cg ON olie_cg.id_extensao = cg.id AND cg.id_nivel_extensao = 2
         JOIN orcamento_linha_investimento_extensao olie_marca ON oli.id = olie_marca.id_linha_investimento
         JOIN extensao marca ON olie_marca.id_extensao = marca.id AND marca.id_nivel_extensao = 8
         WHERE o.id_tipo_verba IN (6, 9)
-          AND o.id_status = 2 -- Apenas orçamentos aprovados
+          AND o.id_status = 2 -- Aprovado
           AND oli.status = 'LIBERADO'
-          AND oli.dta_alteracao >= CAST(:start_date AS TIMESTAMP) AND oli.dta_alteracao <= CAST(:end_date AS TIMESTAMP)
-          -- Apenas linhas que não houveram rateios integrados
+          AND afp.data_inicio >= CAST(:start_date AS DATE) AND afp.data_fim <= CAST(:end_date AS DATE)
           AND NOT EXISTS (
               SELECT 1 FROM suzano_ajuste_provisao_memoria_calculo s_int 
               WHERE s_int.id_linha_investimento = oli.id AND s_int.status = 'INTEGRADO'
           )
-          -- Garante que não está na pending_memory (já possui registro no sapmc)
           AND NOT EXISTS (
               SELECT 1 FROM suzano_ajuste_provisao_memoria_calculo s_any 
               WHERE s_any.id_linha_investimento = oli.id
@@ -726,8 +727,8 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         INNER JOIN extensao marca ON vper.id_extensao = marca.id 
             AND marca.id_nivel_extensao = 8 
             AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
-        WHERE s.dta_emissao >= CAST(:start_date AS TIMESTAMP) - INTERVAL '3 months'
-          AND s.dta_emissao < CAST(:start_date AS TIMESTAMP)
+        WHERE s.dta_emissao >= CAST(:start_date AS DATE) - INTERVAL '3 months'
+          AND s.dta_emissao < CAST(:start_date AS DATE)
           AND s.tipo_doc_fat IN ('ZF2B', 'ZFCO')
           AND s.valor_total > 0
           AND ce.id_extensao = ap.id_cg
