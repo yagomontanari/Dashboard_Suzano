@@ -661,7 +661,13 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         WHERE sapmc.status = 'PENDENTE_INTEGRACAO'
           AND sapmc.purch_no_c IS NOT NULL
           AND o.id_tipo_verba IN (6, 9)
+          AND o.id_status = 2 -- Apenas orçamentos aprovados
           AND sapmc.dta_alteracao >= CAST(:start_date AS TIMESTAMP) AND sapmc.dta_alteracao <= CAST(:end_date AS TIMESTAMP)
+          -- Apenas linhas que não houveram rateios integrados (nenhum INTEGRADO)
+          AND NOT EXISTS (
+              SELECT 1 FROM suzano_ajuste_provisao_memoria_calculo s2 
+              WHERE s2.id_linha_investimento = sapmc.id_linha_investimento AND s2.status = 'INTEGRADO'
+          )
     ),
     orphaned_lines AS (
         SELECT 
@@ -679,35 +685,29 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
             marca.nom_extensao as marca_name
         FROM orcamento_linha_investimento oli
         JOIN orcamento o ON o.id = oli.id_orcamento
-        LEFT JOIN suzano_ajuste_provisao_memoria_calculo sapmc ON sapmc.id_linha_investimento = oli.id
         JOIN orcamento_linha_investimento_extensao olie_cg ON oli.id = olie_cg.id_linha_investimento
         JOIN extensao cg ON olie_cg.id_extensao = cg.id AND cg.id_nivel_extensao = 2
         JOIN orcamento_linha_investimento_extensao olie_marca ON oli.id = olie_marca.id_linha_investimento
         JOIN extensao marca ON olie_marca.id_extensao = marca.id AND marca.id_nivel_extensao = 8
         WHERE o.id_tipo_verba IN (6, 9)
+          AND o.id_status = 2 -- Apenas orçamentos aprovados
           AND oli.status = 'LIBERADO'
-          AND sapmc.id IS NULL
           AND oli.dta_alteracao >= CAST(:start_date AS TIMESTAMP) AND oli.dta_alteracao <= CAST(:end_date AS TIMESTAMP)
+          -- Apenas linhas que não houveram rateios integrados
+          AND NOT EXISTS (
+              SELECT 1 FROM suzano_ajuste_provisao_memoria_calculo s_int 
+              WHERE s_int.id_linha_investimento = oli.id AND s_int.status = 'INTEGRADO'
+          )
+          -- Garante que não está na pending_memory (já possui registro no sapmc)
+          AND NOT EXISTS (
+              SELECT 1 FROM suzano_ajuste_provisao_memoria_calculo s_any 
+              WHERE s_any.id_linha_investimento = oli.id
+          )
     ),
     all_pending AS (
         SELECT * FROM pending_memory
         UNION ALL
         SELECT * FROM orphaned_lines
-    ),
-    history_faturamento AS (
-        SELECT DISTINCT 
-            ce.id_extensao as id_cg,
-            vper.id_extensao as id_marca
-        FROM sellin s
-        JOIN cliente_extensao ce ON s.id_cliente = ce.id_cliente
-        INNER JOIN v_produto_extensao_recursiva vper ON s.id_produto = vper.id_produto
-        INNER JOIN extensao marca ON vper.id_extensao = marca.id 
-            AND marca.id_nivel_extensao = 8 
-            AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
-        WHERE s.dta_emissao >= CAST(:start_date AS TIMESTAMP) - INTERVAL '3 months'
-          AND s.dta_emissao < CAST(:start_date AS TIMESTAMP)
-          AND s.tipo_doc_fat IN ('ZF2B', 'ZFCO')
-          AND s.valor_total > 0
     )
     SELECT 
         ap.orc_desc as orcamento,
@@ -719,8 +719,20 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         'Sem faturamento histórico no período (D-3)' as mensagem,
         ap.dta_alteracao
     FROM all_pending ap
-    LEFT JOIN history_faturamento h ON h.id_cg = ap.id_cg AND h.id_marca = ap.id_marca
-    WHERE h.id_cg IS NULL
+    WHERE NOT EXISTS (
+        SELECT 1 FROM sellin s
+        JOIN cliente_extensao ce ON s.id_cliente = ce.id_cliente
+        INNER JOIN v_produto_extensao_recursiva vper ON s.id_produto = vper.id_produto
+        INNER JOIN extensao marca ON vper.id_extensao = marca.id 
+            AND marca.id_nivel_extensao = 8 
+            AND marca.des_atributos @> '{"nomeLabel": "hierarquia1", "indiceLabel": 2}'
+        WHERE s.dta_emissao >= CAST(:start_date AS TIMESTAMP) - INTERVAL '3 months'
+          AND s.dta_emissao < CAST(:start_date AS TIMESTAMP)
+          AND s.tipo_doc_fat IN ('ZF2B', 'ZFCO')
+          AND s.valor_total > 0
+          AND ce.id_extensao = ap.id_cg
+          AND vper.id_extensao = ap.id_marca
+    )
 """)
 
 QUERY_ZAJU_PENDENTE_SEM_RATEIO_PAGINATED = text(QUERY_ZAJU_PENDENTE_SEM_RATEIO.text + PAGINATION_SORT_SUFFIX)

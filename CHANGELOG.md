@@ -4,9 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-### [2.4.31] - 2026-05-04
-- **Bug Fix (Backend)**: Resolvido erro de `DataError` e `AmbiguousFunctionError` no driver `asyncpg`. A solução definitiva utiliza `TO_CHAR(CAST(:date AS TIMESTAMP), 'YYYY-MM-DD')` em todas as queries SQL. Isso fornece o "hint" necessário para que o driver reconheça o parâmetro como data e o banco de dados resolva a função correta, eliminando ambiguidades e conflitos de tipo.
-- **Backend (Manutenção)**: Padronização completa do tratamento de datas no dashboard, garantindo estabilidade no ambiente assíncrono.
+### [2.4.32] - 2026-05-04
+- **Otimização (Dashboard)**: Refatoração da consulta de "Rateios Pendentes (Faturamento)" para melhorar significativamente a performance. Agora a busca foca apenas em orçamentos aprovados (`id_status = 2`) e exclui linhas de investimento que já possuam rateios integrados com sucesso.
+- **Backend (Performance)**: Otimização da verificação de histórico de faturamento (janela de 3 meses) utilizando `NOT EXISTS` correlacionado, reduzindo o processamento de grandes volumes de dados de faturamento.
+- **Bug Fix (Backend)**: Resolvido erro de `DataError` e `AmbiguousFunctionError` no driver `asyncpg` utilizando `TO_CHAR(CAST(:date AS TIMESTAMP), 'YYYY-MM-DD')`.
 
 ### [2.4.30] - 2026-05-01
 - **Filtro de Período (Dashboard)**: Implementada a funcionalidade de filtro global por mês ("Competência") no cabeçalho do dashboard. Agora os usuários podem navegar por meses anteriores para consultar dados históricos de integrações.
