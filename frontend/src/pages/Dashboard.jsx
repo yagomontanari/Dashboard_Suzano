@@ -1187,9 +1187,6 @@ export default function Dashboard() {
                 Atualizado em <span className="text-slate-700 font-bold">{formatDateTime(lastUpdated)}</span>
               </p>
             </div>
-            <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-900 text-white hover:bg-slate-800 hover:-translate-y-0.5 rounded shadow-[4px_4px_0px_#94a3b8] font-bold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
-              <Download size={16} strokeWidth={2.5} /> Exportar Excel
-            </button>
           </div>
         </div>
         
