@@ -5,7 +5,8 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 ---
 
 ### [2.4.34] - 2026-05-04
-- **UX/UI (Relatórios)**: Reestruturação completa dos seletores de data para o padrão **Inline Premium** (idêntico ao filtro global do Dashboard).
+- **UX/UI (Relatórios)**: Reestruturação completa dos seletores de data para o padrão **Inline Premium**.
+- **UX/UI (Relatórios)**: Consolidação dos seletores de intervalo (Início/Fim) em um único componente `MonthRangeFilter`, resolvendo problemas de sobreposição e quebra de layout em telas menores.
 - **Exportação (Saldos)**: Unificação da seleção anual em um único campo multisseleção, permitindo escolher até 2 anos simultaneamente de forma mais intuitiva.
 - **UX (Relatórios)**: Padronização de ícones e labels para maior consistência visual entre os módulos de ZAJU, CG Elegíveis e Saldos.
 
