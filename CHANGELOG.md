@@ -4,6 +4,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
+### [2.4.34] - 2026-05-04
+- **Exportação (Saldos Disponíveis)**: Expansão da funcionalidade de exportação para permitir a seleção de múltiplos meses (limite de 1 ano) e múltiplos anos (limite de 2 anos). Agora o sistema suporta a extração consolidada de intervalos personalizados.
+- **UX/UI (Relatórios)**: Implementação de seletores de intervalo (Início/Fim) com validação em tempo real. O sistema impede seleções que excedam os limites de 12 meses (mensal) ou 2 anos (anual) e bloqueia datas finais anteriores às iniciais.
+- **Relatórios**: Atualização da lógica de nomenclatura de arquivos exportados para incluir o período exato selecionado, facilitando a organização dos arquivos pelo usuário.
+
 ### [2.4.33] - 2026-05-04
 - **Interface (Dashboard)**: Implementação de cards de resumo financeiro no detalhamento de "Rateios Pendentes (Faturamento)". Agora o dashboard exibe o montante total em R$ que deixará de ser provisionado, fornecendo visibilidade clara do impacto financeiro causado pela falta de faturamento histórico.
 - **Backend (API)**: Adicionado cálculo dinâmico de `total_value` no endpoint de inconsistências para a categoria de rateio pendente.

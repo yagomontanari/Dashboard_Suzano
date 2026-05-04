@@ -120,8 +120,10 @@ export default function Relatorios() {
 
   // State for Saldos report
   const [saldosMode, setSaldosMode] = useState('mensal'); // 'mensal' ou 'anual'
-  const [selectedSaldosMonth, setSelectedSaldosMonth] = useState(new Date().toISOString().slice(0, 7));
-  const [selectedSaldosYear, setSelectedSaldosYear] = useState(new Date().getFullYear().toString());
+  const [saldosStartMonth, setSaldosStartMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [saldosEndMonth, setSaldosEndMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [saldosStartYear, setSaldosStartYear] = useState(new Date().getFullYear().toString());
+  const [saldosEndYear, setSaldosEndYear] = useState(new Date().getFullYear().toString());
   const [loadingSaldos, setLoadingSaldos] = useState(false);
   const [errorSaldos, setErrorSaldos] = useState(null);
   const [successSaldos, setSuccessSaldos] = useState(null);
@@ -185,21 +187,49 @@ export default function Relatorios() {
     setSuccessSaldos(null);
     try {
       let startDate, endDate;
+      let filename_suffix;
       
       if (saldosMode === 'mensal') {
-        const [year, month] = selectedSaldosMonth.split('-').map(Number);
-        startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-        endDate = new Date(year, month, 0).toISOString().split('T')[0];
+        const [startYear, startMonth] = saldosStartMonth.split('-').map(Number);
+        const [endYear, endMonth] = saldosEndMonth.split('-').map(Number);
+        
+        const d1 = new Date(startYear, startMonth - 1, 1);
+        const d2 = new Date(endYear, endMonth - 1, 1);
+        
+        if (d2 < d1) {
+          throw new Error('O mês final não pode ser anterior ao inicial.');
+        }
+        
+        const monthDiff = (endYear - startYear) * 12 + (endMonth - startMonth);
+        if (monthDiff >= 12) {
+          throw new Error('O limite máximo de exportação mensal é de 1 ano.');
+        }
+
+        startDate = `${startYear}-${String(startMonth).padStart(2, '0')}-01`;
+        endDate = new Date(endYear, endMonth, 0).toISOString().split('T')[0];
+        filename_suffix = `mensal_${saldosStartMonth}_a_${saldosEndMonth}`;
       } else {
-        startDate = `${selectedSaldosYear}-01-01`;
-        endDate = `${selectedSaldosYear}-12-31`;
+        const startY = parseInt(saldosStartYear);
+        const endY = parseInt(saldosEndYear);
+
+        if (endY < startY) {
+          throw new Error('O ano final não pode ser anterior ao inicial.');
+        }
+
+        if (endY - startY >= 2) {
+          throw new Error('O limite máximo de exportação anual é de 2 anos.');
+        }
+
+        startDate = `${startY}-01-01`;
+        endDate = `${endY}-12-31`;
+        filename_suffix = `anual_${saldosStartYear}_a_${saldosEndYear}`;
       }
 
       const blob = await exportRelatorioSaldos(startDate, endDate);
       const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `Saldos_Disponiveis_${saldosMode}_${saldosMode === 'mensal' ? selectedSaldosMonth : selectedSaldosYear}.xlsx`);
+      link.setAttribute('download', `Saldos_Disponiveis_${filename_suffix}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -207,7 +237,7 @@ export default function Relatorios() {
       setSuccessSaldos('Relatório gerado com sucesso!');
     } catch (err) {
       console.error('Erro ao exportar saldos:', err);
-      setErrorSaldos('Falha ao gerar o relatório. Verifique sua conexão.');
+      setErrorSaldos(err.message || 'Falha ao gerar o relatório. Verifique sua conexão.');
     } finally {
       setLoadingSaldos(false);
     }
@@ -395,27 +425,52 @@ export default function Relatorios() {
               <div className="space-y-8">
                 <div className="space-y-2">
                   {saldosMode === 'mensal' ? (
-                    <MonthFilter 
-                      value={selectedSaldosMonth} 
-                      onChange={setSelectedSaldosMonth} 
-                      label="Mês Competência"
-                      iconColor="text-orange-500"
-                      activeColor="bg-orange-600"
-                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <MonthFilter 
+                        value={saldosStartMonth} 
+                        onChange={setSaldosStartMonth} 
+                        label="Mês Inicial"
+                        iconColor="text-orange-500"
+                        activeColor="bg-orange-600"
+                      />
+                      <MonthFilter 
+                        value={saldosEndMonth} 
+                        onChange={setSaldosEndMonth} 
+                        label="Mês Final"
+                        iconColor="text-orange-500"
+                        activeColor="bg-orange-600"
+                      />
+                    </div>
                   ) : (
-                    <div className="space-y-2">
-                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Calendar size={14} className="text-orange-500" /> Ano Exercício
-                      </label>
-                      <select
-                        value={selectedSaldosYear}
-                        onChange={(e) => setSelectedSaldosYear(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all appearance-none cursor-pointer"
-                      >
-                        {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
-                          <option key={year} value={year}>{year}</option>
-                        ))}
-                      </select>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                          <Calendar size={14} className="text-orange-500" /> Ano Inicial
+                        </label>
+                        <select
+                          value={saldosStartYear}
+                          onChange={(e) => setSaldosStartYear(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all appearance-none cursor-pointer"
+                        >
+                          {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                          <Calendar size={14} className="text-orange-500" /> Ano Final
+                        </label>
+                        <select
+                          value={saldosEndYear}
+                          onChange={(e) => setSaldosEndYear(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all appearance-none cursor-pointer"
+                        >
+                          {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   )}
                 </div>
