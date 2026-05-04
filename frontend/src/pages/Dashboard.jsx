@@ -35,6 +35,7 @@ import {
   Database,
   UserCheck,
   FileText,
+  FileX2,
   CreditCard,
   Settings,
   Truck,
