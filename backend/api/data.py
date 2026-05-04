@@ -94,10 +94,6 @@ async def get_dashboard_metrics(
     try:
         start_dt, end_dt = parse_date_range(start_date, end_date)
 
-        params_str = {
-            "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S"),
-        }
         params = {"start_date": start_dt, "end_date": end_dt}
 
         # Otimizacao: Paralelizando 11 chamadas utilizando conexoes via polling para baixar o tempo de 6s para 1~2s.
@@ -118,12 +114,12 @@ async def get_dashboard_metrics(
                     return [dict(row) for row in res.mappings().all()]
 
         results = await asyncio.gather(
-            fetch_data(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params_str),
+            fetch_data(QUERY_ORCAMENTO_INTEGRACAO_TOTAL, params),
             fetch_data(QUERY_ZAJU_TOTAL, params),
             fetch_data(QUERY_ZAJU_BY_TYPE, params),
             fetch_data(QUERY_PAGAMENTOS_TOTAL, params),
             fetch_data(QUERY_TOP_CLIENTES, params),
-            fetch_data(QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params_str), # 7 contagens em 1 única conexão
+            fetch_data(QUERY_DASHBOARD_COUNTS_CONSOLIDATED, params), # 7 contagens em 1 única conexão
             fetch_data(QUERY_LAST_SYNC, {}),
         )
 
@@ -280,18 +276,6 @@ async def get_inconsistencies(
         }
         params_count = {"start_date": start_dt, "end_date": end_dt}
 
-        # Consistent with get_dashboard_metrics, VK11 needs string dates
-        if category == "vk11":
-            params = {
-                "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"),
-                "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S"),
-                "limit": size,
-                "offset": offset,
-            }
-            params_count = {
-                "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"),
-                "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S"),
-            }
 
         query_map = {
             "sellin": (QUERY_ERRO_SELLIN_PAGINATED, QUERY_ERRO_SELLIN),
@@ -392,12 +376,12 @@ async def get_vk11_details(
 ):
     try:
         start_dt, end_dt = parse_date_range(start_date, end_date)
-        params_str = {
-            "start_date": start_dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "end_date": end_dt.strftime("%Y-%m-%d %H:%M:%S"),
+        params = {
+            "start_date": start_dt,
+            "end_date": end_dt,
         }
 
-        result = await db.execute(QUERY_ORCAMENTO_INTEGRACAO, params_str)
+        result = await db.execute(QUERY_ORCAMENTO_INTEGRACAO, params)
         rows = [dict(row) for row in result.mappings().all()]
 
         return {"source": "postgresql", "data": rows}
