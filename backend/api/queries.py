@@ -663,7 +663,7 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         WHERE sapmc.status = 'PENDENTE_INTEGRACAO'
           AND sapmc.purch_no_c IS NOT NULL
           AND o.id_tipo_verba IN (6, 9)
-          AND o.status = 2 -- Aprovado
+          AND o.status = 'APROVADO' -- Aprovado
           AND (afp.id IS NULL OR (afp.data_inicio >= CAST(:start_date AS DATE) AND afp.data_fim <= CAST(:end_date AS DATE)))
           AND NOT EXISTS (
               SELECT 1 FROM suzano_ajuste_provisao_memoria_calculo s2 
@@ -693,7 +693,7 @@ QUERY_ZAJU_PENDENTE_SEM_RATEIO = text("""
         JOIN orcamento_linha_investimento_extensao olie_marca ON oli.id = olie_marca.id_linha_investimento
         JOIN extensao marca ON olie_marca.id_extensao = marca.id AND marca.id_nivel_extensao = 8
         WHERE o.id_tipo_verba IN (6, 9)
-          AND o.status = 2 -- Aprovado
+          AND o.status = 'APROVADO' -- Aprovado
           AND oli.status = 'LIBERADO'
           AND (afp.id IS NULL OR (afp.data_inicio >= CAST(:start_date AS DATE) AND afp.data_fim <= CAST(:end_date AS DATE)))
           AND NOT EXISTS (
