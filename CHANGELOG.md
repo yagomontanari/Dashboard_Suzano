@@ -5,8 +5,8 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 ---
 
 ### [2.4.31] - 2026-05-04
-- **Bug Fix (Backend)**: Resolvido erro de `DataError` no driver `asyncpg` ao carregar as métricas do dashboard. A refatoração eliminou a passagem de strings formatadas para parâmetros de data, substituindo-as por objetos `datetime` nativos do Python, garantindo compatibilidade total com os requisitos de tipagem do driver e mantendo a integridade das consultas SQL.
-- **Backend (Manutenção)**: Padronização do tratamento de parâmetros de data nos endpoints de métricas consolidadas, detalhes de VK11 e listagem de inconsistências, removendo redundâncias e potenciais pontos de falha na comunicação com o banco de dados.
+- **Bug Fix (Backend)**: Resolvido erro de `DataError` no driver `asyncpg` ao carregar as métricas do dashboard. A solução definitiva envolveu a substituição de `CAST` por `TO_CHAR` em todas as consultas SQL que utilizam parâmetros de data, forçando o driver a reconhecer os parâmetros como timestamps nativos e evitando conflitos de inferência de tipo.
+- **Backend (Manutenção)**: Refatoração das consultas de VK11 e contagens consolidadas em `queries.py` para maior robustez e clareza no tratamento de intervalos de datas.
 
 ### [2.4.30] - 2026-05-01
 - **Filtro de Período (Dashboard)**: Implementada a funcionalidade de filtro global por mês ("Competência") no cabeçalho do dashboard. Agora os usuários podem navegar por meses anteriores para consultar dados históricos de integrações.
