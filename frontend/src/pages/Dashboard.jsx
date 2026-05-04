@@ -402,6 +402,7 @@ export default function Dashboard() {
     return pct.toFixed(1);
   }, []);
   const [totalCount, setTotalCount] = useState(0);
+  const [totalValue, setTotalValue] = useState(0);
   const [sortConfig, setSortConfig] = useState(null);
 
   // VK11 Specific States
@@ -623,6 +624,7 @@ export default function Dashboard() {
       setCurrentPage(result.page);
       setTotalPages(result.total_pages);
       setTotalCount(result.total_count);
+      setTotalValue(result.total_value || 0);
     } catch (err) {
       console.error("Erro ao buscar dados", err);
       setInconsistencyError(err.message || 'Erro de rede');
@@ -2109,6 +2111,37 @@ export default function Dashboard() {
                       {inconsistencyLoading ? 'Gerando...' : 'Exportar Excel'}
                     </button>
                   </div>
+
+                  {totalValue > 0 && (
+                    <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-top-4 duration-500">
+                      <div className="md:col-span-2 bg-slate-900 p-8 rounded-[2rem] text-white shadow-2xl flex items-center gap-8 border border-slate-800 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                        <div className="p-5 bg-rose-500/20 text-rose-400 rounded-3xl border border-rose-500/30 shadow-lg shadow-rose-900/20 group-hover:scale-110 transition-transform duration-500">
+                          <TrendingDown size={40} strokeWidth={2.5} />
+                        </div>
+                        <div className="relative z-10">
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Impacto Financeiro Bloqueado</p>
+                          <div className="flex items-baseline gap-2">
+                            <p className="text-5xl font-black text-white tracking-tighter">{formatCurrency(totalValue)}</p>
+                            <span className="text-rose-400 font-bold text-sm bg-rose-400/10 px-3 py-1 rounded-full border border-rose-400/20 animate-pulse">TOTAL</span>
+                          </div>
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-3 flex items-center gap-2">
+                            <AlertCircle size={14} className="text-rose-500" />
+                            Montante que deixará de ser provisionado por falta de histórico
+                          </p>
+                        </div>
+                        <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none">
+                           <FileX2 size={120} />
+                        </div>
+                      </div>
+                      
+                      <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col justify-center gap-2">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Itens Impactados</p>
+                        <p className="text-4xl font-black text-slate-800 tracking-tighter">{totalCount}</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Linhas de Investimento</p>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="mb-6 p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-4">
                     <div className="p-2 bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-200">

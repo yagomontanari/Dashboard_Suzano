@@ -333,6 +333,14 @@ async def get_inconsistencies(
         res = await db.execute(final_query, params)
         rows = [dict(row) for row in res.mappings().all()]
 
+        # Calcular valor total se for a categoria de rateio pendente
+        total_value = 0
+        if category == "zaju_pending_rateio":
+            # Usamos a mesma query base (count_query) para somar o valor_provisao (aliased em cond_value no CTE final)
+            sum_sql = f"SELECT SUM(valor_provisao) FROM ({count_query.text.strip().rstrip(';')}) AS sum_subquery"
+            sum_res = await db.execute(text(sum_sql), params_count)
+            total_value = sum_res.scalar() or 0
+
         return {
             "source": "postgresql",
             "category": category,
@@ -341,6 +349,7 @@ async def get_inconsistencies(
             "size": size,
             "total_count": total_count,
             "total_pages": (total_count + size - 1) // size,
+            "total_value": float(total_value) if total_value else 0,
         }
     except Exception as e:
         logger.error(f"Erro ao buscar detalhes da categoria {category}: {e}")

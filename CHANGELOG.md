@@ -4,10 +4,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-### [2.4.32] - 2026-05-04
-- **Otimização (Dashboard)**: Refatoração profunda da consulta de "Rateios Pendentes (Faturamento)" para máxima precisão e performance. Agora utiliza as tabelas `orcamento_desdobramento` e `ano_fiscal_periodo` para filtrar os dados exatamente pelo mês selecionado no Dashboard, focando em orçamentos aprovados (`id_status = 2`) e linhas sem rateios integrados.
-- **Backend (Performance)**: Implementação de filtros correlacionados via `NOT EXISTS` para verificação de histórico de faturamento (janela retroativa de 3 meses), eliminando scans desnecessários e melhorando o tempo de resposta do dashboard.
-- **Bug Fix (Backend)**: Resolvido erro de `DataError` e `AmbiguousFunctionError` no driver `asyncpg` utilizando `TO_CHAR(CAST(:date AS TIMESTAMP), 'YYYY-MM-DD')`.
+### [2.4.33] - 2026-05-04
+- **Interface (Dashboard)**: Implementação de cards de resumo financeiro no detalhamento de "Rateios Pendentes (Faturamento)". Agora o dashboard exibe o montante total em R$ que deixará de ser provisionado, fornecendo visibilidade clara do impacto financeiro causado pela falta de faturamento histórico.
+- **Backend (API)**: Adicionado cálculo dinâmico de `total_value` no endpoint de inconsistências para a categoria de rateio pendente.
+- **Otimização (Dashboard)**: Refatoração profunda da consulta de "Rateios Pendentes (Faturamento)" para máxima precisão e performance utilizando as tabelas `orcamento_desdobramento` e `ano_fiscal_periodo`.
 
 ### [2.4.30] - 2026-05-01
 - **Filtro de Período (Dashboard)**: Implementada a funcionalidade de filtro global por mês ("Competência") no cabeçalho do dashboard. Agora os usuários podem navegar por meses anteriores para consultar dados históricos de integrações.
