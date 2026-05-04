@@ -301,25 +301,31 @@ const IntegrationLog = React.memo(({ updates, className = "" }) => {
 });
 
 const MonthFilter = ({ dateRange, setDateRange }) => {
-  const [selectedMonth, setSelectedMonth] = useState(dateRange.startDate.substring(0, 7));
+  const [isOpen, setIsOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(parseInt(dateRange.startDate.split('-')[0]));
+  
+  const months = [
+    'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+    'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+  ];
 
-  // Sincronizar com o estado externo se necessário (ex: botão Mes Atual)
-  useEffect(() => {
-    setSelectedMonth(dateRange.startDate.substring(0, 7));
-  }, [dateRange.startDate]);
+  const fullMonths = [
+    'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+    'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+  ];
 
-  const handleMonthChange = (e) => {
-    const monthStr = e.target.value;
-    if (!monthStr) return;
-    
-    setSelectedMonth(monthStr);
-    
-    const [year, month] = monthStr.split('-').map(Number);
+  const currentMonthIdx = parseInt(dateRange.startDate.split('-')[1]) - 1;
+  const currentYear = parseInt(dateRange.startDate.split('-')[0]);
+
+  const handleSelect = (monthIdx) => {
+    const year = viewYear;
+    const month = monthIdx + 1;
     const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
     const lastDay = new Date(year, month, 0).getDate();
     const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
     
     setDateRange({ startDate, endDate });
+    setIsOpen(false);
   };
 
   const handleSetCurrentMonth = () => {
@@ -330,29 +336,89 @@ const MonthFilter = ({ dateRange, setDateRange }) => {
     const lastDay = new Date(year, month, 0).getDate();
     const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
     
+    setViewYear(year);
     setDateRange({ startDate, endDate });
+    setIsOpen(false);
   };
 
   return (
-    <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl border border-slate-200 shadow-sm">
-      <div className="flex items-center gap-2 pl-3 pr-2 border-r border-slate-200">
-        <Calendar size={18} className="text-blue-500" />
-        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest whitespace-nowrap">Competência</span>
+    <div className="relative flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex items-center gap-2 pl-3 pr-2 border-r border-slate-100">
+        <Calendar size={16} className="text-blue-500" />
+        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">Competência</span>
       </div>
-      <div className="relative group">
-        <input 
-          type="month" 
-          value={selectedMonth}
-          onChange={handleMonthChange}
-          className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer hover:border-slate-300"
-        />
+      
+      <div className="relative">
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-3 px-4 py-2 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all border border-slate-100 group min-w-[160px]"
+        >
+          <span className="text-sm font-black text-slate-700 capitalize">
+            {fullMonths[currentMonthIdx]} <span className="text-slate-400 font-bold ml-1">{currentYear}</span>
+          </span>
+          <ChevronRight size={14} className={`ml-auto text-slate-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+        </button>
+
+        {isOpen && (
+          <>
+            <div 
+              className="fixed inset-0 z-20" 
+              onClick={() => setIsOpen(false)}
+            ></div>
+            <div className="absolute top-full mt-3 left-0 w-72 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-3xl shadow-2xl z-30 p-5 animate-in fade-in zoom-in-95 duration-200 origin-top-left">
+              <div className="flex items-center justify-between mb-6 px-1">
+                <button 
+                  onClick={() => setViewYear(v => v - 1)}
+                  className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-blue-600 transition-colors"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <span className="text-base font-black text-slate-800 tracking-tight">{viewYear}</span>
+                <button 
+                  onClick={() => setViewYear(v => v + 1)}
+                  className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-blue-600 transition-colors"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {months.map((m, idx) => {
+                  const isSelected = currentMonthIdx === idx && currentYear === viewYear;
+                  return (
+                    <button
+                      key={m}
+                      onClick={() => handleSelect(idx)}
+                      className={`py-3 rounded-2xl text-xs font-black transition-all ${
+                        isSelected 
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105' 
+                          : 'hover:bg-slate-50 text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      {m}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between">
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600"
+                >
+                  Fechar
+                </button>
+                <button 
+                  onClick={handleSetCurrentMonth}
+                  className="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all"
+                >
+                  Mês Atual
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
-      <button 
-        onClick={handleSetCurrentMonth}
-        className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all active:scale-95"
-      >
-        Mês Atual
-      </button>
     </div>
   );
 };
