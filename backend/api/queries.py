@@ -920,23 +920,36 @@ QUERY_RELATORIO_SALDOS = text("""
 """)
 
 # ================================
-# INTELIGÊNCIA DE FATURAMENTO
+# INTELIGÊNCIA DE FATURAMENTO (TRADELINKS)
 # ================================
 
 QUERY_REVENUE_INTELLIGENCE_TOTALS = text("""
     SELECT
-        COALESCE(SUM(vlr_bruto), 0) as total_revenue,
-        COALESCE(AVG(CASE WHEN vlr_bruto > 0 THEN (vlr_margem_bruta / vlr_bruto) * 100 END), 0) as avg_margin,
-        (SELECT COUNT(1) FROM orcamento WHERE dta_inicio_orcamento <= :end_date AND dta_fim_orcamento >= :start_date) as total_agreements,
+        COALESCE(SUM(s.vlr_bruto), 0) as total_revenue,
+        COALESCE(AVG(CASE WHEN s.vlr_bruto > 0 THEN (s.vlr_margem_bruta / s.vlr_bruto) * 100 END), 0) as avg_margin,
+        (
+            SELECT COUNT(DISTINCT COALESCE(id_acao_trade_previa::TEXT, id::TEXT)) 
+            FROM acao_trade 
+            WHERE dta_inicio >= :start_date AND dta_fim <= :end_date
+        ) as total_agreements,
         COALESCE(
-            (SELECT SUM(pa.vlr_final) FROM pagamento_acao pa 
-             INNER JOIN orcamento o ON pa.id_orcamento = o.id 
-             WHERE o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date) / 
-            NULLIF((SELECT SUM(o.vlr_orcamento) FROM orcamento o 
-             WHERE o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date), 0) * 100, 
+            (
+                SELECT SUM(pa.vlr_final) 
+                FROM pagamento_acao pa 
+                INNER JOIN apuracao_acao ap ON pa.id_apuracao_acao = ap.id
+                INNER JOIN acao_trade at ON ap.id_acao_trade = at.id
+                WHERE at.dta_inicio >= :start_date AND at.dta_fim <= :end_date
+            ) / 
+            NULLIF(
+                (
+                    SELECT SUM(at.vlr_acao) 
+                    FROM acao_trade at 
+                    WHERE at.dta_inicio >= :start_date AND at.dta_fim <= :end_date
+                ), 0
+            ) * 100, 
         0) as payment_efficiency
-    FROM sellin
-    WHERE dta_emissao >= :start_date AND dta_emissao < :end_date;
+    FROM sellin s
+    WHERE s.dta_emissao >= :start_date AND s.dta_emissao < :end_date;
 """)
 
 QUERY_TOP_PRODUCTS_PERFORMANCE = text("""
@@ -954,32 +967,54 @@ QUERY_TOP_PRODUCTS_PERFORMANCE = text("""
 """)
 
 QUERY_REGIONAL_PERFORMANCE = text("""
+    WITH regional_mapping AS (
+        SELECT ce.id_cliente, e.nom_extensao as region
+        FROM cliente_extensao ce
+        INNER JOIN extensao e ON ce.id_extensao = e.id
+        WHERE e.id_nivel_extensao = 11 -- Nível Regional conforme mapeamento real
+    )
     SELECT 
-        r.nom_regiao as region,
+        rm.region,
         SUM(s.vlr_bruto) as revenue,
         COALESCE(
-            SUM(pa.vlr_final) / NULLIF(SUM(o.vlr_orcamento), 0) * 100, 
+            (
+                SELECT SUM(pa.vlr_final)
+                FROM pagamento_acao pa
+                INNER JOIN apuracao_acao ap ON pa.id_apuracao_acao = ap.id
+                INNER JOIN acao_trade at ON ap.id_acao_trade = at.id
+                INNER JOIN acao_agrupamento_cliente aac ON aac.id_acao = at.id
+                WHERE aac.id_extensao IN (SELECT id_extensao FROM cliente_extensao WHERE id_cliente = ANY(ARRAY_AGG(DISTINCT rm.id_cliente)))
+                  AND at.dta_inicio >= :start_date AND at.dta_fim <= :end_date
+            ) / 
+            NULLIF(
+                (
+                    SELECT SUM(at.vlr_acao)
+                    FROM acao_trade at
+                    INNER JOIN acao_agrupamento_cliente aac ON aac.id_acao = at.id
+                    WHERE aac.id_extensao IN (SELECT id_extensao FROM cliente_extensao WHERE id_cliente = ANY(ARRAY_AGG(DISTINCT rm.id_cliente)))
+                      AND at.dta_inicio >= :start_date AND at.dta_fim <= :end_date
+                ), 0
+            ) * 100, 
         0) as efficiency
-    FROM regiao r
-    INNER JOIN cliente c ON c.id_regiao = r.id
-    LEFT JOIN sellin s ON s.id_cliente = c.id AND s.dta_emissao >= :start_date AND s.dta_emissao < :end_date
-    LEFT JOIN orcamento o ON o.id_cliente = c.id AND o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date
-    LEFT JOIN pagamento_acao pa ON pa.id_orcamento = o.id
-    GROUP BY r.nom_regiao
+    FROM regional_mapping rm
+    LEFT JOIN sellin s ON s.id_cliente = rm.id_cliente AND s.dta_emissao >= :start_date AND s.dta_emissao < :end_date
+    GROUP BY rm.region
     ORDER BY revenue DESC;
 """)
 
 QUERY_AGREEMENTS_SUMMARY = text("""
     SELECT 
         otv.descricao as type,
-        COUNT(o.id) as count,
-        SUM(o.vlr_orcamento) as agreed,
+        COUNT(DISTINCT COALESCE(at.id_acao_trade_previa::TEXT, at.id::TEXT)) as count,
+        SUM(at.vlr_acao) as agreed,
         COALESCE(SUM(pa.vlr_final), 0) as paid,
-        COALESCE(SUM(pa.vlr_final) / NULLIF(SUM(o.vlr_orcamento), 0) * 100, 0) as utilization
-    FROM orcamento o
+        COALESCE(SUM(pa.vlr_final) / NULLIF(SUM(at.vlr_acao), 0) * 100, 0) as utilization
+    FROM acao_trade at
+    INNER JOIN orcamento o ON at.id_orcamento = o.id
     INNER JOIN orcamento_tipo_verba otv ON o.id_tipo_verba = otv.id
-    LEFT JOIN pagamento_acao pa ON pa.id_orcamento = o.id
-    WHERE o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date
+    LEFT JOIN apuracao_acao ap ON ap.id_acao_trade = at.id
+    LEFT JOIN pagamento_acao pa ON pa.id_apuracao_acao = ap.id
+    WHERE at.dta_inicio >= :start_date AND at.dta_fim <= :end_date
     GROUP BY otv.descricao
     ORDER BY agreed DESC;
 """)
