@@ -4,7 +4,9 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 ---
 
-### [2.4.34] - 2026-05-04
+### [2.4.34] - 2026-05-05
+- **UX/UI (Dashboard)**: Implementada a nova aba **"Inteligência de Vendas"**, oferecendo uma visão analítica premium de Receita, Margem Bruta e Eficiência de Pagamento.
+- **Backend (API)**: Novos endpoints e queries SQL otimizadas para processamento de métricas de Sell-in e performance regional.
 - **UX/UI (Dashboard)**: Removido o botão global "Exportar Excel" do cabeçalho, priorizando a utilização do módulo dedicado de Relatórios para extrações avançadas.
 - **UX/UI (Relatórios)**: Reestruturação completa dos seletores de data para o padrão **Inline Premium**.
 - **UX/UI (Relatórios)**: Consolidação dos seletores de intervalo (Início/Fim) em um único componente `MonthRangeFilter`, resolvendo problemas de sobreposição e quebra de layout em telas menores.

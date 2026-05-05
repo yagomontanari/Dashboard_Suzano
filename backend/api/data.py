@@ -1026,6 +1026,46 @@ async def export_rateio_pendente(
         )
 
 
+
+@router.get("/revenue-intelligence")
+@limiter.limit("30/minute")
+async def get_revenue_intelligence(
+    request: Request,
+    start_date: str = None,
+    end_date: str = None,
+    db: AsyncSession = Depends(get_db),
+    user: str = Depends(get_current_user),
+):
+    try:
+        start_dt, end_dt = parse_date_range(start_date, end_date)
+        params = {"start_date": start_dt, "end_date": end_dt}
+
+        async def fetch_data(q, p):
+            result = await db.execute(q, p)
+            return [dict(row._mapping) for row in result.all()]
+
+        # Execução paralela das queries de inteligência
+        results = await asyncio.gather(
+            fetch_data(QUERY_REVENUE_INTELLIGENCE_TOTALS, params),
+            fetch_data(QUERY_TOP_PRODUCTS_PERFORMANCE, params),
+            fetch_data(QUERY_REGIONAL_PERFORMANCE, params),
+            fetch_data(QUERY_AGREEMENTS_SUMMARY, params)
+        )
+
+        return {
+            "status": "success",
+            "data": {
+                "totals": results[0][0] if results[0] else {},
+                "top_products": results[1],
+                "regional_performance": results[2],
+                "agreements_summary": results[3]
+            }
+        }
+    except Exception as e:
+        logger.error(f"Erro ao buscar inteligência de faturamento: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao processar dados de inteligência")
+
+
 @router.post("/export/styled")
 @limiter.limit("20/minute")
 async def export_styled_json(

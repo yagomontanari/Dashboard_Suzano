@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import RevenueIntelligence from '../components/RevenueIntelligence';
 import { 
   getDashboardData, 
   getInconsistenciasData, 
@@ -1157,6 +1158,7 @@ export default function Dashboard() {
 
   const tabs = [
     { id: 'geral', label: 'Geral' },
+    { id: 'revenue', label: 'Inteligência de Vendas' },
     { id: 'pagamentos', label: 'Pagamento (ZVER)' },
     { id: 'vk11', label: 'Provisão (VK11)' },
     { id: 'zaju', label: 'Ajuste de Provisão (ZAJU)' }
@@ -1397,6 +1399,10 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+        )}
+
+        {activeTab === 'revenue' && (
+          <RevenueIntelligence dateRange={dateRange} />
         )}
 
         {activeTab === 'pagamentos' && (

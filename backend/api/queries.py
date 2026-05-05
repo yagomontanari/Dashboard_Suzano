@@ -918,3 +918,68 @@ QUERY_RELATORIO_SALDOS = text("""
             AS NUMERIC(15,2)
         ) > 0;
 """)
+
+# ================================
+# INTELIGÊNCIA DE FATURAMENTO
+# ================================
+
+QUERY_REVENUE_INTELLIGENCE_TOTALS = text("""
+    SELECT
+        COALESCE(SUM(vlr_bruto), 0) as total_revenue,
+        COALESCE(AVG(CASE WHEN vlr_bruto > 0 THEN (vlr_margem_bruta / vlr_bruto) * 100 END), 0) as avg_margin,
+        (SELECT COUNT(1) FROM orcamento WHERE dta_inicio_orcamento <= :end_date AND dta_fim_orcamento >= :start_date) as total_agreements,
+        COALESCE(
+            (SELECT SUM(pa.vlr_final) FROM pagamento_acao pa 
+             INNER JOIN orcamento o ON pa.id_orcamento = o.id 
+             WHERE o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date) / 
+            NULLIF((SELECT SUM(o.vlr_orcamento) FROM orcamento o 
+             WHERE o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date), 0) * 100, 
+        0) as payment_efficiency
+    FROM sellin
+    WHERE dta_emissao >= :start_date AND dta_emissao < :end_date;
+""")
+
+QUERY_TOP_PRODUCTS_PERFORMANCE = text("""
+    SELECT 
+        p.id_externo as id,
+        p.nom_produto as name,
+        SUM(s.vlr_bruto) as revenue,
+        AVG(CASE WHEN s.vlr_bruto > 0 THEN (s.vlr_margem_bruta / s.vlr_bruto) * 100 END) as margin
+    FROM sellin s
+    INNER JOIN produto p ON s.id_produto = p.id
+    WHERE s.dta_emissao >= :start_date AND s.dta_emissao < :end_date
+    GROUP BY p.id_externo, p.nom_produto
+    ORDER BY revenue DESC
+    LIMIT 10;
+""")
+
+QUERY_REGIONAL_PERFORMANCE = text("""
+    SELECT 
+        r.nom_regiao as region,
+        SUM(s.vlr_bruto) as revenue,
+        COALESCE(
+            SUM(pa.vlr_final) / NULLIF(SUM(o.vlr_orcamento), 0) * 100, 
+        0) as efficiency
+    FROM regiao r
+    INNER JOIN cliente c ON c.id_regiao = r.id
+    LEFT JOIN sellin s ON s.id_cliente = c.id AND s.dta_emissao >= :start_date AND s.dta_emissao < :end_date
+    LEFT JOIN orcamento o ON o.id_cliente = c.id AND o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date
+    LEFT JOIN pagamento_acao pa ON pa.id_orcamento = o.id
+    GROUP BY r.nom_regiao
+    ORDER BY revenue DESC;
+""")
+
+QUERY_AGREEMENTS_SUMMARY = text("""
+    SELECT 
+        otv.descricao as type,
+        COUNT(o.id) as count,
+        SUM(o.vlr_orcamento) as agreed,
+        COALESCE(SUM(pa.vlr_final), 0) as paid,
+        COALESCE(SUM(pa.vlr_final) / NULLIF(SUM(o.vlr_orcamento), 0) * 100, 0) as utilization
+    FROM orcamento o
+    INNER JOIN orcamento_tipo_verba otv ON o.id_tipo_verba = otv.id
+    LEFT JOIN pagamento_acao pa ON pa.id_orcamento = o.id
+    WHERE o.dta_inicio_orcamento <= :end_date AND o.dta_fim_orcamento >= :start_date
+    GROUP BY otv.descricao
+    ORDER BY agreed DESC;
+""")
